@@ -26,7 +26,7 @@ Measuring objects and their intensities in images is basic step in many quantita
 analysis workflows. We present a flexible and scalable image processing pipeline tailored to
 highly multiplexed images. This pipline allows the single cell and image structure segmentation of
 hundereds of imagese. It is based on supervised pixel classifcation using Ilastik to the destill the
-segmentation relevenat information from the multiplexed images in a semi automated fashion,
+segmentation relevanat information from the multiplexed images in a semi automated fashion,
 followed by standard image segmentation using CellProfiler. We provide a helper python package as
 well as customized CellProfiler modules that allow for a straight forward application of this
 workflow. As the pipeline is entirely build on open source tool it can be easily adapted to more
@@ -103,14 +103,13 @@ The developed image pipline consists of the general steps:
 \begin{itemize}
 \item Installation of the required software
 \item Conversion of IMC data into a common file format
-\item Preparation of the piepline metadata
+\item Preparation of the pipeline metadata
 \item Generation of the analysis stacks 
 \item Preparation of the input stacks for Ilastik
 \item Iterative training of the Ilastik pixel classifier
 \item Single cell segmentation using CellProfiler
 \item Multiplexed image measuremetns using CellProfiler
-\item Export of the data for HistoCAT exploration
-\item Example data analysis using R
+\item EFurther analysis of the single cell data
 \end{itemize}
 
 \begin{figure}[htb]
@@ -176,7 +175,7 @@ can be easily converted to a normal stack using the Image5D 'Image5D to stack' f
 allows the visualization of the raw imc data using ImageJ.
 
 For aditional visualization, the imctool \textit{omefolder2micatfolder} script can be used to convert the
-ome.tiff images into a HistoCat compatible format.
+ome.tiff images into a HistoCat compatible format (\texttt{python -m imctools.scripts.omefolder2micatfolder -h}).
 
 \subsection{Preparation of the pipeline metadata}
 The pipeline needs several configuration settings:
@@ -435,13 +434,15 @@ specifically to alleviate these problems.
 A natural limitation of training a pixel classifier, is that the classifier can not be easily
 transfered to new datasets, except if they have the same markers measured. However given that the
 same markers used for classification are measured, we observe a transferability of a classifier
-from one dataset to another. We speculate that in the future, provided a variable enough training
+from one dataset to another. However we recommend to calculate the uncertainty maps of the predicted
+images and screen for regions of high uncertainty, which should then be trained specifically. 
+We speculate that in the future, provided a variable enough training
 set and the use of a different classification implementation, a classifier trained on a single large dataset might be reused on new datasets with only minor
 needs for retraining, making the pipeline even more automatized.
 
 
 Being solely based on mature open source software, extending the pipeline is easy, mainly due to
-the modular structure of CellProfiler, which forms the core of the pipeline.
+the modular structure of CellProfiler and Ilastik, which forms the core of the pipeline.
 Obvious extensions of the approach is to combine it with tissue level segmentation masks.
 For example Ilastik can be used to classfiy the tissue into stroma and tumor areas, similarly
 than used in the AQUA approach \cite{mccabe_automated_2005}. Measuring the resulting probability masks with the
@@ -472,8 +473,9 @@ score', taking anto account the overlap of the masks with a user defined nuclear
 cells. While taking informaion from more than one channel into account, this approach a) largely
 depends on the validity of the semgentation score, b) a single, good bait membrane channel that is expresed
 in most of the cells of interest, c) focuses heavily on the membrane channel identification. d)
-does not incorporate single gradient and texture features.
-While a quantitative comparison still remains to be done, we argue that the supervised machine
+does not incorporate singnal gradient and texture features.
+Observing a better scalability and visual performance,  a real quantitative comparison of the approaches
+is challenging and corresponing experiments are currently being performed. Conceptually we argue that the supervised machine
 learning based approach is more flexible and makes better use of the segmentation relevant
 information incorporated in the channels. Notably not only information about the membrane but also
 about nuclear identity of the pixels is extracted from the masks. For example in cases were the
