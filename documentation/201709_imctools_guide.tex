@@ -429,10 +429,11 @@ between nuclear and cytoplasmic/membrane pixels, but no seperate distinction bet
 membrane. Correspondingly the separation between neightbouring cells is notoriously difficult. We
 partially address this problem by doing the pixel classification at a linear inerpolated two fold
 upsampled resolution, which also makes the manual pixelclassification easier. When downsampling the
-segmentation objects two the original resolution we remove pixels that would belong to two cells at
+segmentation objects two the original resolution we initially remove pixels that would belong to two different cells at
 two fold resolution, leaving an empty border between neightbouring cells. Due to the lack of
 membrane specific membrane seperation between neightbouring cells we argue that these pixels would
-anyways be just randomly assigned to one or the other cells. Once the quality and resolution of IMC
+be just randomly assigned to one or the other cells. Depending on the problem it might thus be
+resonable to work with the mask with a gap or close it using another expansion step. Once the quality and resolution of IMC
 images improved we highly recommend to correspondingly acknowledge the membrane structures
 specifically to alleviate these problems.
 
