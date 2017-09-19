@@ -1,0 +1,109 @@
+# This document describes how to setup the pipeline on an clean Ubuntu 14.04 image:
+# Ubuntu 16.xx should also work, however I found some issues with CellProfiler 2.1.1 and GTK3.0,
+# thus I recommend Ubuntu 14.04
+
+sudo apt update
+sudo apt -y upgrade
+
+
+#For ubuntu 16.04: sudo apt-get -y install python-wxgtk3.0
+
+
+
+# cellprofiler dependencies
+sudo apt -y install \
+  git                \
+  python-wxgtk2.8    \
+  build-essential    \
+  libsm6             \
+  libhdf5-dev        \
+  cython             \
+  git                \
+  libmysqlclient-dev \
+  libhdf5-dev        \
+  libxml2-dev        \
+  libxslt1-dev       \
+  openjdk-7-jdk      \
+  openjdk-7-jre      \
+  python-dev         \
+  python-pip         \
+  python-h5py        \
+  python-matplotlib  \
+  python-mysqldb     \
+  python-scipy       \
+  python-vigra       \
+  python-wxgtk2.8    \
+  python-zmq \
+  python-dev\
+    libfreetype6-dev \
+    libv8-dev
+    
+# python libraries
+sudo pip install --upgrade cython
+sudo pip install dask
+sudo pip install --upgrade six 
+sudo pip install -U pip
+sudo pip install -U setuptools
+sudo pip install -U cython
+sudo pip install -U scipy
+sudo pip install -U numpy
+
+sudo pip install matplotlib==1.5.3
+
+# higher javabridge version seems not to work
+sudo pip install javabridge===1.0.14
+
+sudo pip install ipython
+sudo pip install jupyter
+
+# cellprofiler
+sudo pip install https://github.com/CellProfiler/CellProfiler/archive/2.2.0.zip
+# prokaryote needs to be fixed
+sudo pip install prokaryote==1.0.11
+
+# imctools
+sudo pip install https://github.com/BodenmillerGroup/imctools/archive/master.zip
+
+#IMCpluginsCP
+mkdir ~/Git
+cd ~/Git
+git clone https://github.com/BodenmillerGroup/IMCpluginsCP.git
+
+
+# ilastik
+mkdir ~/Bin #optional choose different folder and adapt accordingly
+cd ~/Downloads
+wget http://files.ilastik.org/ilastik-1.2.2-Linux.tar.bz2
+tar xvf ilastik-1.2.2-Linux.tar.bz2 -C ~/Bin
+
+
+
+# optional if the R based CATALYST compensation should be installed:
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9
+#sudo add-apt-repository 'deb [arch=amd64,i386] https://cran.rstudio.com/bin/linux/ubuntu xenial/'
+sudo add-apt-repository 'deb [arch=amd64,i386] https://cran.rstudio.com/bin/linux/ubuntu trusty/'
+sudo apt-get update
+sudo apt-get -y install r-base \
+    r-cran-rcpp\
+    libssl-dev
+
+sudo apt-get -y install build-essential libcurl4-gnutls-dev libxml2-dev libssl-dev
+
+sudo R
+# then
+```
+
+# install dependencies     
+source("https://bioconductor.org/biocLite.R")
+biocLite(c("drc","flowCore","ggplot2","gridExtra",
+    "htmltools","matrixStats","nnls","plotly",
+    "RColorBrewer","reshape2","shiny", 
+    "shinydashboard","shinyjs","shinyBS", 
+    "DT", "magrittr","rmarkdown","knitr",
+    "BiocStyle","testthat","devtools", "V8"))
+
+# install CATALYST
+devtools::install_github("HelenaLC/CATALYST", ref="shiny")
+```
+
+sudo pip install rpy2==2.8.2
