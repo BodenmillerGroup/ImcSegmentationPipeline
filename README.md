@@ -7,6 +7,8 @@ The pipline is based on CellProfiler (http://cellprofiler.org/) for segmentation
 for pixel classification. It is streamlined by using the specially developped imctools python package (https://github.com/BodenmillerGroup/imctools) 
 package as well as custom CellProfiler modules (https://github.com/BodenmillerGroup/ImcPluginsCP).
 
+In our lab we use this pipeline setup on Ubuntu. However it should also be possible to set it up on a Windows or MacOS machine.
+
 Please read the draft document describing the pipeline in the 'Documents' folder for further information about the pipeline and consider the example configuration jupyter file (configuration_files/201709_imctutorial.ipynb) and Cellprofiler Pipeline examples.
 
 We freely share this pipeline in the hope that it will be usefull for others to perform high quality image segmentation and serve as a basis to develop more complicated
