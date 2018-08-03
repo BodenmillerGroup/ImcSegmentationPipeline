@@ -1,0 +1,26 @@
+Tube Number,Metal Tag,Target,Antibody Clone,Stock Concentration,Final Concentration / Dilution,uL to add,full,ilastik
+293,Dy161,Myeloperoxidase MPO,Polyclonal MPO,200,2 ug/mL,1,1,0
+1182,Dy162,CD45,2B11,300,2 ug/mL,0.6666666667,1,1
+1091,Er166,Carbonic Anhydrase IX,polyclonal_CAIX,300,2 ug/mL,0.6666666667,1,0
+1174,Er167,Fibronectin,10/Fibronectin,300,2 ug/mL,0.6666666667,1,1
+1062,Er168,Ki-67,B56,300,2 ug/mL,0.6666666667,1,1
+716,Er170,CD20,H1(FB1),200,2 ug/mL,1,1,0
+1052,Gd160,CD44,IM7,200,2 ug/mL,1,1,1
+1176,Lu175,pan Cytokeratin,AE1,200,2 ug/mL,1,1,1
+1173,Nd142,E-Cadherin / P-Cadherin,36/E-Cadherin,200,2 ug/mL,1,1,1
+844,Nd145,CD31,HC1/6,400,2 ug/mL,0.5,1,0
+636,Nd148,SMA,1A4,400,2 ug/mL,0.5,1,1
+1172,Pr141,Cytokeratin 5,EP1601Y,300,2 ug/mL,0.6666666667,1,0
+1168,Sm147,Keratin 14,polyclonal_905301,300,2 ug/mL,0.6666666667,1,0
+1084,Sm149,Vimentin,EPR3776,300,2 ug/mL,0.6666666667,1,1
+1029,Sm152,CD3,polyclonal_CD3,300,2 ug/mL,0.6666666667,1,0
+,Tb159,CD68,KP1 ,,,,1,1
+,Yb171,pS6,D57.2.2E,,,,1,1
+,Yb172,vWF,polyclonal,,,,1,0
+521,Yb174,Cytokeratin 8/18,C51,100,2 ug/mL,2,1,0
+,Yb176,Histone H3 ,D1H2,,,,1,1
+,Ir191,Iridium191,,,,,1,0
+,Ir193,Iridium193,,,,,1,1
+,Ru100,Ru Counterstain,,,,,1,0
+,Ru102,Ru Counterstain,,,,,1,1
+
