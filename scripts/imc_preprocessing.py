@@ -26,11 +26,19 @@ import zipfile
 
 # This is a pipeline to segment IMC data using Ilastik pixel classification as well as CellProfiler.
 # 
-# To run install the conda `imctools` envrionment found in `Setup/conda_imctools.yml`.
-# -> Install conda
-# -> On a conda console type: `conda env create -f conda_imctools.yml`
+# It requires:
+# - CellProfiler 3.1.5: http://cellprofiler.org/releases/
+# - Ilastik: http://ilastik.org/
+# - ImcPluginsCP plugins of the development branch: develop-cp3, https://github.com/BodenmillerGroup/ImcPluginsCP/tree/develop-cp3
+#     - Download the zip, point the CellProfiler Plugins folder in the preferences to `ImcPluginsCP/plugins`
 # 
-# Start a Jupyter instance in this environment to run this Jupyter Notebook.
+# - An the installed `imctools` conda environement:
+#  
+#     -To run install the conda `imctools` envrionment found in `Setup/conda_imctools.yml`.
+#         -> Install conda: https://www.anaconda.com/download/#linux
+#         -> On a conda console type: `conda env create -f conda_imctools.yml`
+#         -> Start a Jupyter instance in this conda environment to run this Jupyter Notebook.
+#         -> Please let me know if this works in Windows!!
 # 
 # This notebook will automatically download example data.
 # 
@@ -44,7 +52,7 @@ import zipfile
 # 
 # For working with `.txt` files, please look at the older examples.
 # 
-# For any feedback please contact: Vito, vito.zanotelli@uzh.ch
+# For any feedback please contact: Vito, vito.zanotelli@uzh.ch or even better raise an issue on this Github page!
 
 # In[3]:
 
