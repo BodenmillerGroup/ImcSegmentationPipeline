@@ -38,7 +38,15 @@ import zipfile
 #         -> Install conda: https://www.anaconda.com/download/#linux
 #         -> On a conda console type: `conda env create -f conda_imctools.yml`
 #         -> Start a Jupyter instance in this conda environment to run this Jupyter Notebook.
-#         -> Please let me know if this works in Windows!!
+# 
+# - If compensation should be done (https://www.cell.com/cell-systems/abstract/S2405-4712(18)30063-2), the following additional requirements are needed:
+#     - A spillover matrix specific to the isotope lots used for antibody conjugation
+#         - Use the experimental protocol of:https://docs.google.com/document/d/195eViUqHoYRKrkoy_NkIdJPmyx1-OuDaSjiWQBy4weA/edit
+#             -> Will result in a spillovermatrix in `.csv` format.
+#         - R > 3.5 (https://cran.r-project.org/bin/windows/base/)
+#         - Rstudio: https://www.rstudio.com/products/rstudio/download/
+#         - CATALYST >= 1.4.3: https://bioconductor.org/packages/release/bioc/html/CATALYST.html
+#         - 'tiff' R library: run `install.packages('tiff')`
 # 
 # This notebook will automatically download example data.
 # 
@@ -276,8 +284,30 @@ get_ipython().run_cell_magic('time', '', "for fol in os.listdir(folder_ome):\n  
 #     To reduce the outputs, select in `Export To Spreadsheet` -> `Select Measurements to Export` -> Only the measurements you want (usually all Image measurements and only the `MeanIntensity` fullstack measurements).
 # - The `FullStack` can also be not measured, as it is almost identical to the `FullStackFiltered`.
 # 
-# #### 3_measure_mask
-# This will also have a spillover corrections step - stay tuned!
+# #### 3_measure_mask_compensation
+# This will do measurements and also single cell data compensation
+# 0) Run the script: https://github.com/BodenmillerGroup/cyTOFcompensation/blob/master/scripts/imc_adaptsm.Rmd in R:
+#     - Adapt the path to the spillover matrix `fn_sm='.../path/to/sm/spillmat.csv'`. In this example data it can be found at:
+#         `fn_sm = 'PATHTO/ImcSegmentationPipeline/config/20170707_example_spillmat.csv'`
+#     - Choose any `_full.csv` file for the `fn_imc_metals = '/path/to/anyfile_full.csv' `.
+#         In this example this could be: `fn_imc_metals = 'PATHTO/tiffs/20170905_Fluidigmworkshopfinal_SEAJa_s0_p0_r0_a0_ac_full.csv'`
+#     - Run the script and this will produce an `PATHTO/tiffs/imc_full_sm.tiff` file
+# 
+# 1) File list: choose again all files from the `tiffs` folder
+# 
+# 2) View Output settings: set the `Default output folder` to the `cpout` folder
+# 
+# 3) Metadata: update - this will automatically merge the mcd metadata .csv generated earlier in the script with your images.
+# 
+# 4) Names and types:  Make sure that in `NamesAndTypes` the `PATHTO/tiffs/imc_full_sm.tiff` file is selected, click update
+# 
+# 5) `Measure Object Intensity Multichannel`: Adapt the channel numbers. Check the `_full.csv` files in the `tiffs` folder to see how many channels the stack have and adapt accordingly.
+# 
+# 6) `Measure Image Intensity Multichannel`: Adapt the channel numbers. Check the `_full.csv` files in the `tiffs` folder to see how many channels the stack have and adapt accordingly.
+# 
+# 7) `CorrectSpilloverApply`: This will generate a corrected image stack, this can be used e.g. to do measurements of intensity distribution. For measurements of intensity it is however better to correct the measurement afterward using the `CorrectSpilloverMeasurement`.
+# 
+# 8) `CorrectSpilloverMeasurement`: Here the intensity measurement can be spillover corrected. Note that this makes only sense for linear combinations of intensity measurements such as `MeanIntensity` or `TotalIntensity`. For these it is more accurate to do this after measurement than doing it on the pixel level beforehand. Note that for things with non linear transformations as `MedianIntensity`, this will not result in valid results and these measurements should be done on beforehand corrected images from `CorrectSpilloverApply`.
 
 # ## Convert probabilities to uncertainties
 
