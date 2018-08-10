@@ -36,16 +36,20 @@ import zipfile
 #  
 #     -To run install the conda `imctools` envrionment found in `Setup/conda_imctools.yml`.
 #         -> Install conda: https://www.anaconda.com/download/#linux
-#         -> On a conda console type: `conda env create -f conda_imctools.yml`
-#         -> Start a Jupyter instance in this conda environment to run this Jupyter Notebook.
+#         -> On a conda console type: `conda env create -f conda_imctools.yml` OR use the Anaconda GUI -> Environments -> Import -> choose `setup/conda_imctools.yml`
+#         -> Start a Jupyter notebook instance *in this conda environment* to run this Jupyter Notebook.
+#             -`conda activate imctools`
+#             -`conda jupyter notebook`
+#             - OR in the GUI: choose the `imctools` environment, start `Jupyter Notebook`
 # 
 # - If compensation should be done (https://www.cell.com/cell-systems/abstract/S2405-4712(18)30063-2), the following additional requirements are needed:
 #     - A spillover matrix specific to the isotope lots used for antibody conjugation
 #         - Use the experimental protocol of:https://docs.google.com/document/d/195eViUqHoYRKrkoy_NkIdJPmyx1-OuDaSjiWQBy4weA/edit
 #             -> Will result in a spillovermatrix in `.csv` format.
+#         - Clone the Github repository: 
 #         - R > 3.5 (https://cran.r-project.org/bin/windows/base/)
 #         - Rstudio: https://www.rstudio.com/products/rstudio/download/
-#         - CATALYST >= 1.4.3: https://bioconductor.org/packages/release/bioc/html/CATALYST.html
+#         - CATALYST >= 1.4.2: https://bioconductor.org/packages/release/bioc/html/CATALYST.html
 #         - 'tiff' R library: run `install.packages('tiff')`
 # 
 # This notebook will automatically download example data.
@@ -61,6 +65,8 @@ import zipfile
 # For working with `.txt` files, please look at the older examples.
 # 
 # For any feedback please contact: Vito, vito.zanotelli@uzh.ch or even better raise an issue on this Github page!
+
+# ### Input folders (should likely be changed!)
 
 # In[3]:
 
@@ -81,6 +87,8 @@ csv_pannel_metal = 'Metal Tag'
 csv_pannel_ilastik = 'ilastik'
 csv_pannel_full = 'full'
 
+
+# ### Other Input (only change if really necessary and you know what your doing)
 
 # In[4]:
 
@@ -115,6 +123,9 @@ for fol in [folder_base, folder_analysis, folder_ilastik,
         os.makedirs(fol)
 
 
+# ### Optional step: download the example data
+# => Diseable the cell if you are using your own data
+
 # In[6]:
 
 
@@ -132,6 +143,13 @@ for fn, url in urls:
     if os.path.exists(fn) == False:
         urllib.request.urlretrieve(url, fn)
 
+
+# ### Convert zipped IMC acquisitions to input format
+# 
+# This script works with zipped IMC acquisitions:
+# Each acquisition session = (1 mcd file) should be zipped in a folder containing:
+# - The `.mcd` file
+# - All associated `.txt` file generated during the acquisition of this `.mcd` file -> Don't change any of the filenames!!
 
 # Convert mcd containing folders into imc zip folders
 
@@ -289,7 +307,7 @@ get_ipython().run_cell_magic('time', '', "for fol in os.listdir(folder_ome):\n  
 # 0) Run the script: https://github.com/BodenmillerGroup/cyTOFcompensation/blob/master/scripts/imc_adaptsm.Rmd in R:
 #     - Adapt the path to the spillover matrix `fn_sm='.../path/to/sm/spillmat.csv'`. In this example data it can be found at:
 #         `fn_sm = 'PATHTO/ImcSegmentationPipeline/config/20170707_example_spillmat.csv'`
-#     - Choose any `_full.csv` file for the `fn_imc_metals = '/path/to/anyfile_full.csv' `.
+#     - Choose any `_full.csv` file, generated during the `Generate analysis stacks` step in the output folder, for the `fn_imc_metals = '/path/to/anyfile_full.csv' `.
 #         In this example this could be: `fn_imc_metals = 'PATHTO/tiffs/20170905_Fluidigmworkshopfinal_SEAJa_s0_p0_r0_a0_ac_full.csv'`
 #     - Run the script and this will produce an `PATHTO/tiffs/imc_full_sm.tiff` file
 # 
