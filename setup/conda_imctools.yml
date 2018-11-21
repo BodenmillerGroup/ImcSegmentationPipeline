@@ -16,4 +16,4 @@ dependencies:
   - scipy
   - git
   - pip:
-        - "git+https://github.com/BodenmillerGroup/imctools.git@develop-test"
+        - "git+https://github.com/BodenmillerGroup/imctools.git@master"
