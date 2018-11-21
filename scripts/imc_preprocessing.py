@@ -29,18 +29,30 @@ import zipfile
 # It requires:
 # - CellProfiler 3.1.5: http://cellprofiler.org/releases/
 # - Ilastik: http://ilastik.org/
-# - ImcPluginsCP plugins of the development branch: develop-cp3, https://github.com/BodenmillerGroup/ImcPluginsCP/tree/develop-cp3
-#     - Download the zip, point the CellProfiler Plugins folder in the preferences to `ImcPluginsCP/plugins`
+# - The following Github repositories:
+#     => Either Clone (e.g. using command line git or the github deskop client: https://desktop.github.com/) OR download and unzip these repositories to a local folder:
+#     - ImcPluginsCP plugins of the development branch: develop-cp3, https://github.com/BodenmillerGroup/ImcPluginsCP/tree/develop-cp3
+#           - This repository contains additional CellProfiller modules.
+#           - **In the preferences of CellProfiller point the CellProfiler Plugins folder to `ImcPluginsCP/plugins`**
+#       
+#     - The ImcSegmentationPipeline repository: https://github.com/BodenmillerGroup/
+#         - contains the conda environment that you will use bellow in the `setup` folder
+#         - contains the CellProfiler pipelines to be used
 # 
-# - An the installed `imctools` conda environement:
+# 
+# - Install the `imctools` conda environment
+#     - If you have already an older version of this installed, please uninstall it first
 #  
-#     -To run install the conda `imctools` envrionment found in `Setup/conda_imctools.yml`.
+#     - To install the `imctools` envrionment:
 #         -> Install conda: https://www.anaconda.com/download/#linux
-#         -> On a conda console type: `conda env create -f conda_imctools.yml` OR use the Anaconda GUI -> Environments -> Import -> choose `setup/conda_imctools.yml`
-#         -> Start a Jupyter notebook instance *in this conda environment* to run this Jupyter Notebook.
+#         -> The conda environment file is found in  `ImcSegmentationPipeline/Setup/conda_imctools.yml`
+#         -> On a conda console type: `conda env create -f PATHTO/conda_imctools.yml` OR use the Anaconda GUI -> Environments -> Import -> choose `setup/conda_imctools.yml`
+#         -> Start a Jupyter notebook instance *in this conda environment* and open this script: 
 #             -`conda activate imctools`
 #             -`conda jupyter notebook`
 #             - OR in the GUI: choose the `imctools` environment, start `Jupyter Notebook`
+#             - open the `ImcSegmentationPipeline/scripts/imc_preprocessing.ipynb`
+#             - Execute the script cell by cell using `shift-enter`
 # 
 # - If compensation should be done (https://www.cell.com/cell-systems/abstract/S2405-4712(18)30063-2), the following additional requirements are needed:
 #     - A spillover matrix specific to the isotope lots used for antibody conjugation
@@ -52,21 +64,21 @@ import zipfile
 #         - CATALYST >= 1.4.2: https://bioconductor.org/packages/release/bioc/html/CATALYST.html
 #         - 'tiff' R library: run `install.packages('tiff')`
 # 
-# This notebook will automatically download example data.
 # 
-# This dataset are zipped folders of the `.mcd` and all `.txt` files corresponding to one acquisitions session.
-# This is my recomended data format as it preserves and contains all original metadata and enforces a consistent naming scheme.
+# - Data requirements:
+#     - This scripts assume that *each `.mcd`  acquisition and all `.txt` files corresponding to this '.mcd' acquisition* are saved in one a seperate `.zip` folder.
+#         -> This is my recomended data format as it preserves and contains all original metadata and enforces a consistent naming scheme.
+#     - see the example files that are downloaded bellow for an example
 # 
-# Note that the `description` image name can be found in the `..._Acquisition_meta.csv` generated together with the ome tiffs
-# as well as in the `cpout` folder later in the script.
+# Note that the `description` image name can be found in the `..._Acquisition_meta.csv` generated together with the ome tiffs as well as in the `cpout` folder later in the script.
 # After analysis the `Image.csv` metadata file generated in Cellprofiller will also contain the `Description` as well as other important metadata for each 
 # image, such as acquisition frequency, time, location etc.
 # 
-# For working with `.txt` files, please look at the older examples.
+# For working with `.txt` files only, please look at the older examples.
 # 
 # For any feedback please contact: Vito, vito.zanotelli@uzh.ch or even better raise an issue on this Github page!
 
-# ### Input folders (should likely be changed!)
+# ### Input folders (Needs to be adapted for use)
 
 # In[3]:
 
@@ -74,10 +86,11 @@ import zipfile
 # the folders with the ziped acquisition files for the analysis
 folders = ['../example_data']
 
-# part that all considered files need to have in common
+# part that all considered acquisition files need to have in common
+# -> can be adapted to only process a subset of the acquisitions
 file_regexp = '.*.zip'
 
-# output for OME tiffs
+# output folder
 folder_base = '/home/vitoz/Data/Analysis/201805_cp_segmentation_example'
 
 
@@ -111,6 +124,16 @@ suffix_probablities = '_Probabilities'
 
 failed_images = list()
 
+# Make a list of all the analysis stacks with format:
+# (CSV_NAME, SUFFIX, ADDSUM)
+# CSV_NAME: name of the column in the CSV to be used
+# SUFFIX: suffix of the tiff
+# ADDSUM: BOOL, should the sum of all channels be added as the first channel?
+list_analysis_stacks =[
+    (csv_pannel_ilastik, suffix_ilastik, 1),
+    (csv_pannel_full, suffix_full, 0)
+]
+
 
 # Generate all the folders if necessary
 
@@ -124,6 +147,7 @@ for fol in [folder_base, folder_analysis, folder_ilastik,
 
 
 # ### Optional step: download the example data
+# This example comes with example data.
 # => Diseable the cell if you are using your own data
 
 # In[6]:
@@ -180,7 +204,7 @@ get_ipython().run_cell_magic('time', '', "if not(os.path.exists(folder_histocat)
 # In[10]:
 
 
-get_ipython().run_cell_magic('time', '', "for fol in os.listdir(folder_ome):\n    sub_fol = os.path.join(folder_ome, fol)\n    for img in os.listdir(sub_fol):\n        if not img.endswith('.ome.tiff'):\n            continue\n        basename = img.rstrip('.ome.tiff')\n        print(img)\n        ometiff2analysis.ometiff_2_analysis(os.path.join(sub_fol, img), folder_analysis, basename+suffix_full,\n                                               pannelcsv=csv_pannel, metalcolumn=csv_pannel_metal,\n                                                usedcolumn=csv_pannel_full, bigtiff=False, pixeltype='uint16')\n        ometiff2analysis.ometiff_2_analysis(os.path.join(sub_fol, img), folder_analysis,\n                                            basename + suffix_ilastik, pannelcsv=csv_pannel, metalcolumn=csv_pannel_metal,\n                                            usedcolumn=csv_pannel_ilastik, addsum=True, bigtiff=False,\n                                           pixeltype='uint16')\n            \n")
+get_ipython().run_cell_magic('time', '', "for fol in os.listdir(folder_ome):\n    sub_fol = os.path.join(folder_ome, fol)\n    for img in os.listdir(sub_fol):\n        if not img.endswith('.ome.tiff'):\n            continue\n        basename = img.rstrip('.ome.tiff')\n        print(img)\n        for (col, suffix, addsum) in list_analysis_stacks:\n            try:\n                ometiff2analysis.ometiff_2_analysis(os.path.join(sub_fol, img), folder_analysis,\n                                                basename + suffix, pannelcsv=csv_pannel, metalcolumn=csv_pannel_metal,\n                                                usedcolumn=col, addsum=addsum, bigtiff=False,\n                                               pixeltype='uint16')\n            except:\n                print('Error in', img )\n            \n")
 
 
 # # Next steps
@@ -230,7 +254,7 @@ get_ipython().run_cell_magic('time', '', "for fol in os.listdir(folder_ome):\n  
 #         - Diseable `Live Update` for performance
 #         - Frequently check the `Uncertainties`: This indicates which pixels the classifier profits most if they are labeled. A well trained classifier has low uncertainty within class regions (e.g. Nuclei) and high uncertainty at class borders (e.g. between nuclei and cytoplasma).
 #         
-#     - If you think the classifier is well trained, export the probabilities:
+# 6) If you think the classifier is well trained, export the probabilities:
 #         - Export Settings -> Source: Probabilities -> Choose Export Image Settings:
 #             - Convert to datatype: Unsigned Integer 16 bit
 #             - Renormalize: check
@@ -243,9 +267,11 @@ get_ipython().run_cell_magic('time', '', "for fol in os.listdir(folder_ome):\n  
 #             
 #         - Optional: Train again regions with high uncertainty, then proceed.
 #         
-#         - Batch processing: -> Select raw data files -> select all `_s2.h5` files in the `tiff` folder. (sort by filetype, select all `H5` files).
-#             -> This step takes a while and is computationally intensive!
-#             -> Ca 15 min on 10 cores on the example data
+# 7) If you think that you are finished with classification, you need to apply the classifier to your whole dataset usingBatch processing:
+#         - Make sure the Export Settings are still the same as in the step 6), then go to the 'Batch Processing' step in ilastik.
+#         - Select raw data files -> select all `_s2.h5` files in the `tiff` folder. (sort by filetype, select all `H5` files).
+#         => This step takes a while and is computationally intensive!
+#         => Ca 15 min on 10 cores on the example data
 #             
 #         - Optional: use the below probability to uncertainty `#For the data` to convert all proabilities to uncertainties, check if there are any regions of high uncertainty and optionally crop the corresponding image part in imagej and add it to the training data.
 #         - Note: store the `ilastik` folder with all the random crops and the trained classifier for reproducibility reasons.
@@ -351,7 +377,7 @@ for fn in os.listdir(folder_analysis):
 
 # ## Generate the histocat folder with masks
 
-# In[ ]:
+# In[13]:
 
 
 get_ipython().run_cell_magic('time', '', "for fol in os.listdir(folder_ome):\n    ome2micat.omefolder2micatfolder(os.path.join(folder_ome,fol), folder_histocat, \n                                         fol_masks=folder_analysis, mask_suffix=suffix_mask, dtype='uint16')")
