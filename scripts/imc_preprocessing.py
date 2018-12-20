@@ -16,6 +16,7 @@ from imctools.scripts import exportacquisitioncsv
 
 
 import os
+import logging
 import re
 import zipfile
 
@@ -180,7 +181,7 @@ for fn, url in urls:
 # In[7]:
 
 
-get_ipython().run_cell_magic('time', '', "failed_images = list()\nre_fn = re.compile(file_regexp)\n\nfor fol in folders:\n    for fn in os.listdir(fol):\n        if re_fn.match(fn):\n            fn_full = os.path.join(fol, fn)\n            print(fn_full)\n            try:\n                convertfolder2imcfolder.convert_folder2imcfolder(fn_full, out_folder=folder_ome,\n                                                                   dozip=False)\n            except:\n                print('Failed Folder: ' + fn_full)")
+get_ipython().run_cell_magic('time', '', "failed_images = list()\nre_fn = re.compile(file_regexp)\n\nfor fol in folders:\n    for fn in os.listdir(fol):\n        if re_fn.match(fn):\n            fn_full = os.path.join(fol, fn)\n            print(fn_full)\n            try:\n                convertfolder2imcfolder.convert_folder2imcfolder(fn_full, out_folder=folder_ome,\n                                                                   dozip=False)\n            except:\n                logging.exception('Error in {}'.format(fn_full))")
 
 
 # Generate a csv with all the acquisition metadata
@@ -204,7 +205,7 @@ get_ipython().run_cell_magic('time', '', "if not(os.path.exists(folder_histocat)
 # In[10]:
 
 
-get_ipython().run_cell_magic('time', '', "for fol in os.listdir(folder_ome):\n    sub_fol = os.path.join(folder_ome, fol)\n    for img in os.listdir(sub_fol):\n        if not img.endswith('.ome.tiff'):\n            continue\n        basename = img.rstrip('.ome.tiff')\n        print(img)\n        for (col, suffix, addsum) in list_analysis_stacks:\n            try:\n                ometiff2analysis.ometiff_2_analysis(os.path.join(sub_fol, img), folder_analysis,\n                                                basename + suffix, pannelcsv=csv_pannel, metalcolumn=csv_pannel_metal,\n                                                usedcolumn=col, addsum=addsum, bigtiff=False,\n                                               pixeltype='uint16')\n            except:\n                print('Error in', img )\n            \n")
+get_ipython().run_cell_magic('time', '', "for fol in os.listdir(folder_ome):\n    sub_fol = os.path.join(folder_ome, fol)\n    for img in os.listdir(sub_fol):\n        if not img.endswith('.ome.tiff'):\n            continue\n        basename = img.rstrip('.ome.tiff')\n        print(img)\n        for (col, suffix, addsum) in list_analysis_stacks:\n            try:\n                ometiff2analysis.ometiff_2_analysis(os.path.join(sub_fol, img), folder_analysis,\n                                                basename + suffix, pannelcsv=csv_pannel, metalcolumn=csv_pannel_metal,\n                                                usedcolumn=col, addsum=addsum, bigtiff=False,\n                                               pixeltype='uint16')\n            except:\n                logging.exception('Error in {}'.format(img))\n            \n")
 
 
 # # Next steps
