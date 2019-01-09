@@ -219,6 +219,15 @@ get_ipython().run_cell_magic('time', '', "if not(os.path.exists(folder_histocat)
 get_ipython().run_cell_magic('time', '', "for fol in os.listdir(folder_ome):\n    sub_fol = os.path.join(folder_ome, fol)\n    for img in os.listdir(sub_fol):\n        if not img.endswith('.ome.tiff'):\n            continue\n        basename = img.rstrip('.ome.tiff')\n        print(img)\n        for (col, suffix, addsum) in list_analysis_stacks:\n            try:\n                ometiff2analysis.ometiff_2_analysis(os.path.join(sub_fol, img), folder_analysis,\n                                                basename + suffix, pannelcsv=csv_pannel, metalcolumn=csv_pannel_metal,\n                                                usedcolumn=col, addsum=addsum, bigtiff=False,\n                                               pixeltype='uint16')\n            except:\n                logging.exception('Error in {}'.format(img))\n            \n")
 
 
+# An key-error here of the form:
+# 
+# ```
+# line 91, in <listcomp> return [order_dict[m] for m in metallist] KeyError: 'Ru100'
+# ```
+# 
+# Is an indication that the `pannel.csv` contains a metal channel that was not actually measured in all or one of the acquisitions!
+# Please check the images as well as the `pannel.csv` to make sure that only channels are in the `pannel.csv` that were actually measured.
+
 # # Next steps
 # 
 # This concludes the conversion of the IMC rawdata into usable TIFFs.
