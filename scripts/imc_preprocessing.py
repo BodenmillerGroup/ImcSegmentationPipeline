@@ -67,7 +67,7 @@ import zipfile
 # 
 # 
 # - Data requirements:
-#     - This scripts assume that *each `.mcd`  acquisition and all `.txt` files corresponding to this '.mcd' acquisition* are saved in one a seperate `.zip` folder.
+#     - This scripts assume that *each `.mcd`  acquisition - and *optionally* all `.txt` files corresponding to this '.mcd' acquisition* - are saved in one a seperate `.zip` folder.
 #         -> This is my recomended data format as it preserves and contains all original metadata and enforces a consistent naming scheme.
 #     - see the example files that are downloaded bellow for an example
 # 
@@ -80,8 +80,9 @@ import zipfile
 # For any feedback please contact: Vito, vito.zanotelli@uzh.ch or even better raise an issue on this Github page!
 
 # ### Input folders (Needs to be adapted for use)
+# Please read the comments
 
-# In[3]:
+# In[15]:
 
 
 # the folders with the ziped acquisition files for the analysis
@@ -92,13 +93,23 @@ folders = ['../example_data']
 file_regexp = '.*.zip'
 
 # output folder
+# where the output files will be saved
 folder_base = '/home/vitoz/Data/Analysis/201805_cp_segmentation_example'
 
 
-# pannel
+# pannel:
+# This CSV file is specific to the pannel used for the Acquisitions
+# It is a comma seperated file that contains metadata about the antibodies and isotopes measured
+# Please look at the example!
 csv_pannel = '../config/example_pannel.csv'
-csv_pannel_metal = 'Metal Tag'
-csv_pannel_ilastik = 'ilastik'
+# Three columns are obligatory
+csv_pannel_metal = 'Metal Tag' # Contains the isotope channel measured int he form (Metal)(Mass), e.g. Ir191, Yb171 etc.
+# ilastik columm: Bool, either 0 or 1: this selects channels to be used for cellular segmentation
+# It is recommended to choose all channels/isotope that gave a signal that could help for cell identification,
+# e.g. nuclear, cytoplasmic or membranous signal
+# The more channels selected, the slower the pixel classification
+csv_pannel_ilastik = 'ilastik' 
+# full column: Contains the channels that should be quantified/measured in cellprofiler
 csv_pannel_full = 'full'
 
 
