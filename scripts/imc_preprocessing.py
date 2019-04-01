@@ -79,27 +79,58 @@ import zipfile
 # 
 # For any feedback please contact: Vito, vito.zanotelli@uzh.ch or even better raise an issue on this Github page!
 
-# ### Input folders (Needs to be adapted for use)
-# Please read the comments
+# ## How to adapt this pipeline:
+# 
+# - Recommendation: For each analysis make a copy of the ImcSegmentationPipeline repository (=folder containing the scripts, cellprofiler pipelines etc) and save it under its own name.
+#     
+#     -> If you are more experience it would be also appropriate to make a seperate git branch for each analysis
+#     
+#     
+# - The configuration section (below) needs to be adapted, such that all the folders fit (read the comments).
+#     
+#     -> Most importantly the `pannel.csv` needs to be compatible/fit your acquisitions! It needs to be a comma seperated `.csv` file containing the columns `Metal tag` (csv_pannel_metal variable), a columns `full`(csv_pannel_full variable) containing a 1 for each metal that should be included in the analysis and a column `ilastik` which specifies which metals should be used as a basis for the ilastik pixel classification. *Please look at the example*
+# 
+# 
+# - The ilastik pixel classification needs to be re-trained whenever anoter antibody pannel is used or if the tissue type changes
+# 
+# - The channel numbers need to be adapted to the number of channels selected for the full stack in the cellprofiler **measurement** module.
 
-# In[15]:
+# ### Configuration (Needs to be adapted for use)
+# Please **read the comments** for instructions how to **adapt this pipeline** for your needs/data.
+# 
+# 
+
+# In[3]:
 
 
+# 1) input folders
 # the folders with the ziped acquisition files for the analysis
+# -> If you want to analyse  your own data, put the zipped inuput files (see above `Data requirements`)
+#    into a directory and add it to the folder
+# Example: if you put it into a folder 'data' which is a subdirectory of the ÌmcSegmentationPipeline folder change this to
+#  folders = ['../data']
+# Example2: if you put your data into a folder C://Users/dummy/mydata change this to
+# folders = ['C://Users/dummy/mydata']
+
 folders = ['../example_data']
 
+# 2) file_regexp:
 # part that all considered acquisition files need to have in common
 # -> can be adapted to only process a subset of the acquisitions
+# Example: if you want to only analyse zips which contain '_yourname_', change this to
+#  file_regexp = '.*_yourname_.*.zip'   
 file_regexp = '.*.zip'
 
+# 3) folder_base
 # output folder
 # where the output files will be saved
-folder_base = '/home/vitoz/Data/Analysis/201805_cp_segmentation_example'
+folder_base = '../output'
 
-
+# 4) pannel
 # pannel:
 # This CSV file is specific to the pannel used for the Acquisitions
 # It is a comma seperated file that contains metadata about the antibodies and isotopes measured
+# This absolutely **needs** to be adapted if you work with your own files1
 # Please look at the example!
 csv_pannel = '../config/example_pannel.csv'
 # Three columns are obligatory
@@ -119,7 +150,6 @@ csv_pannel_full = 'full'
 
 
 # parameters for resizing the images for ilastik
-
 folder_analysis = os.path.join(folder_base, 'tiffs')
 folder_ilastik = os.path.join(folder_base, 'ilastik')
 folder_ome = os.path.join(folder_base, 'ometiff')
@@ -162,7 +192,7 @@ for fol in [folder_base, folder_analysis, folder_ilastik,
 # This example comes with example data.
 # => Diseable the cell if you are using your own data
 
-# In[6]:
+# In[9]:
 
 
 ## This will download the example data - remove if you work with your own data!
@@ -189,7 +219,7 @@ for fn, url in urls:
 
 # Convert mcd containing folders into imc zip folders
 
-# In[7]:
+# In[10]:
 
 
 get_ipython().run_cell_magic('time', '', "failed_images = list()\nre_fn = re.compile(file_regexp)\n\nfor fol in folders:\n    for fn in os.listdir(fol):\n        if re_fn.match(fn):\n            fn_full = os.path.join(fol, fn)\n            print(fn_full)\n            try:\n                convertfolder2imcfolder.convert_folder2imcfolder(fn_full, out_folder=folder_ome,\n                                                                   dozip=False)\n            except:\n                logging.exception('Error in {}'.format(fn_full))")
@@ -197,7 +227,7 @@ get_ipython().run_cell_magic('time', '', "failed_images = list()\nre_fn = re.com
 
 # Generate a csv with all the acquisition metadata
 
-# In[8]:
+# In[11]:
 
 
 exportacquisitioncsv.export_acquisition_csv(folder_ome, fol_out=folder_cp)
@@ -205,7 +235,7 @@ exportacquisitioncsv.export_acquisition_csv(folder_ome, fol_out=folder_cp)
 
 # Convert ome.tiffs to a HistoCAT compatible format, e.g. to do some visualization and channel checking.
 
-# In[9]:
+# In[12]:
 
 
 get_ipython().run_cell_magic('time', '', "if not(os.path.exists(folder_histocat)):\n    os.makedirs(folder_histocat)\nfor fol in os.listdir(folder_ome):\n    ome2micat.omefolder2micatfolder(os.path.join(folder_ome,fol), folder_histocat, dtype='uint16')")
@@ -213,7 +243,7 @@ get_ipython().run_cell_magic('time', '', "if not(os.path.exists(folder_histocat)
 
 # Generate the analysis stacks
 
-# In[10]:
+# In[13]:
 
 
 get_ipython().run_cell_magic('time', '', "for fol in os.listdir(folder_ome):\n    sub_fol = os.path.join(folder_ome, fol)\n    for img in os.listdir(sub_fol):\n        if not img.endswith('.ome.tiff'):\n            continue\n        basename = img.rstrip('.ome.tiff')\n        print(img)\n        for (col, suffix, addsum) in list_analysis_stacks:\n            try:\n                ometiff2analysis.ometiff_2_analysis(os.path.join(sub_fol, img), folder_analysis,\n                                                basename + suffix, pannelcsv=csv_pannel, metalcolumn=csv_pannel_metal,\n                                                usedcolumn=col, addsum=addsum, bigtiff=False,\n                                               pixeltype='uint16')\n            except:\n                logging.exception('Error in {}'.format(img))\n            \n")
@@ -237,6 +267,7 @@ get_ipython().run_cell_magic('time', '', "for fol in os.listdir(folder_ome):\n  
 # The next steps are:
 # 
 # ### A) Cellprofiler: 1_prepare_ilastik
+# *Make sure that the correct plugins folder "/ImcPluginsCP/plugins" is selected in the CellProfiler preferences, otherwise loading these pipelines will fail*
 # 
 # In this module we prepare the data for Ilastik pixel classification, by first removing strong outlier pixels, then scaling the images 2x and then taking random 500x500 crops to do the train the pixel classifier.
 # 
@@ -251,6 +282,7 @@ get_ipython().run_cell_magic('time', '', "for fol in os.listdir(folder_ome):\n  
 # 
 # 
 # ### B) Ilatik: Train a pixel classifier
+# *Unfortunately the example dataset does not come with a pre-trained classsifier yet.*
 # 
 # This uses the random crops generated in the last step.
 # 
@@ -376,7 +408,7 @@ get_ipython().run_cell_magic('time', '', "for fol in os.listdir(folder_ome):\n  
 
 # ## Convert probabilities to uncertainties
 
-# In[11]:
+# In[14]:
 
 
 # For training
@@ -386,7 +418,7 @@ for fn in os.listdir(folder_ilastik):
         probablity2uncertainty.probability2uncertainty(os.path.join(folder_ilastik,fn), folder_uncertainty)
 
 
-# In[12]:
+# In[15]:
 
 
 # For the data
@@ -398,7 +430,7 @@ for fn in os.listdir(folder_analysis):
 
 # ## Generate the histocat folder with masks
 
-# In[13]:
+# In[16]:
 
 
 get_ipython().run_cell_magic('time', '', "for fol in os.listdir(folder_ome):\n    ome2micat.omefolder2micatfolder(os.path.join(folder_ome,fol), folder_histocat, \n                                         fol_masks=folder_analysis, mask_suffix=suffix_mask, dtype='uint16')")
