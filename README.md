@@ -16,7 +16,7 @@ This pipline was developped in the Bodenmiller laboratory of the University of Z
 imaging mass cytometry (IMC) images. However we think it might also be usefull for other multiplexed imaging techniques.
 
 
-The document to start can be found at 'scripts/imc_preprocessing.ipynb'.
+The document to start can be found at 'scripts/imc_preprocessing.ipynb' (https://nbviewer.jupyter.org/github/BodenmillerGroup/ImcSegmentationPipeline/blob/development/scripts/imc_preprocessing.ipynb).
 The pdf found in 'Documentation/201709_imctools_guide.pdf' is still conceptually valid, however the installation procedures described are outdated. Please follow the instructions in the imc_preprocessing.ipynb document!
 
 We freely share this pipeline in the hope that it will be usefull for others to perform high quality image segmentation and serve as a basis to develop more complicated
