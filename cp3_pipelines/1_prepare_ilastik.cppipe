@@ -52,7 +52,7 @@ Groups:[module_num:4|svn_version:\'Unknown\'|variable_revision_number:2|show_win
     grouping metadata count:\xff\xfe1\x00
     Metadata category:\xff\xfeN\x00o\x00n\x00e\x00
 
-Smooth Multichannel:[module_num:5|svn_version:\'Unknown\'|variable_revision_number:4|show_window:False|notes:\x5B\'This filter will remove strong, single outlier pixels from the images, which sometimes occur in IMC images.\'\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:True|wants_pause:False]
+Smooth Multichannel:[module_num:5|svn_version:\'Unknown\'|variable_revision_number:5|show_window:False|notes:\x5B\'This filter will remove strong, single outlier pixels from the images, which sometimes occur in IMC images.\'\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:True|wants_pause:False]
     Select the input image:\xff\xfeI\x00l\x00a\x00s\x00t\x00i\x00k\x00
     Name the output image:\xff\xfeI\x00l\x00a\x00s\x00t\x00i\x00k\x00F\x00i\x00l\x00
     Select smoothing method:\xff\xfeR\x00e\x00m\x00o\x00v\x00e\x00 \x00s\x00i\x00n\x00g\x00l\x00e\x00 \x00h\x00o\x00t\x00 \x00p\x00i\x00x\x00e\x00l\x00s\x00
@@ -60,9 +60,9 @@ Smooth Multichannel:[module_num:5|svn_version:\'Unknown\'|variable_revision_numb
     Typical artifact diameter:\xff\xfe1\x006\x00.\x000\x00
     Edge intensity difference:\xff\xfe0\x00.\x001\x00
     Clip intensities to 0 and 1?:\xff\xfeY\x00e\x00s\x00
-    Outlier neighbourhood:\xff\xfe3\x00
-    Outlier Treshold:\xff\xfe5\x000\x00.\x000\x00
-    Scale Treshold to image scale?:\xff\xfeY\x00e\x00s\x00
+    Neighborhood filter size:\xff\xfe3\x00
+    Hot pixel threshold:\xff\xfe5\x000\x00.\x000\x00
+    Scale hot pixel threshold to image scale?:\xff\xfeY\x00e\x00s\x00
 
 Resize:[module_num:6|svn_version:\'Unknown\'|variable_revision_number:4|show_window:False|notes:\x5B\'Scaling up the images 2x makes pixel classificaiton easier.\'\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:True|wants_pause:False]
     Select the input image:\xff\xfeI\x00l\x00a\x00s\x00t\x00i\x00k\x00F\x00i\x00l\x00
