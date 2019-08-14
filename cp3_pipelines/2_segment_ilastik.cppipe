@@ -196,7 +196,7 @@ RescaleObjects:[module_num:12|svn_version:\'Unknown\'|variable_revision_number:1
     Select the operation:\xff\xfeD\x00o\x00w\x00n\x00s\x00c\x00a\x00l\x00e\x00 \x00o\x00b\x00j\x00e\x00c\x00t\x00s\x00 \x00w\x00i\x00t\x00h\x00 \x00a\x00 \x00s\x00c\x00a\x00l\x00i\x00n\x00g\x00 \x00f\x00a\x00c\x00t\x00o\x00r\x00
     Factor to scale the object mask:\xff\xfe0\x00.\x005\x00
 
-OverlayOutlines:[module_num:13|svn_version:\'Unknown\'|variable_revision_number:4|show_window:False|notes:\x5B\'Outline of object \\xe2\\x80\\x9cNucFil\\xe2\\x80\\x9d is created as grayscale image. \'\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:True|wants_pause:False]
+OverlayOutlines:[module_num:13|svn_version:\'Unknown\'|variable_revision_number:4|show_window:False|notes:\x5B\'Outline of object \\xe2\\x80\\x9cRescaledCells\\xe2\\x80\\x9d is created as grayscale image. \'\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:True|wants_pause:False]
     Display outlines on a blank image?:\xff\xfeY\x00e\x00s\x00
     Select image on which to display outlines:\xff\xfeN\x00o\x00n\x00e\x00
     Name the output image:\xff\xfeR\x00e\x00s\x00c\x00a\x00l\x00l\x00e\x00d\x00C\x00e\x00l\x00l\x00s\x00O\x00u\x00t\x00l\x00i\x00n\x00e\x00
@@ -204,7 +204,7 @@ OverlayOutlines:[module_num:13|svn_version:\'Unknown\'|variable_revision_number:
     Select method to determine brightness of outlines:\xff\xfeM\x00a\x00x\x00 \x00o\x00f\x00 \x00i\x00m\x00a\x00g\x00e\x00
     How to outline:\xff\xfeI\x00n\x00n\x00e\x00r\x00
     Select outline color:\xff\xfeR\x00e\x00d\x00
-    Select objects to display:\xff\xfeN\x00u\x00c\x00F\x00i\x00l\x00
+    Select objects to display:\xff\xfeR\x00e\x00s\x00c\x00a\x00l\x00e\x00d\x00C\x00e\x00l\x00l\x00s\x00
 
 ConvertObjectsToImage:[module_num:14|svn_version:\'Unknown\'|variable_revision_number:1|show_window:False|notes:\x5B\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:True|wants_pause:False]
     Select the input objects:\xff\xfeR\x00e\x00s\x00c\x00a\x00l\x00e\x00d\x00C\x00e\x00l\x00l\x00s\x00
