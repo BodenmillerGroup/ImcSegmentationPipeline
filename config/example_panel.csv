@@ -1,0 +1,28 @@
+Tube Number,Metal Tag,Target,Antibody Clone,Stock Concentration,Final Concentration / Dilution,uL to add,channel,full,ilastik
+1502,In113,Histone H3,D1H2,150,0.5 ug/mL,0.333333333,1,1,1
+1521,In115,SMA,1A4,500,0.2 ug/mL,0.04,2,1,0
+1745,Pr141,Cytokeratin 5,EP1601Y,300,4 ug/mL,1.333333333,3,1,0
+1249,Nd142,EGFR,D38B1,500,6 ug/mL,1.2,4,1,0
+1625,Nd143,HLA-DR,TAL 1B5,500,2 ug/mL,0.4,5,1,1
+1746,Sm147,CD163,EDHu-1,400,4 ug/mL,1,6,1,0
+1646,Nd148,CD16,EPR16784,400,4 ug/mL,1,7,1,0
+1084,Sm149,Vimentin,EPR3776,300,2 ug/mL,0.666666667,8,1,1
+1614,Sm152,CD3,polyclonal_A0452,500,8 ug/mL,1.6,9,1,0
+1602,Eu153,Histone H3,HTA28,5,0.4 ug/mL,8,10,1,0
+1731,Gd155,Carbonic Anhydrase IX,polyclonal_CA9_AF2188,500,5 ug/mL,1,11,1,0
+1086,Gd156,Histone H3,HTA28,300,0.5 ug/mL,0.166666667,12,1,0
+1400,Gd160,CD44,polyclonal_CD44,500,5 ug/mL,1,13,1,1
+293,Dy161,Myeloperoxidase MPO,Polyclonal MPO,200,2 ug/mL,1,14,1,0
+1460,Dy162,CD45,2B11,500,5 ug/mL,1,15,1,1
+1186,Dy164,Cytokeratin 7,RCK105,500,5 ug/mL,1,16,1,0
+1555,Ho165,CD8a,C8/144B,500,5 ug/mL,1,17,1,0
+1174,Er167,Fibronectin,10/Fibronectin,300,2 ug/mL,0.666666667,18,1,0
+1673,Er168,Ki-67,B56,500,4 ug/mL,0.8,19,1,0
+1487,Er170,S6,D57.2.2E,500,4 ug/mL,0.8,20,1,0
+1621,Yb172,vWF,poly vwf,500,4 ug/mL,0.8,21,1,0
+965,Yb173,E-Cadherin / P-Cadherin,36/E-Cadherin,150,5 ug/mL,3.333333333,22,1,0
+521,Yb174,Cytokeratin 8/18,C51,100,2 ug/mL,2,23,1,0
+1176,Lu175,pan Cytokeratin,AE1,200,2 ug/mL,1,24,1,0
+1685,Yb176,Cleaved Caspase3,C92-605,500,2 ug/mL,0.4,25,1,0
+NA,Ir191,Iridium,Iridium,NA,NA,NA,26,1,1
+NA,Ir193,Iridium,Iridium,NA,NA,NA,27,1,0
