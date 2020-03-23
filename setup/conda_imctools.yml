@@ -16,4 +16,4 @@ dependencies:
   - scipy
   - git
   - pip:
-        - imctools=1.0.7
+        - imctools==1.0.7
