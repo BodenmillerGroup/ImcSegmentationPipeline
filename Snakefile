@@ -12,7 +12,7 @@ from imctools.converters import exportacquisitioncsv
 folders = ['example_data']
 fol_example = folders[0] 
 # part that all considered files need to have in common
-file_regexp = '{zipfol}.zip'
+file_regexp = '.*.zip'
 
 # output for OME tiffs
 folder_base = '/home/vitoz/Data/Analysis/2020_cp_segmentation_example_sm'
@@ -41,6 +41,11 @@ suffix_mask = '_mask.tiff'
 suffix_probablities = '_Probabilities'
 
 
+FN_ACMETA = os.path.join(folder_cp, 'acquisition_metadata.csv')
+OUTFOLS_OME = os.path.join(folder_ome,'{omefol}','{omefile}.ome.tiff')
+OUTFN_ZIP = os.path.join(folder_base, '{zipfol}.txt')
+
+
 failed_images = list()
 
 urls = [('20170905_Fluidigmworkshopfinal_SEAJa.zip',
@@ -48,35 +53,53 @@ urls = [('20170905_Fluidigmworkshopfinal_SEAJa.zip',
        ('20170906_FluidigmONfinal_SE.zip',
         'https://www.dropbox.com/s/0pdt1ke4b07v7zd/20170906_FluidigmONfinal_SE.zip?dl=1')]
 
+re_fn = re.compile(file_regexp)
+fns_zip = {}
+for fol in folders:
+   for fn in os.listdir(fol):
+       if re_fn.match(fn): 
+           fns_zip[fn[:-4]] = fol
+
 rule all:
-    input: dynamic(os.path.join(folder_ome , '{omefile}.ome.tiff'))
+    input: dynamic(OUTFOLS_OME)
     
+
+rule listzips:
+    output: '{zipfol}.zip'
+    run:
+       for f in fns_zip.keys():
+           Path(f + '.zip').touch()
+                
+rule mcdfolder2imcfolder:
+    input: '{zipfol}.zip'
+    output: OUTFN_ZIP 
+    
+    run:
+        mcdfolder2imcfolder.mcdfolder_to_imcfolder(
+	    os.path.join(fns_zip[wildcards.zipfol], input[0]), output_folder=folder_tmp, 
+            create_zip=False)
+        Path(output[0]).touch()
+
+rule listimcfiles:
+    input: expand(OUTFN_ZIP, zipfol=fns_zip.keys())
+    output: dynamic(OUTFOLS_OME)
+    shell:
+        'mv {folder_tmp}/* {folder_ome}' 
+
+rule exportacmeta:
+    input: dynamic(OUTFOLS_OME)
+    output: FN_ACMETA
+    run:
+        print(1)
+        exportacquisitioncsv.export_acquisition_csv(folder_ome, output_folder=folder_cp)
+        
+rule clean:
+    shell:
+        "rm -R {folder_base}"
+
 rule download:
-    output: dynamic(os.path.join(folders[0], '{zipfol}.zip'))
     run:
         for fn, url in urls:
             fn = os.path.join(fol_example, fn)
             if os.path.exists(fn) == False:
                 urllib.request.urlretrieve(url, fn)
-                
-rule mcdfolder2imcfolder:
-    input: os.path.join(folders[0], '{zipfol}.zip')
-    output: os.path.join(folder_base, '{zipfol}.txt')
-    
-    run:
-        print(input)
-        mcdfolder2imcfolder.mcdfolder_to_imcfolder(
-            input[0], output_folder=folder_tmp, 
-            create_zip=False)
-        Path(output[0]).touch()
-
-rule listimcfiles:
-    input: dynamic(os.path.join(folder_base, '{zipfol}.txt'))
-    output: dynamic(os.path.join(folder_ome , '{omefile}.ome.tiff'))
-    
-    shell:
-        'mv {folder_tmp}/* {folder_ome}' 
-        
-rule clean:
-    shell:
-        "rm -R {folder_base}"
