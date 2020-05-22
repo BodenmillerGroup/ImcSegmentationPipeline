@@ -41,7 +41,7 @@ suffix_probablities = '_Probabilities'
 
 
 FN_ACMETA = os.path.join(folder_cp, 'acquisition_metadata.csv')
-OUTFOLS_OME = os.path.join(folder_ome,'{omefile}.ome.tiff')
+FN_OME = os.path.join(folder_ome,'{omefile}.ome.tiff')
 OUTFN_ZIP = os.path.join(folder_base, '{zipfol}.txt')
 FN_FULL = os.path.join(folder_analysis, '{omefile}_full.tiff')
 FN_ILASTIK = os.path.join(folder_analysis, '{omefile}_ilastik.tiff')
@@ -63,41 +63,35 @@ for fol in folders:
            fns_zip[fn[:-4]] = fol
 
 rule all:
-    input: dynamic(OUTFOLS_OME), dynamic(FN_FULL), dynamic(FN_ILASTIK)
+    input: dynamic(FN_OME), dynamic(FN_FULL), dynamic(FN_ILASTIK)
 
 rule prepare_cp:
     input: dynamic(FN_FULL), dynamic(FN_ILASTIK)
 
 rule prepare_ome:
-    input: dynamic(OUTFOLS_OME)
+    input: dynamic(FN_OME)
     
 
-rule listzips:
-    output: '{zipfol}.zip'
-    run:
-       for f in fns_zip.keys():
-           Path(f + '.zip').touch()
-                
 rule mcdfolder2imcfolder:
-    input: '{zipfol}.zip'
-    output: OUTFN_ZIP 
-    
+    output: touch(OUTFN_ZIP) 
+    params:
+        zipfn = '{zipfol}.zip'
     run:
         mcdfolder2imcfolder.mcdfolder_to_imcfolder(
-	    os.path.join(fns_zip[wildcards.zipfol], input[0]), output_folder=folder_tmp, 
+	    os.path.join(fns_zip[wildcards.zipfol],
+                params.zipfn), output_folder=folder_tmp, 
             create_zip=False)
-        Path(output[0]).touch()
 
 rule listimcfiles:
     input: expand(OUTFN_ZIP, zipfol=fns_zip.keys())
-    output: dynamic(OUTFOLS_OME)
+    output: dynamic(FN_OME)
     #'mv {folder_tmp}/* {folder_ome} && echo 1' 
     shell:
         'find {folder_tmp} -type f -print0 | xargs -0 mv -t {folder_ome}'
 
 rule ome2full:
     input:
-        image=OUTFOLS_OME,
+        image=FN_OME,
         panel=csv_pannel
     output:
         FN_FULL
@@ -109,7 +103,7 @@ rule ome2full:
 
 rule ome2ilastik:
     input:
-        image=OUTFOLS_OME,
+        image=FN_OME,
         panel=csv_pannel
     output:
         FN_ILASTIK
@@ -118,9 +112,20 @@ rule ome2ilastik:
         ome2analysis.omefile_2_analysisfolder(input.image, output_folder=folder_analysis,
                 basename=outname, panel_csv_file=input.panel,
                 metalcolumn=csv_pannel_metal, usedcolumn=csv_pannel_ilastik)
+        
+#rule prepare_cpbatch:
+#    input:
+#        pipeline=fn_pipe
+#    params:
+#        plugins=fol_plugins
+#    output:
+#        cpbatch
+#    shell:
+#        'cellprofiler  -p {pipeline} -i {image_data} -w {cp_plugins} -d {docker_image}'
+#
 
 rule exportacmeta:
-    input: dynamic(OUTFOLS_OME)
+    input: dynamic(FN_OME)
     output: FN_ACMETA
     run:
         print(1)
