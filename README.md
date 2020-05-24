@@ -19,4 +19,19 @@ The pdf found in 'Documentation/201709_imctools_guide.pdf' is still conceptually
 
 This pipeline was presented at the 2019 Imaging Mass Cytometry User Group Meeting. [The slides can be downloaded here](https://drive.google.com/file/d/1ajPzlJ2CUj6sFYSOq0HR2dOJehHIlCJt/view). The slides briefly explain why we chose this approach to image segmentation and provide help to run the pipeline.
 
-We freely share this pipeline in the hope that it will be usefull for others to perform high quality image segmentation and serve as a basis to develop more complicated open source IMC image processing workflows. In return we would like you to be considerate and give us and others feedback if you find a bug or issue and raise a GitHub Issue on the affected projects or on this page.
+We freely share this pipeline in the hope that it will be usefull for others to perform high quality image segmentation and serve as a basis to develop more complicated open source IMC image processin17g workflows. In return we would like you to be considerate and give us and others feedback if you find a bug or issue and raise a GitHub Issue on the affected projects or on this page.
+
+If you use this workflow for your research, please cite us:
+```
+@misc{ImcSegmentationPipeline,
+    author       = {Vito RT Zanotelli, Bernd Bodenmiller},
+    title        = {{ImcSegmentationPipeline: A pixelclassification based multiplexed image segmentation pipeline}},
+    month        = Sept,
+    year         = 2017,
+    doi          = {10.5281/zenodo.3841961},
+    version      = {0.9},
+    publisher    = {Zenodo},
+    url          = {https://doi.org/10.5281/zenodo.3841961}
+    }
+```
+
