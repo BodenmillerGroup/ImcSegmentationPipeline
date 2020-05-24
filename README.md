@@ -1,3 +1,4 @@
+[![DOI](https://zenodo.org/badge/103582813.svg)](https://zenodo.org/badge/latestdoi/103582813)
 # A flexible  image segmentation pipeline for heterogeneous multiplexed tissue images based on pixel classification
 
 I am currently remodelling the whole description/procedure and would be happy for any feedback!
