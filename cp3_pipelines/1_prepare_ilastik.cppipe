@@ -1,8 +1,8 @@
 CellProfiler Pipeline: http://www.cellprofiler.org
 Version:4
-DateRevision:315
+DateRevision:319
 GitHash:
-ModuleCount:9
+ModuleCount:10
 HasImagePlaneDetails:False
 
 Images:[module_num:1|svn_version:\'Unknown\'|variable_revision_number:2|show_window:False|notes:\x5B\'Select all the files in the `tiffs` folder\'\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:True|wants_pause:False]
@@ -52,7 +52,7 @@ Groups:[module_num:4|svn_version:\'Unknown\'|variable_revision_number:2|show_win
     grouping metadata count:\xff\xfe1\x00
     Metadata category:\xff\xfeN\x00o\x00n\x00e\x00
 
-Smooth Multichannel:[module_num:5|svn_version:\'Unknown\'|variable_revision_number:2|show_window:False|notes:\x5B\'This filter will remove strong, single outlier pixels from the images, which sometimes occur in IMC images.\'\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:True|wants_pause:False]
+Smooth Multichannel:[module_num:5|svn_version:\'Unknown\'|variable_revision_number:5|show_window:False|notes:\x5B\'This filter will remove strong, single outlier pixels from the images, which sometimes occur in IMC images.\'\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:True|wants_pause:False]
     Select the input image:\xff\xfeI\x00l\x00a\x00s\x00t\x00i\x00k\x00
     Name the output image:\xff\xfeI\x00l\x00a\x00s\x00t\x00i\x00k\x00F\x00i\x00l\x00
     Select smoothing method:\xff\xfeR\x00e\x00m\x00o\x00v\x00e\x00 \x00s\x00i\x00n\x00g\x00l\x00e\x00 \x00h\x00o\x00t\x00 \x00p\x00i\x00x\x00e\x00l\x00s\x00
@@ -60,8 +60,9 @@ Smooth Multichannel:[module_num:5|svn_version:\'Unknown\'|variable_revision_numb
     Typical artifact diameter:\xff\xfe1\x006\x00.\x000\x00
     Edge intensity difference:\xff\xfe0\x00.\x001\x00
     Clip intensities to 0 and 1?:\xff\xfeY\x00e\x00s\x00
-    Outlier neighbourhood:\xff\xfe3\x00
-    Outlier Treshold:\xff\xfe5\x000\x00.\x000\x00
+    Neighborhood filter size:\xff\xfe3\x00
+    Hot pixel threshold:\xff\xfe5\x000\x00.\x000\x00
+    Scale hot pixel threshold to image scale?:\xff\xfeN\x00o\x00
 
 Resize:[module_num:6|svn_version:\'Unknown\'|variable_revision_number:4|show_window:False|notes:\x5B\'Scaling up the images 2x makes pixel classificaiton easier.\'\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:True|wants_pause:False]
     Select the input image:\xff\xfeI\x00l\x00a\x00s\x00t\x00i\x00k\x00F\x00i\x00l\x00
@@ -95,7 +96,7 @@ SaveImages H5:[module_num:8|svn_version:\'Unknown\'|variable_revision_number:1|s
     Append a suffix to the image file name?:\xff\xfeY\x00e\x00s\x00
     Text to append to the image name:\xff\xfe_\x00s\x002\x00
     Saved file format:\xff\xfeh\x005\x00
-    Output file location:\xff\xfeS\x00a\x00m\x00e\x00 \x00f\x00o\x00l\x00d\x00e\x00r\x00 \x00a\x00s\x00 \x00i\x00m\x00a\x00g\x00e\x00\x7C\x00
+    Output file location:\xff\xfeD\x00e\x00f\x00a\x00u\x00l\x00t\x00 \x00O\x00u\x00t\x00p\x00u\x00t\x00 \x00F\x00o\x00l\x00d\x00e\x00r\x00\x7C\x00
     Image bit depth:\xff\xfe1\x006\x00-\x00b\x00i\x00t\x00 \x00i\x00n\x00t\x00e\x00g\x00e\x00r\x00
     Overwrite existing files without warning?:\xff\xfeY\x00e\x00s\x00
     When to save:\xff\xfeE\x00v\x00e\x00r\x00y\x00 \x00c\x00y\x00c\x00l\x00e\x00
@@ -113,10 +114,22 @@ SaveImages H5:[module_num:9|svn_version:\'Unknown\'|variable_revision_number:1|s
     Append a suffix to the image file name?:\xff\xfeY\x00e\x00s\x00
     Text to append to the image name:\xff\xfe_\x00x\x00\\\x00g\x00<\x00C\x00r\x00o\x00p\x00_\x00I\x00l\x00a\x00s\x00t\x00i\x00k\x00c\x00r\x00o\x00p\x00p\x00e\x00d\x00_\x00x\x00>\x00_\x00y\x00\\\x00g\x00<\x00C\x00r\x00o\x00p\x00_\x00I\x00l\x00a\x00s\x00t\x00i\x00k\x00c\x00r\x00o\x00p\x00p\x00e\x00d\x00_\x00y\x00>\x00_\x00w\x00\\\x00g\x00<\x00C\x00r\x00o\x00p\x00_\x00I\x00l\x00a\x00s\x00t\x00i\x00k\x00c\x00r\x00o\x00p\x00p\x00e\x00d\x00_\x00w\x00>\x00_\x00h\x00\\\x00g\x00<\x00C\x00r\x00o\x00p\x00_\x00I\x00l\x00a\x00s\x00t\x00i\x00k\x00c\x00r\x00o\x00p\x00p\x00e\x00d\x00_\x00h\x00>\x00
     Saved file format:\xff\xfeh\x005\x00
-    Output file location:\xff\xfeD\x00e\x00f\x00a\x00u\x00l\x00t\x00 \x00O\x00u\x00t\x00p\x00u\x00t\x00 \x00F\x00o\x00l\x00d\x00e\x00r\x00\x7C\x00
+    Output file location:\xff\xfeD\x00e\x00f\x00a\x00u\x00l\x00t\x00 \x00O\x00u\x00t\x00p\x00u\x00t\x00 \x00F\x00o\x00l\x00d\x00e\x00r\x00 \x00s\x00u\x00b\x00-\x00f\x00o\x00l\x00d\x00e\x00r\x00\x7C\x00c\x00r\x00o\x00p\x00s\x00
     Image bit depth:\xff\xfe1\x006\x00-\x00b\x00i\x00t\x00 \x00i\x00n\x00t\x00e\x00g\x00e\x00r\x00
     Overwrite existing files without warning?:\xff\xfeY\x00e\x00s\x00
     When to save:\xff\xfeE\x00v\x00e\x00r\x00y\x00 \x00c\x00y\x00c\x00l\x00e\x00
     Record the file and path information to the saved image?:\xff\xfeN\x00o\x00
     Create subfolders in the output folder?:\xff\xfeN\x00o\x00
     Base image folder:\xff\xfeE\x00l\x00s\x00e\x00w\x00h\x00e\x00r\x00e\x00.\x00.\x00.\x00\x7C\x00
+
+CreateBatchFiles:[module_num:10|svn_version:\'Unknown\'|variable_revision_number:8|show_window:False|notes:\x5B\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:True|wants_pause:False]
+    Store batch files in default output folder?:\xff\xfeY\x00e\x00s\x00
+    Output folder path:\xff\xfe/\x00h\x00o\x00m\x00e\x00/\x00v\x00i\x00t\x00o\x00z\x00
+    Are the cluster computers running Windows?:\xff\xfeN\x00o\x00
+    Hidden\x3A in batch mode:\xff\xfeN\x00o\x00
+    Hidden\x3A in distributed mode:\xff\xfeN\x00o\x00
+    Hidden\x3A default input folder at time of save:\xff\xfe/\x00h\x00o\x00m\x00e\x00/\x00v\x00i\x00t\x00o\x00z\x00
+    Hidden\x3A revision number:\xff\xfe0\x00
+    Hidden\x3A from old matlab:\xff\xfeN\x00o\x00
+    Local root path:\xff\xfe/\x00h\x00o\x00m\x00e\x00/\x00v\x00i\x00t\x00o\x00z\x00
+    Cluster root path:\xff\xfe/\x00h\x00o\x00m\x00e\x00/\x00v\x00i\x00t\x00o\x00z\x00
