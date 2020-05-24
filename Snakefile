@@ -5,12 +5,10 @@ from imctools.converters import ome2analysis
 from imctools.converters import ome2histocat
 from imctools.converters import mcdfolder2imcfolder
 from imctools.converters import exportacquisitioncsv
-import re
 import json
-import pandas as pd
 import shutil
-import glob
 
+from helpers import *
 
 
 # the folders with the ziped acquisition files for the analysis
@@ -77,91 +75,22 @@ urls = [('20170905_Fluidigmworkshopfinal_SEAJa.zip',
        ('20170906_FluidigmONfinal_SE.zip',
         'https://www.dropbox.com/s/0pdt1ke4b07v7zd/20170906_FluidigmONfinal_SE.zip?dl=1')]
 
-def get_filenames_by_re(folders, fn_regexp):
-    """
-    Retrieve all files matching the re.Path
-    Args:
-        folders: an iterable of folders
-        fn_regexp: a regular expression to identify valid files
-    Returns:
-        Dict with key=Filename and values=Folders
-    """
-    fns = {}
-    re_fn = re.compile(fn_regexp)
-    for fol in folders:
-        for file in pathlib.Path(fol).rglob('*'):
-            if re_fn.match(file.name):
-                fns[file.name] = file
-    return fns
-
-def _get_chunks(lenght, chunk_size):
-    """
-    Given a lenght, split the range into chunks of chunk_size
-    """
-
-    chunks = list(range(1,lenght+1,chunk_size))
-    chunks.append(lenght+1)
-    for i in range(0,len(chunks)-1):
-        yield(chunks[i],chunks[i+1]-1)
-        
-def _copy_cp_file(path_source, fol_source, fol_target):
-    """
-    Copies a file from a source folder in a target folder, preserving the subfolder
-    structure.
-    If the file exists already, it is not overwritten but a warning is printed.
-    If the file exists already and is a .csv file, it will be appended to the existing .csv
-    without header
-
-    Input:
-        path_source: the full path to the source file
-        fol_source: the base folder of the source file
-        fol_target: the target folder
-    Output:
-        True: if copied/appended
-        False: if not copied
-    """
-    CSV_SUFFIX = '.csv'
-
-    fn_source_rel = os.path.relpath(path_source,fol_source)
-    path_target = os.path.join(fol_target, fn_source_rel)
-    if os.path.exists(path_target):
-        if path_source.endswith(CSV_SUFFIX):
-            with open(path_target, 'ab') as outfile:
-                with open(path_source, 'rb') as infile:
-                    infile.readline()  # Throw away header on all but first file
-                    # Block copy rest of file from input to output without parsing
-                    shutil.copyfileobj(infile, outfile)
-                    print(path_source + " has been appended.")
-            return True
-        else:
-            print('File: ', path_target, 'present in multiple outputs!')
-            return False
-    else:
-        subfol = os.path.dirname(path_target)
-        if not os.path.exists(subfol):
-            # create the subfolder if it does not yet exist
-            os.makedirs(os.path.dirname(path_target))
-        shutil.copy(path_source, path_target)
-        return True
-
-def _combine_cp_directories(fols_input, fol_out):
-    """
-    Combines a list of cellprofiler ouput directories into one output
-    folder.
-    This .csv files present in multiple output directories are appended
-    to each other, ignoring the header. Other files present in multiple directories
-    are only copied once.
-    Input:
-        fols_input: list of cp ouput folders
-        fol_out: folder to recombine the output folders into
-    """
-    for d_root in fols_input:
-        for dp, dn, filenames in os.walk(d_root):
-            for f in filenames:
-                _copy_cp_file(path_source=os.path.join(dp, f), fol_source=d_root, fol_target=fol_out)
 
 
 fns_zip = get_filenames_by_re(folders, file_regexp)
+
+
+
+
+### Batch run
+def get_plugins(wildcards):
+    return CONFIG_BATCHRUNS[wildcards.batchname]['plugins']
+
+def get_batch_files(wildcards):
+    return CONFIG_BATCHRUNS[wildcards.batchname]['fns_fkt'](DYNAMIC_FNS)
+
+def get_pipeline(wildcards):
+    return CONFIG_BATCHRUNS[wildcards.batchname]['pipeline']
 
 def get_fns_ome_fkt(files_zip):
     def get_fns_ome(wildcards=None):
@@ -180,6 +109,7 @@ def get_fns_analysis_fkt(files_zip, folder, suffix):
         return fns
     return get_fns_analysis
 
+# Define targets
 FNS_OME = get_fns_ome_fkt(fns_zip)
 FNS_FULL = get_fns_analysis_fkt(fns_zip, folder_analysis, suffix_full+suffix_tiff)
 FNS_ILASTIK = get_fns_analysis_fkt(fns_zip, folder_analysis, suffix_ilastik+suffix_tiff)
@@ -191,9 +121,10 @@ DYNAMIC_FNS = {
     'ilastik': FNS_ILASTIK,
     'ilastik_scaled': FNS_ILASTIK_SCALED
 }
+# Start rules
 
 rule all:
-    input: FNS_OME, FNS_FULL, FNS_ILASTIK
+    input: FNS_OME, FNS_FULL, FNS_ILASTIK, FNS_ILASTIK_SCALED
 
 rule files_ilastik_scaled:
     input: FNS_OME, FNS_ILASTIK, FNS_ILASTIK_SCALED
@@ -240,10 +171,18 @@ rule ome2ilastik:
                 basename=params.outname, panel_csv_file=input.panel,
                 metalcolumn=csv_pannel_metal, usedcolumn=csv_pannel_ilastik, dtype='uint16')
 
-rule prepare_ilastik:
+rule cp_prepare_ilastik_input:
+    input:  get_batch_files
+    output: 'data/batch_{batchname}/filelist.txt'
+    shell:
+         'for f in {input}\n'
+         '        do\n'
+         '            echo $f >> {output}\n'
+         '        done\n'
+
+rule cp_prepare_ilastik_output:
     input:
-        fn=FN_ILASTIK,
-        fol_combined='batch_prepilastik/combined'
+        fol_combined='data/batch_prepilastik/combined'
     output:
         fn=FN_ILASTIK_SCALED
     params:
@@ -266,24 +205,7 @@ rule exportacmeta:
     run:
         exportacquisitioncsv.export_acquisition_csv(folder_ome, output_folder=folder_cp)
 
-### Batch run
-def get_plugins(wildcards):
-    return CONFIG_BATCHRUNS[wildcards.batchname]['plugins']
 
-def get_batch_files(wildcards):
-    return CONFIG_BATCHRUNS[wildcards.batchname]['fns_fkt'](DYNAMIC_FNS)
-
-def get_pipeline(wildcards):
-    return CONFIG_BATCHRUNS[wildcards.batchname]['pipeline']
-
-rule create_filelist:
-    input:  get_batch_files
-    output: 'batch_{batchname}/filelist.txt'
-    shell:
-         'for f in {input}\n'
-         '        do\n'
-         '            echo $f >> {output}\n'
-         '        done\n'
 
 rule get_plugins:
     input: get_plugins
@@ -293,13 +215,13 @@ rule get_plugins:
 
 rule create_batch:
     input:
-        filelist='batch_{batchname}/filelist.txt',
+        filelist='data/batch_{batchname}/filelist.txt',
         pipeline=get_pipeline,
         plugins=FOL_PLUGINS
     output:
-        batchfile='batch_{batchname}/Batch_data.h5'
+        batchfile='data/batch_{batchname}/Batch_data.h5'
     params:
-        outfolder='batch_{batchname}',
+        outfolder='data/batch_{batchname}',
     container:
         "docker://cellprofiler/cellprofiler:3.1.9"
     message: 'Prepares a batch file'
@@ -309,19 +231,21 @@ rule create_batch:
 
 rule run_batchgroup:
     input:
-        batchfile='batch_{batchname}/Batch_data.h5',
+        batchfile='data/batch_{batchname}/Batch_data.h5',
         plugins=FOL_PLUGINS
     output:
-        outfolder=directory('batch_{batchname}/run_{start}_{end}')
+        outfolder=directory('data/batch_{batchname}/run_{start}_{end}')
     container:
         "docker://cellprofiler/cellprofiler:3.1.9"
+    threads:
+        1
     shell:
         ("cellprofiler -c -r -p {input.batchfile} -f {wildcards.start} -l {wildcards.end}"
         " --do-not-write-schema --plugins-directory={input.plugins} -o {output.outfolder} || true")
 
 checkpoint get_groups_from_batch:
-    input: 'batch_{batchname}/Batch_data.h5'
-    output: 'batch_{batchname}/result.json'
+    input: 'data/batch_{batchname}/Batch_data.h5'
+    output: 'data/batch_{batchname}/result.json'
     message: 'Creates grouped output based on batch'
     container:
         "docker://cellprofiler/cellprofiler:3.1.9"
@@ -338,21 +262,19 @@ def get_batchgroups(wildcards):
     batchname = wildcards.batchname
     batchsize = CONFIG_BATCHRUNS[wildcards.batchname]['batchsize']
     # from gc3apps: https://github.com/BodenmillerGroup/gc3apps/blob/master/gc3apps/pipelines/gcp_pipeline.py
-    print(fn_grpfile)
     with open(fn_grpfile) as json_file:
         data = json.load(json_file)
         total_size = len(data)
     fns_batch = []
-    print(total_size, batchsize)
-    for start, end in _get_chunks(total_size, batchsize):
-        fns_batch.append(f'batch_{batchname}/run_{start}_{end}')
+    for start, end in get_chunks(total_size, batchsize):
+        fns_batch.append(f'data/batch_{batchname}/run_{start}_{end}')
     return fns_batch
 
 rule combine_batch_output:
     input: get_batchgroups # function that retrieves all groups for a batch
-    output: directory('batch_{batchname}/combined')
+    output: directory('data/batch_{batchname}/combined')
     run:
-        _combine_cp_directories(input, output[0])
+        combine_cp_directories(input, output[0])
 
     
 
