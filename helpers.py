@@ -22,13 +22,6 @@ def get_filenames_by_re(folders, fn_regexp):
                 fns[file.name] = file
     return fns
 
-### Dynamic output helpers
-
-def get_plugins(wildcards):
-    return CONFIG_BATCHRUNS[wildcards.batchname]['plugins']
-
-def get_pipeline(wildcards):
-    return CONFIG_BATCHRUNS[wildcards.batchname]['pipeline']
 
 ### Cellprofiler helpers
 

@@ -51,18 +51,17 @@ FN_ACMETA = os.path.join(folder_cp, 'acquisition_metadata.csv')
 FOL_OME = os.path.join(folder_ome, '{omefol}/',)
 BASENAME_OME = '{omefol}_{omefile, s[0-9]+_a[0-9]+_ac}'
 FN_OME = os.path.join(FOL_OME, BASENAME_OME+'.ome.tiff')
-FN_MCDPARSE_DONE = os.path.join(folder_base, '{zipfol}' + SUFFIX_DONE)
+FN_MCDPARSE_DONE = os.path.join(folder_base, 'zips','{zipfol}' + SUFFIX_DONE)
 FN_FULL = os.path.join(folder_analysis, BASENAME_OME + '_full.tiff')
 FN_ILASTIK = os.path.join(folder_analysis, BASENAME_OME + '_ilastik.tiff')
 FN_ILASTIK_SCALED = os.path.join(folder_analysis, BASENAME_OME +'_ilastik_s2'+suffix_h5)
 
-FOL_PLUGINS = 'plugins/{batchname}/'
+FOL_PLUGINS = 'data/batch_{batchname}/plugins'
 
 CONFIG_BATCHRUNS = {
     'prepilastik': {
         'batchsize': 3,
         'plugins': '/home/vitoz/Git/ImcPluginsCP/plugins',
-        'fns_fkt': lambda dynamic_fns: [fn for k in ['ilastik'] for fn in dynamic_fns[k](None)],
         'pipeline': 'cp3_pipelines/1_prepare_ilastik.cppipe'
     }
 }
@@ -77,17 +76,11 @@ urls = [('20170905_Fluidigmworkshopfinal_SEAJa.zip',
 
 
 
-fns_zip = get_filenames_by_re(folders, file_regexp)
 
 
-
-
-### Batch run
+### Dynamic output helpers functions
 def get_plugins(wildcards):
     return CONFIG_BATCHRUNS[wildcards.batchname]['plugins']
-
-def get_batch_files(wildcards):
-    return CONFIG_BATCHRUNS[wildcards.batchname]['fns_fkt'](DYNAMIC_FNS)
 
 def get_pipeline(wildcards):
     return CONFIG_BATCHRUNS[wildcards.batchname]['pipeline']
@@ -109,25 +102,21 @@ def get_fns_analysis_fkt(files_zip, folder, suffix):
         return fns
     return get_fns_analysis
 
-# Define targets
-FNS_OME = get_fns_ome_fkt(fns_zip)
-FNS_FULL = get_fns_analysis_fkt(fns_zip, folder_analysis, suffix_full+suffix_tiff)
-FNS_ILASTIK = get_fns_analysis_fkt(fns_zip, folder_analysis, suffix_ilastik+suffix_tiff)
-FNS_ILASTIK_SCALED = get_fns_analysis_fkt(fns_zip, folder_analysis, suffix_ilastik+suffix_ilastik_scale+suffix_h5)
 
-DYNAMIC_FNS = {
-    'ome': FNS_OME,
-    'full': FNS_FULL,
-    'ilastik': FNS_ILASTIK,
-    'ilastik_scaled': FNS_ILASTIK_SCALED
-}
+
+dict_zip_fns = get_filenames_by_re(folders, file_regexp)
+FNS_OME = get_fns_ome_fkt(dict_zip_fns)
+FNS_FULL = get_fns_analysis_fkt(dict_zip_fns, folder_analysis, suffix_full + suffix_tiff)
+FNS_ILASTIK = get_fns_analysis_fkt(dict_zip_fns, folder_analysis, suffix_ilastik + suffix_tiff)
+FNS_ILASTIK_SCALED = get_fns_analysis_fkt(dict_zip_fns, folder_analysis, suffix_ilastik + suffix_ilastik_scale + suffix_h5)
+
 # Start rules
 
 rule all:
     input: FNS_OME, FNS_FULL, FNS_ILASTIK, FNS_ILASTIK_SCALED
 
 rule files_ilastik_scaled:
-    input: FNS_OME, FNS_ILASTIK, FNS_ILASTIK_SCALED
+    input: FNS_ILASTIK_SCALED
 
 rule files_ilastik:
     input: FNS_ILASTIK
@@ -140,7 +129,7 @@ checkpoint mcdfolder2imcfolder:
     run:
         # TODO: add asserts to not overwrite
         mcdfolder2imcfolder.mcdfolder_to_imcfolder(
-	        str(fns_zip[wildcards.zipfol]), output_folder=folder_ome,
+	        str(dict_zip_fns[wildcards.zipfol]), output_folder=folder_ome,
             create_zip=False)
 
 rule ome2full:
@@ -152,7 +141,6 @@ rule ome2full:
     params:
         outname = BASENAME_OME + suffix_full
     run:
-        print(params.outname)
         ome2analysis.omefile_2_analysisfolder(input.image, output_folder=folder_analysis,
                 basename=params.outname, panel_csv_file=input.panel,
                 metalcolumn=csv_pannel_metal, usedcolumn=csv_pannel_full, dtype='uint16')
@@ -166,14 +154,15 @@ rule ome2ilastik:
     params:
           outname = BASENAME_OME + suffix_ilastik
     run:
-        print(params.outname)
         ome2analysis.omefile_2_analysisfolder(input.image, output_folder=folder_analysis,
                 basename=params.outname, panel_csv_file=input.panel,
                 metalcolumn=csv_pannel_metal, usedcolumn=csv_pannel_ilastik, dtype='uint16')
 
+# Define the Cellprofiler run
 rule cp_prepare_ilastik_input:
-    input:  get_batch_files
-    output: 'data/batch_{batchname}/filelist.txt'
+    input:  FNS_ILASTIK
+    output: 'data/batch_prepilastik/filelist.txt'
+    message: 'Define CP pipeline input files'
     shell:
          'for f in {input}\n'
          '        do\n'
@@ -185,19 +174,10 @@ rule cp_prepare_ilastik_output:
         fol_combined='data/batch_prepilastik/combined'
     output:
         fn=FN_ILASTIK_SCALED
-    params:
+    message: 'Define CP pipeline output files'
     run:
         fn = pathlib.Path(output.fn).name
         shutil.copy(pathlib.Path(input.fol_combined) / fn, output.fn)
-#rule prepare_cpbatch:
-#    input:
-#        pipeline=fn_pipe
-#    params:
-#        plugins=fol_plugins
-#    output:
-#        cpbatch
-#    shell:
-#        'cellprofiler  -p {pipeline} -i {image_data} -w {cp_plugins} -d {docker_image}'
 
 rule exportacmeta:
     input: FNS_OME
@@ -206,14 +186,16 @@ rule exportacmeta:
         exportacquisitioncsv.export_acquisition_csv(folder_ome, output_folder=folder_cp)
 
 
+## Rules to enable Cellprofiler batch runs
 
-rule get_plugins:
+rule cp_get_plugins:
     input: get_plugins
     output: directory(FOL_PLUGINS)
     shell:
+        'mkdir -p {output} && '
         'cp -R {input}/* {output}'
 
-rule create_batch:
+rule cp_create_batch_data:
     input:
         filelist='data/batch_{batchname}/filelist.txt',
         pipeline=get_pipeline,
@@ -229,7 +211,7 @@ rule create_batch:
         ("cellprofiler -c -r --file-list={input.filelist} --plugins-directory {input.plugins} "
         "-p {input.pipeline} -o {params.outfolder} || true")
 
-rule run_batchgroup:
+rule cp_run_batch:
     input:
         batchfile='data/batch_{batchname}/Batch_data.h5',
         plugins=FOL_PLUGINS
@@ -243,7 +225,7 @@ rule run_batchgroup:
         ("cellprofiler -c -r -p {input.batchfile} -f {wildcards.start} -l {wildcards.end}"
         " --do-not-write-schema --plugins-directory={input.plugins} -o {output.outfolder} || true")
 
-checkpoint get_groups_from_batch:
+checkpoint cp_get_groups:
     input: 'data/batch_{batchname}/Batch_data.h5'
     output: 'data/batch_{batchname}/result.json'
     message: 'Creates grouped output based on batch'
@@ -252,13 +234,13 @@ checkpoint get_groups_from_batch:
     shell:
         "cellprofiler -c --print-groups={input[0]}  > {output[0]} || true"
 
-def get_batchgroups(wildcards):
+def get_cp_batch_groups(wildcards):
     """
     Todo: Adapt to respect grouping!
     :param wildcards:
     :return:
     """
-    fn_grpfile = checkpoints.get_groups_from_batch.get(**wildcards).output[0]
+    fn_grpfile = checkpoints.cp_get_groups.get(**wildcards).output[0]
     batchname = wildcards.batchname
     batchsize = CONFIG_BATCHRUNS[wildcards.batchname]['batchsize']
     # from gc3apps: https://github.com/BodenmillerGroup/gc3apps/blob/master/gc3apps/pipelines/gcp_pipeline.py
@@ -270,19 +252,11 @@ def get_batchgroups(wildcards):
         fns_batch.append(f'data/batch_{batchname}/run_{start}_{end}')
     return fns_batch
 
-rule combine_batch_output:
-    input: get_batchgroups # function that retrieves all groups for a batch
+rule cp_combine_batch_output:
+    input: get_cp_batch_groups  # function that retrieves all groups for a batch
     output: directory('data/batch_{batchname}/combined')
     run:
         combine_cp_directories(input, output[0])
-
-    
-
-rule run_as_batch:
-    input: 'fn_input_{pattern}', 'combined_{batchname}'
-    output: 'fn_ouptut_{pattern}'
-
-
 
 ### Varia
 
