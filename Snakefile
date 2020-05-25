@@ -96,9 +96,15 @@ def get_fns_crop_fkt(batchname):
         fol_out = pathlib.Path(fol_out)
         pat_name = FN_ILASTIK_CROP.name
         pat = fol_out / pat_name
-        wcs = glob_wildcards(pat)
-        out_pattern = strip_wildcard_constraints(str(FN_ILASTIK_CROP))
-        return expand(out_pattern, zip, omefol=wcs.omefol, omefile=wcs.omefile, crop=wcs.crop, batchname=batchname)
+
+        fkt_cropfol = get_derived_input_fkt(FNS_OME, FN_OME, pat, extra_wildcards={'batchname': batchname})
+        fkt_target = get_derived_input_fkt(FNS_OME, FN_OME, FN_ILASTIK_CROP, extra_wildcards={'batchname': batchname})
+        fns_out = []
+        for fn_crop, fn_target in zip(fkt_cropfol(wildcards), fkt_target(wildcards)):
+            wcs = glob_wildcards(fn_crop)
+            fns_out.append(expand(fn_target, crop=wcs.crop)[0])
+        print(fns_out)
+        return fns_out
     return fkt
 
 FNS_ILASTIK_CROP = get_fns_crop_fkt('prepilastik')
@@ -208,6 +214,7 @@ for batchname, cp_config in CONFIG_BATCHRUNS.items():
                  fol_combined=expand('data/batch_{batchname}/combined', batchname=batchname)
             output: outfile
             message: 'Define CP pipeline output files'
+            threads: 1
             shell:
                  cp_config['output_script']
 
