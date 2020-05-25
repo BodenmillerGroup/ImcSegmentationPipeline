@@ -22,7 +22,7 @@ def define_cellprofiler_rules(cp_configs, base_folder):
 
     This will write rules to :
         - collect input files (1 rule per batchname)
-        - create a cellprofiler batch file
+        - create a Cellprofiler batch file
         - run the batch as subbatches of size 'batchsize'
         - collect all the output images and append all the output .csv files
         - write a rule to move the files from the output folder
@@ -36,12 +36,17 @@ def define_cellprofiler_rules(cp_configs, base_folder):
     FOL_PLUGINS = base_folder / 'batch_{batchname}/plugins'
 
     def get_plugins(wildcards):
+        """Function to retrieve plugin folders"""
         return cp_configs[wildcards.batchname]['plugins']
 
     def get_pipeline(wildcards):
+        """Function to retrieve pipeline filename"""
         return cp_configs[wildcards.batchname]['pipeline']
 
     for batchname, cur_config in cp_configs.items():
+        """
+        Initializes all rules for the defined CellProfiler pipelines.
+        """
         rule:
             input:  *cur_config['input_files']
             output: expand('data/batch_{batchname}/filelist.txt', batchname=batchname)
@@ -51,15 +56,15 @@ def define_cellprofiler_rules(cp_configs, base_folder):
                 '            echo $(realpath $f) >> {output}\n'
                 '        done\n'
 
-    for i, outfile in enumerate(cur_config['output_files']):
-        rule:
-            input:
-                 fol_combined=expand('data/batch_{batchname}/combined', batchname=batchname)
-            output: outfile
-            message: 'Define CP pipeline output files'
-            threads: 1
-            shell:
-                 cur_config['output_script']
+        for i, outfile in enumerate(cur_config['output_files']):
+            rule:
+                input:
+                     fol_combined=expand('data/batch_{batchname}/combined', batchname=batchname)
+                output: outfile
+                message: 'Define CP pipeline output files'
+                threads: 1
+                shell:
+                     cur_config['output_script']
 
     rule cp_get_plugins:
         input: get_plugins
