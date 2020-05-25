@@ -2,7 +2,7 @@ CellProfiler Pipeline: http://www.cellprofiler.org
 Version:4
 DateRevision:319
 GitHash:
-ModuleCount:10
+ModuleCount:12
 HasImagePlaneDetails:False
 
 Images:[module_num:1|svn_version:\'Unknown\'|variable_revision_number:2|show_window:False|notes:\x5B\'Select all the files in the `tiffs` folder\'\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:True|wants_pause:False]
@@ -64,8 +64,20 @@ Smooth Multichannel:[module_num:5|svn_version:\'Unknown\'|variable_revision_numb
     Hot pixel threshold:\xff\xfe5\x000\x00.\x000\x00
     Scale hot pixel threshold to image scale?:\xff\xfeN\x00o\x00
 
-Resize:[module_num:6|svn_version:\'Unknown\'|variable_revision_number:4|show_window:False|notes:\x5B\'Scaling up the images 2x makes pixel classificaiton easier.\'\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:True|wants_pause:False]
+Summarize Stack:[module_num:6|svn_version:\'Unknown\'|variable_revision_number:0|show_window:False|notes:\x5B\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:True|wants_pause:False]
     Select the input image:\xff\xfeI\x00l\x00a\x00s\x00t\x00i\x00k\x00F\x00i\x00l\x00
+    Conversion method:\xff\xfeP\x00y\x00t\x00h\x00o\x00n\x00 \x00F\x00u\x00n\x00c\x00t\x00i\x00o\x00n\x00
+    Name the output image:\xff\xfeI\x00l\x00a\x00s\x00t\x00i\x00k\x00S\x00u\x00m\x00
+    Input a Python function:\xff\xfen\x00p\x00.\x00s\x00u\x00m\x00
+
+StackImages:[module_num:7|svn_version:\'Unknown\'|variable_revision_number:1|show_window:False|notes:\x5B\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:True|wants_pause:False]
+    Name the output image:\xff\xfeI\x00l\x00a\x00s\x00t\x00i\x00k\x00S\x00t\x00a\x00c\x00k\x00e\x00d\x00
+    Hidden:\xff\xfe2\x00
+    Image name:\xff\xfeI\x00l\x00a\x00s\x00t\x00i\x00k\x00S\x00u\x00m\x00
+    Image name:\xff\xfeI\x00l\x00a\x00s\x00t\x00i\x00k\x00F\x00i\x00l\x00
+
+Resize:[module_num:8|svn_version:\'Unknown\'|variable_revision_number:4|show_window:False|notes:\x5B\'Scaling up the images 2x makes pixel classificaiton easier.\'\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:True|wants_pause:False]
+    Select the input image:\xff\xfeI\x00l\x00a\x00s\x00t\x00i\x00k\x00S\x00t\x00a\x00c\x00k\x00e\x00d\x00
     Name the output image:\xff\xfeI\x00l\x00a\x00s\x00t\x00i\x00k\x002\x00x\x00
     Resizing method:\xff\xfeR\x00e\x00s\x00i\x00z\x00e\x00 \x00b\x00y\x00 \x00a\x00 \x00f\x00r\x00a\x00c\x00t\x00i\x00o\x00n\x00 \x00o\x00r\x00 \x00m\x00u\x00l\x00t\x00i\x00p\x00l\x00e\x00 \x00o\x00f\x00 \x00t\x00h\x00e\x00 \x00o\x00r\x00i\x00g\x00i\x00n\x00a\x00l\x00 \x00s\x00i\x00z\x00e\x00
     Resizing factor:\xff\xfe2\x00
@@ -76,7 +88,7 @@ Resize:[module_num:6|svn_version:\'Unknown\'|variable_revision_number:4|show_win
     Select the image with the desired dimensions:\xff\xfeN\x00o\x00n\x00e\x00
     Additional image count:\xff\xfe0\x00
 
-Crop bb:[module_num:7|svn_version:\'Unknown\'|variable_revision_number:3|show_window:False|notes:\x5B\'This function crops random sections from the images, that are used for training.\'\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:True|wants_pause:False]
+Crop bb:[module_num:9|svn_version:\'Unknown\'|variable_revision_number:4|show_window:False|notes:\x5B\'This function crops random sections from the images, that are used for training.\'\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:True|wants_pause:False]
     Select the input image:\xff\xfeI\x00l\x00a\x00s\x00t\x00i\x00k\x002\x00x\x00
     Name the output image:\xff\xfeI\x00l\x00a\x00s\x00t\x00i\x00k\x00c\x00r\x00o\x00p\x00p\x00e\x00d\x00
     W width:\xff\xfe5\x000\x000\x00
@@ -87,7 +99,7 @@ Crop bb:[module_num:7|svn_version:\'Unknown\'|variable_revision_number:3|show_wi
     Optional Random Seed:\xff\xfe\\\x00g\x00<\x00F\x00i\x00l\x00e\x00n\x00a\x00m\x00e\x00>\x00
     Additional image count:\xff\xfe0\x00
 
-SaveImages H5:[module_num:8|svn_version:\'Unknown\'|variable_revision_number:1|show_window:False|notes:\x5B\'Save the scaled images as `hdf5` images in the `tiffs` folder.\'\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:True|wants_pause:False]
+SaveImages H5:[module_num:10|svn_version:\'Unknown\'|variable_revision_number:1|show_window:False|notes:\x5B\'Save the scaled images as `hdf5` images in the `tiffs` folder.\'\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:True|wants_pause:False]
     Select the type of image to save:\xff\xfeI\x00m\x00a\x00g\x00e\x00
     Select the image to save:\xff\xfeI\x00l\x00a\x00s\x00t\x00i\x00k\x002\x00x\x00
     Select method for constructing file names:\xff\xfeF\x00r\x00o\x00m\x00 \x00i\x00m\x00a\x00g\x00e\x00 \x00f\x00i\x00l\x00e\x00n\x00a\x00m\x00e\x00
@@ -105,7 +117,7 @@ SaveImages H5:[module_num:8|svn_version:\'Unknown\'|variable_revision_number:1|s
     Create subfolders in the output folder?:\xff\xfeN\x00o\x00
     Base image folder:\xff\xfeE\x00l\x00s\x00e\x00w\x00h\x00e\x00r\x00e\x00.\x00.\x00.\x00\x7C\x00
 
-SaveImages H5:[module_num:9|svn_version:\'Unknown\'|variable_revision_number:1|show_window:False|notes:\x5B\'Save the random crops for ilastik training in the `ilastik subfolder`.\', "Don\'t forget to change the `Default Output Folder` in `View output settings`"\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:True|wants_pause:False]
+SaveImages H5:[module_num:11|svn_version:\'Unknown\'|variable_revision_number:1|show_window:False|notes:\x5B\'Save the random crops for ilastik training in the `ilastik subfolder`.\', "Don\'t forget to change the `Default Output Folder` in `View output settings`"\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:True|wants_pause:False]
     Select the type of image to save:\xff\xfeI\x00m\x00a\x00g\x00e\x00
     Select the image to save:\xff\xfeI\x00l\x00a\x00s\x00t\x00i\x00k\x00c\x00r\x00o\x00p\x00p\x00e\x00d\x00
     Select method for constructing file names:\xff\xfeF\x00r\x00o\x00m\x00 \x00i\x00m\x00a\x00g\x00e\x00 \x00f\x00i\x00l\x00e\x00n\x00a\x00m\x00e\x00
@@ -123,7 +135,7 @@ SaveImages H5:[module_num:9|svn_version:\'Unknown\'|variable_revision_number:1|s
     Create subfolders in the output folder?:\xff\xfeN\x00o\x00
     Base image folder:\xff\xfeE\x00l\x00s\x00e\x00w\x00h\x00e\x00r\x00e\x00.\x00.\x00.\x00\x7C\x00
 
-CreateBatchFiles:[module_num:10|svn_version:\'Unknown\'|variable_revision_number:8|show_window:False|notes:\x5B\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:True|wants_pause:False]
+CreateBatchFiles:[module_num:12|svn_version:\'Unknown\'|variable_revision_number:8|show_window:False|notes:\x5B\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:True|wants_pause:False]
     Store batch files in default output folder?:\xff\xfeY\x00e\x00s\x00
     Output folder path:\xff\xfe/\x00h\x00o\x00m\x00e\x00/\x00v\x00i\x00t\x00o\x00z\x00
     Are the cluster computers running Windows?:\xff\xfeN\x00o\x00

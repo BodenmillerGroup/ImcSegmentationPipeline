@@ -52,17 +52,17 @@ def define_cellprofiler_rules(cp_configs, base_folder):
         """
         rule:
             input:  *cur_config['input_files']
-            output: expand(fol_batch / 'filelist.txt', batchname=batchname)
+            output: expand(str(fol_batch / 'filelist.txt'), batchname=batchname)
             shell:
                 'for f in {input}\n'
                 '        do\n'
                 '            echo $(realpath $f) >> {output}\n'
                 '        done\n'
 
-        for i, outfile in enumerate(cur_config['output_files']):
+        for i, outfile in enumerate(cur_config['output_patterns']):
             rule:
                 input:
-                     fol_combined=expand(fol_batch / 'combined', batchname=batchname)
+                     fol_combined=expand(str(fol_batch / 'combined'), batchname=batchname)
                 output: outfile
                 message: 'Define CP pipeline output files'
                 threads: 1
@@ -84,13 +84,13 @@ def define_cellprofiler_rules(cp_configs, base_folder):
         output:
             batchfile=fol_batch / 'Batch_data.h5'
         params:
-            outfolder=fol_batch,
+            outfolder=str(fol_batch),
         container:
             "docker://cellprofiler/cellprofiler:3.1.9"
         message: 'Prepares a batch file'
         shell:
-            ("cellprofiler -c -r --file-list={input.filelist} --plugins-directory {input.plugins} "
-         "-p {input.pipeline} -o {params.outfolder} || true")
+            "cellprofiler -c -r --file-list={input.filelist} --plugins-directory {input.plugins} "
+            "-p {input.pipeline} -o {params.outfolder} || true"
 
     rule cp_run_batch:
         input:
@@ -128,12 +128,13 @@ def define_cellprofiler_rules(cp_configs, base_folder):
             total_size = len(data)
         fns_batch = []
         for start, end in hpr.get_chunks(total_size, batchsize):
-            fns_batch.append(fol_batch / f'run_{start}_{end}')
+            fns_batch.append(str(fol_batch / f'run_{start}_{end}'))
         return fns_batch
 
     checkpoint cp_combine_batch_output:
         input: get_cp_batch_groups  # function that retrieves all groups for a batch
         output: directory(fol_batch / 'combined')
-        run:
-            hpr.combine_directories(input, output[0])
-
+        params:
+              script='combine'
+        script:
+              '../helpers.py'
