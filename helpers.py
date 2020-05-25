@@ -98,7 +98,7 @@ def _copy_cp_file(path_source, fol_source, fol_target):
         return True
 
 
-def combine_cp_directories(fols_input, fol_out):
+def combine_directories(fols_input, fol_out):
     """
     Combines a list of cellprofiler ouput directories into one output
     folder.

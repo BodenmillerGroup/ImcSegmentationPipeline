@@ -1,7 +1,9 @@
+import json
+import helpers as hpr
+
 def define_cellprofiler_rules(cp_configs, base_folder):
     """
     Defines rules for Cellprofiler batch runs.
-    These runs will
     The configuration is done via a dictionary with structure:
     {
         BATCH_NAME: # identifier for the run
@@ -33,7 +35,8 @@ def define_cellprofiler_rules(cp_configs, base_folder):
     :param base_folder: the base folder for output
     :return: A set of rules to run cellprofiler pipelines
     """
-    FOL_PLUGINS = base_folder / 'batch_{batchname}/plugins'
+    fol_batch = base_folder / 'batch_{batchname}'
+    fol_plugins = fol_batch / 'plugins'
 
     def get_plugins(wildcards):
         """Function to retrieve plugin folders"""
@@ -49,7 +52,7 @@ def define_cellprofiler_rules(cp_configs, base_folder):
         """
         rule:
             input:  *cur_config['input_files']
-            output: expand('data/batch_{batchname}/filelist.txt', batchname=batchname)
+            output: expand(fol_batch / 'filelist.txt', batchname=batchname)
             shell:
                 'for f in {input}\n'
                 '        do\n'
@@ -59,7 +62,7 @@ def define_cellprofiler_rules(cp_configs, base_folder):
         for i, outfile in enumerate(cur_config['output_files']):
             rule:
                 input:
-                     fol_combined=expand('data/batch_{batchname}/combined', batchname=batchname)
+                     fol_combined=expand(fol_batch / 'combined', batchname=batchname)
                 output: outfile
                 message: 'Define CP pipeline output files'
                 threads: 1
@@ -68,20 +71,20 @@ def define_cellprofiler_rules(cp_configs, base_folder):
 
     rule cp_get_plugins:
         input: get_plugins
-        output: directory(FOL_PLUGINS)
+        output: directory(fol_plugins)
         shell:
              'mkdir -p {output} && '
              'cp -R {input}/* {output}'
 
     rule cp_create_batch_data:
         input:
-            filelist='data/batch_{batchname}/filelist.txt',
+            filelist=fol_batch / 'filelist.txt',
             pipeline=get_pipeline,
-            plugins=FOL_PLUGINS
+            plugins=fol_plugins
         output:
-            batchfile='data/batch_{batchname}/Batch_data.h5'
+            batchfile=fol_batch / 'Batch_data.h5'
         params:
-            outfolder='data/batch_{batchname}',
+            outfolder=fol_batch,
         container:
             "docker://cellprofiler/cellprofiler:3.1.9"
         message: 'Prepares a batch file'
@@ -91,10 +94,10 @@ def define_cellprofiler_rules(cp_configs, base_folder):
 
     rule cp_run_batch:
         input:
-             batchfile='data/batch_{batchname}/Batch_data.h5',
-             plugins=FOL_PLUGINS
+             batchfile=fol_batch / 'Batch_data.h5',
+             plugins=fol_plugins
         output:
-              outfolder=directory('data/batch_{batchname}/run_{start}_{end}')
+              outfolder=directory(fol_batch / 'run_{start}_{end}')
         container:
             "docker://cellprofiler/cellprofiler:3.1.9"
         threads: 1
@@ -103,8 +106,8 @@ def define_cellprofiler_rules(cp_configs, base_folder):
             " --do-not-write-schema --plugins-directory={input.plugins} -o {output.outfolder} || true")
 
     checkpoint cp_get_groups:
-        input: 'data/batch_{batchname}/Batch_data.h5'
-        output: 'data/batch_{batchname}/result.json'
+        input: fol_batch / 'Batch_data.h5'
+        output: fol_batch / 'result.json'
         message: 'Creates grouped output based on batch'
         container:
             "docker://cellprofiler/cellprofiler:3.1.9"
@@ -118,20 +121,19 @@ def define_cellprofiler_rules(cp_configs, base_folder):
         :return:
         """
         fn_grpfile = checkpoints.cp_get_groups.get(**wildcards).output[0]
-        batchname = wildcards.batchname
         batchsize = cp_configs[wildcards.batchname]['batchsize']
         # from gc3apps: https://github.com/BodenmillerGroup/gc3apps/blob/master/gc3apps/pipelines/gcp_pipeline.py
         with open(fn_grpfile) as json_file:
             data = json.load(json_file)
             total_size = len(data)
         fns_batch = []
-        for start, end in get_chunks(total_size, batchsize):
-            fns_batch.append(f'data/batch_{batchname}/run_{start}_{end}')
+        for start, end in hpr.get_chunks(total_size, batchsize):
+            fns_batch.append(fol_batch / f'run_{start}_{end}')
         return fns_batch
 
     checkpoint cp_combine_batch_output:
         input: get_cp_batch_groups  # function that retrieves all groups for a batch
-        output: directory('data/batch_{batchname}/combined')
+        output: directory(fol_batch / 'combined')
         run:
-            combine_cp_directories(input, output[0])
+            hpr.combine_directories(input, output[0])
 
