@@ -9,6 +9,9 @@ from snakemake.io import regex, strip_wildcard_constraints
 
 from helpers import *
 
+# Cellprofiler rules
+include: 'rules/cellprofiler.smk'
+
 ### Config (should be changed)
 # TODO: Add to configuration file and write configuration file schema
 
@@ -54,28 +57,22 @@ suffix_tiff = '.tiff'
 suffix_h5 = '.h5'
 suffix_done = '.done'
 suffix_crop = '_{crop, x[0-9]+_y[0-9]+_w[0-9]+_h[0-9]+}'
-basename_ome = '{omefol}_{omefile, s[0-9]+_a[0-9]+_ac}'
+basename_image = '{img_session}_{img_acquisition, s[0-9]+_a[0-9]+_ac}'
 
 # Define derived file patterns
-FOL_OME = folder_ome / '{omefol}'
-FN_OME = FOL_OME / (basename_ome + '.ome.tiff')
-FN_FULL = folder_analysis / (f'{basename_ome}{suffix_full}{suffix_tiff}')
-FN_ILASTIK = folder_analysis / (f'{basename_ome}{suffix_ilastik}{suffix_tiff}')
-FN_ILASTIK_SCALED = folder_analysis / (f'{basename_ome}{suffix_ilastik}{suffix_scale}{suffix_h5}')
-FN_ILASTIK_CROP = folder_crop / '{batchname}' / (f'{basename_ome}{suffix_ilastik}{suffix_scale}{suffix_crop}{suffix_h5}')
+FOL_OME = folder_ome / '{img_session}'
+FN_OME = FOL_OME / (basename_image + '.ome.tiff')
+FN_FULL = folder_analysis / (f'{basename_image}{suffix_full}{suffix_tiff}')
+FN_ILASTIK = folder_analysis / (f'{basename_image}{suffix_ilastik}{suffix_tiff}')
+FN_ILASTIK_SCALED = folder_analysis / (f'{basename_image}{suffix_ilastik}{suffix_scale}{suffix_h5}')
+FN_ILASTIK_CROP = folder_crop / '{batchname}' / (f'{basename_image}{suffix_ilastik}{suffix_scale}{suffix_crop}{suffix_h5}')
 
 FN_ACMETA = folder_cp / 'acquisition_metadata.csv'
 FN_MCDPARSE_DONE = folder_base / 'zips' / ('{zipfol}' + suffix_done)
 
-FOL_PLUGINS = 'data/batch_{batchname}/plugins'
 
 
 ### Dynamic output helpers functions
-def get_plugins(wildcards):
-    return CONFIG_BATCHRUNS[wildcards.batchname]['plugins']
-
-def get_pipeline(wildcards):
-    return CONFIG_BATCHRUNS[wildcards.batchname]['pipeline']
 
 def get_fns_ome_fkt(files_zip):
     def fkt(wildcards):
@@ -138,6 +135,7 @@ rule files_ome:
 rule files_crops:
     input: FNS_ILASTIK_CROP
 
+
 # MCD to ome conversion
 rule mcdfolder2imcfolder:
     output: touch(FN_MCDPARSE_DONE)
@@ -153,6 +151,7 @@ checkpoint all_mcd_converted:
     output:
         touch('data/all_mcd_converted.done')
 
+
 # OME to analysis tiff conversion
 rule ome2full:
     input:
@@ -161,7 +160,7 @@ rule ome2full:
     output:
         FN_FULL
     params:
-        outname =basename_ome + suffix_full
+        outname =basename_image + suffix_full
     threads: 1
     run:
         ome2analysis.omefile_2_analysisfolder(input.image, output_folder=folder_analysis,
@@ -175,7 +174,7 @@ rule ome2ilastik:
     output:
         FN_ILASTIK
     params:
-          outname =basename_ome + suffix_ilastik
+          outname =basename_image + suffix_ilastik
     threads: 1
     run:
         ome2analysis.omefile_2_analysisfolder(input.image, output_folder=folder_analysis,
@@ -197,95 +196,7 @@ rule exportacmeta:
 
 
 ## Rules to target Cellprofiler batch runs
-# Define the Cellprofiler run
-for batchname, cp_config in CONFIG_BATCHRUNS.items():
-    rule:
-        input:  *cp_config['input_files']
-        output: expand('data/batch_{batchname}/filelist.txt', batchname=batchname)
-        shell:
-            'for f in {input}\n'
-            '        do\n'
-            '            echo $(realpath $f) >> {output}\n'
-            '        done\n'
-
-    for i, outfile in enumerate(cp_config['output_files']):
-        rule:
-            input:
-                 fol_combined=expand('data/batch_{batchname}/combined', batchname=batchname)
-            output: outfile
-            message: 'Define CP pipeline output files'
-            threads: 1
-            shell:
-                 cp_config['output_script']
-
-rule cp_get_plugins:
-    input: get_plugins
-    output: directory(FOL_PLUGINS)
-    shell:
-        'mkdir -p {output} && '
-        'cp -R {input}/* {output}'
-
-rule cp_create_batch_data:
-    input:
-        filelist='data/batch_{batchname}/filelist.txt',
-        pipeline=get_pipeline,
-        plugins=FOL_PLUGINS
-    output:
-        batchfile='data/batch_{batchname}/Batch_data.h5'
-    params:
-        outfolder='data/batch_{batchname}',
-    container:
-        "docker://cellprofiler/cellprofiler:3.1.9"
-    message: 'Prepares a batch file'
-    shell:
-        ("cellprofiler -c -r --file-list={input.filelist} --plugins-directory {input.plugins} "
-        "-p {input.pipeline} -o {params.outfolder} || true")
-
-rule cp_run_batch:
-    input:
-        batchfile='data/batch_{batchname}/Batch_data.h5',
-        plugins=FOL_PLUGINS
-    output:
-        outfolder=directory('data/batch_{batchname}/run_{start}_{end}')
-    container:
-        "docker://cellprofiler/cellprofiler:3.1.9"
-    threads: 1
-    shell:
-        ("cellprofiler -c -r -p {input.batchfile} -f {wildcards.start} -l {wildcards.end}"
-        " --do-not-write-schema --plugins-directory={input.plugins} -o {output.outfolder} || true")
-
-checkpoint cp_get_groups:
-    input: 'data/batch_{batchname}/Batch_data.h5'
-    output: 'data/batch_{batchname}/result.json'
-    message: 'Creates grouped output based on batch'
-    container:
-        "docker://cellprofiler/cellprofiler:3.1.9"
-    shell:
-        "cellprofiler -c --print-groups={input[0]}  > {output[0]} || true"
-
-def get_cp_batch_groups(wildcards):
-    """
-    Todo: Adapt to respect grouping!
-    :param wildcards:
-    :return:
-    """
-    fn_grpfile = checkpoints.cp_get_groups.get(**wildcards).output[0]
-    batchname = wildcards.batchname
-    batchsize = CONFIG_BATCHRUNS[wildcards.batchname]['batchsize']
-    # from gc3apps: https://github.com/BodenmillerGroup/gc3apps/blob/master/gc3apps/pipelines/gcp_pipeline.py
-    with open(fn_grpfile) as json_file:
-        data = json.load(json_file)
-        total_size = len(data)
-    fns_batch = []
-    for start, end in get_chunks(total_size, batchsize):
-        fns_batch.append(f'data/batch_{batchname}/run_{start}_{end}')
-    return fns_batch
-
-checkpoint cp_combine_batch_output:
-    input: get_cp_batch_groups  # function that retrieves all groups for a batch
-    output: directory('data/batch_{batchname}/combined')
-    run:
-        combine_cp_directories(input, output[0])
+define_cellprofiler_rules(CONFIG_BATCHRUNS, folder_base)
 
 ### Varia
 
