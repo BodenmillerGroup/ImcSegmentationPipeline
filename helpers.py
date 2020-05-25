@@ -2,6 +2,7 @@ import re
 import pathlib
 import os
 import shutil
+from snakemake.io import regex, strip_wildcard_constraints, expand
 
 
 ### Varia
@@ -9,7 +10,7 @@ def get_filenames_by_re(folders, fn_regexp):
     """
     Retrieve all files matching the re.Path
     Args:
-        folders: an iterable of folders
+        folders: an iterable of input_data_folders
         fn_regexp: a regular expression to identify valid files
     Returns:
         Dict with key=Filename and values=Folders
@@ -19,9 +20,29 @@ def get_filenames_by_re(folders, fn_regexp):
     for fol in folders:
         for file in pathlib.Path(fol).rglob('*'):
             if re_fn.match(file.name):
-                fns[file.name] = file
+                fns[file.stem] = file
     return fns
 
+
+def get_derived_input_fkt(source_fkt, source_pattern, target_pattern, extra_wildcards=None):
+    """
+    Modify an input function to represent a new pattern.
+    :param source_fkt: function to generate source filenames
+    :param source_pattern: pattern to get wildcards from source filenames
+    :param target_pattern: pattern to apply wildcards to target filenames
+    :return: A function to generate filenames with the target pattern
+    """
+    if extra_wildcards is None:
+        extra_wildcards = {}
+    def get_fns_analysis(wildcards):
+        fns = []
+        re_fn = re.compile(regex(str(source_pattern)))
+        for fn in source_fkt(wildcards):
+            match = re.match(re_fn, fn).groupdict()
+            pattern = strip_wildcard_constraints(str(target_pattern))
+            fns.append(expand(pattern, **match, **extra_wildcards, allow_missing=True)[0])
+        return fns
+    return get_fns_analysis
 
 ### Cellprofiler helpers
 
@@ -85,8 +106,8 @@ def combine_cp_directories(fols_input, fol_out):
     to each other, ignoring the header. Other files present in multiple directories
     are only copied once.
     Input:
-        fols_input: list of cp ouput folders
-        fol_out: folder to recombine the output folders into
+        fols_input: list of cp ouput input_data_folders
+        fol_out: folder to recombine the output input_data_folders into
     """
     for d_root in fols_input:
         for dp, dn, filenames in os.walk(d_root):
