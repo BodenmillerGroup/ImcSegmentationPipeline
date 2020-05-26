@@ -41,7 +41,7 @@ folder_tmp = folder_base / 'tmp'
 folder_cp = folder_base / 'cpout'
 folder_histocat = folder_base / 'histocat'
 folder_uncertainty = folder_base / 'uncertainty'
-folder_crop = folder_base / 'crops'
+folder_crop = folder_base / 'ilastik_training_data'
 folder_classifiers = folder_base / 'classifiers'
 
 fn_cell_class_ut = 'classifiers/cell_untrained.ilp'
@@ -230,11 +230,9 @@ rule ome2ilastik:
                                               metalcolumn=csv_panel_metal, usedcolumn=csv_panel_ilastik, dtype='uint16')
 
 # rule
-rule prepare_cell_classifier_project:
+rule prepare_cell_classifier:
     input:
         FNS_ILASTIK_CROP
-    output:
-        'classifiers/cell_untrained.ilp'
 
 rule exportacmeta:
     input: FNS_OME
@@ -253,7 +251,7 @@ rule clean:
     shell:
         "rm -R {folder_base}"
 
-rule download:
+rule download_example_data:
     run:
         for fn, url in config['example_data_urls']:
             fn = fol_example / fn

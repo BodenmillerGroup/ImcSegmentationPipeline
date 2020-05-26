@@ -1,0 +1,14 @@
+name: snakemake_imc
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - numpy
+  - python
+  - pandas
+  - xarray
+  - ipykernel
+  - snakemake
+  - pip
+  - pip:
+      - git+https://github.com/BodenmillerGroup/imctools.git@next
