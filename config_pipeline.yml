@@ -1,0 +1,24 @@
+# The input folders to be considered
+input_data_folders: [example_data]
+# The pattern of the files/folders to be considered
+input_file_regexp: ".*.zip"
+
+# The path to the panel csv
+csv_panel: 'config/example_pannel.csv'
+# The column indicating the metal in form MetalMass (eg Ir191)
+csv_panel_metal: 'Metal Tag'
+# The boolean column indicating metals to be used for
+# the ilastik pixel classification
+csv_panel_ilastik: 'ilastik'
+# The boolean column indicating metals to be used for quantification
+csv_panel_full: 'full'
+
+# The path to the (trained) cell classifier
+fn_cell_classifier: 'classifiers/cell_classifier.ilp'
+
+## Optional: urls to retrieve example data
+# Only needed in case example data is to be used
+example_data_urls: [['20170905_Fluidigmworkshopfinal_SEAJa.zip',
+                    'https://www.dropbox.com/s/awyq9p7n7dexgyt/20170905_Fluidigmworkshopfinal_SEAJa.zip?dl=1'] ,
+                    ['20170906_FluidigmONfinal_SE.zip',
+                    'https://www.dropbox.com/s/0pdt1ke4b07v7zd/20170906_FluidigmONfinal_SE.zip?dl=1']]

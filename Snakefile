@@ -14,29 +14,23 @@ include: 'rules/ilastik.smk'
 
 ### Config (should be changed)
 # TODO: Add to configuration file and write configuration file schema
+configfile: 'config_pipeline.yml'
 
 ## Required
 # Data input
-input_data_folders = ['example_data']
-input_file_regexp = '.*.zip'
+input_data_folders = config['input_data_folders']
+input_file_regexp = config['input_file_regexp']
 
-fn_cell_classifier = 'classifiers/cell_classifier.ilp'
+fn_cell_classifier = config['fn_cell_classifier']
 
 # pannel
-csv_panel = 'config/example_pannel.csv'
-csv_panel_metal = 'Metal Tag'
-csv_panel_ilastik = 'ilastik'
-csv_panel_full = 'full'
+csv_panel = config['csv_panel']
+csv_panel_metal = config['csv_panel_metal']
+csv_panel_ilastik = config['csv_panel_ilastik']
+csv_panel_full = config['csv_panel_full']
 
-## Optional
-example_data_urls = [('20170905_Fluidigmworkshopfinal_SEAJa.zip',
-         'https://www.dropbox.com/s/awyq9p7n7dexgyt/20170905_Fluidigmworkshopfinal_SEAJa.zip?dl=1') ,
-                     ('20170906_FluidigmONfinal_SE.zip',
-         'https://www.dropbox.com/s/0pdt1ke4b07v7zd/20170906_FluidigmONfinal_SE.zip?dl=1')]
 
 ### Variables (only adapt if pipeline is adapted)
-# Example data folder
-fol_example = pathlib.Path(input_data_folders[0])
 
 # Define input_data_folders
 folder_base = pathlib.Path('data')
@@ -69,6 +63,9 @@ fn_image = folder_cp / 'Image.csv'
 fn_cell = folder_cp / 'cell.csv'
 fn_experiment = folder_cp / 'Experiment.csv'
 fn_object_rel = folder_cp / 'Object relationships.csv'
+
+# Example data folder
+fol_example = pathlib.Path(input_data_folders[0])
 
 # Define derived file patterns
 FOL_OME = folder_ome / '{img_session}'
@@ -134,7 +131,7 @@ CP_CONFIG_DICT = {
         'input_files': [FNS_ILASTIK],
         'output_patterns': [FN_ILASTIK_SCALED, FN_ILASTIK_CROP],
         'output_script': #'mkdir -p  $(dirname {output}) && '
-            'cp {input}/"$(basename "{output}")" "$(dirname "{output}")"'
+            'cp {input}/"$(basename "{output}")" "{output}"'
     },
     'segmasks': {
         'batchsize': 2,
@@ -143,7 +140,7 @@ CP_CONFIG_DICT = {
         'input_files': [FNS_CELL_PROBABILITIES],
         'output_patterns': [FN_MASK],
         'output_script': #'mkdir -p  $(dirname {output}) && '
-            'cp {input}/$(basename {output}) $(dirname {output})'
+            'cp {input}/"$(basename "{output}")" "$(dirname "{output}")"'
     },
     'measuremasks': {
         'batchsize': 2,
@@ -264,7 +261,7 @@ rule clean:
 
 rule download:
     run:
-        for fn, url in example_data_urls:
+        for fn, url in config['example_data_urls']:
             fn = fol_example / fn
             if ~fn.exists():
                 urllib.request.urlretrieve(url, fn)
