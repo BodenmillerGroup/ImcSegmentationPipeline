@@ -30,10 +30,10 @@ csv_panel_ilastik = config['csv_panel_ilastik']
 csv_panel_full = config['csv_panel_full']
 
 
+folder_base = pathlib.Path(config['output_folder'])
 ### Variables (only adapt if pipeline is adapted)
 
 # Define input_data_folders
-folder_base = pathlib.Path('data')
 folder_analysis = folder_base / 'tiffs'
 folder_ilastik = folder_base / 'ilastik'
 folder_ome = folder_base / 'ometiff'

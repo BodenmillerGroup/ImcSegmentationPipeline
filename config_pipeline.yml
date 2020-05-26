@@ -3,6 +3,9 @@ input_data_folders: [example_data]
 # The pattern of the files/folders to be considered
 input_file_regexp: ".*.zip"
 
+# Output base folder:
+output_folder: data
+
 # The path to the panel csv
 csv_panel: 'config/example_pannel.csv'
 # The column indicating the metal in form MetalMass (eg Ir191)
