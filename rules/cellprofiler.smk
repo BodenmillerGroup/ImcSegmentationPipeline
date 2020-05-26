@@ -17,8 +17,6 @@ def define_cellprofiler_rules(cp_configs, base_folder):
                             ),
              'output_files': [pattern_a, # list of output file
                               pattern_b], # patterns
-             'output_script': 'shell script to move files from'
-                             'input to output directory'
     }
 
 
@@ -67,7 +65,8 @@ def define_cellprofiler_rules(cp_configs, base_folder):
                 message: 'Define CP pipeline output files'
                 threads: 1
                 shell:
-                     cur_config['output_script']
+                    'cp {input}/"$(basename "{output}")" "{output}"'
+
 
     rule cp_get_plugins:
         input: get_plugins

@@ -73,7 +73,6 @@ def define_ilastik_rules(ilastik_configs, base_folder):
             output:
                   ilastik_configs[batchname]['output_pattern']
             shell:
-                'cp {input}/$(basename {output}) {output}'
-
+                 'cp {input}/"$(basename "{output}")" "{output}"'
 
 

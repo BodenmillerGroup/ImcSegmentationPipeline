@@ -130,8 +130,6 @@ CP_CONFIG_DICT = {
         'pipeline': 'cp3_pipelines/1_prepare_ilastik.cppipe',
         'input_files': [FNS_ILASTIK],
         'output_patterns': [FN_ILASTIK_SCALED, FN_ILASTIK_CROP],
-        'output_script': #'mkdir -p  $(dirname {output}) && '
-            'cp {input}/"$(basename "{output}")" "{output}"'
     },
     'segmasks': {
         'batchsize': 2,
@@ -139,8 +137,6 @@ CP_CONFIG_DICT = {
         'pipeline': 'cp3_pipelines/2_segment_ilastik.cppipe',
         'input_files': [FNS_CELL_PROBABILITIES],
         'output_patterns': [FN_MASK],
-        'output_script': #'mkdir -p  $(dirname {output}) && '
-            'cp {input}/"$(basename "{output}")" "$(dirname "{output}")"'
     },
     'measuremasks': {
         'batchsize': 2,
@@ -148,8 +144,6 @@ CP_CONFIG_DICT = {
         'pipeline': 'cp3_pipelines/3_measure_mask_basic.cppipe',
         'input_files': [FNS_MASK, FNS_FULL, FNS_CELL_PROBABILITIES],
         'output_patterns': cp_meas_output + [FN_MASK_CPOUT],
-        'output_script': #'mkdir -p  $(dirname {output}) && '
-            'cp {input}/"$(basename "{output}")" "$(dirname "{output}")"'
     }
 }
 
