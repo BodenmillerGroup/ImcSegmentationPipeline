@@ -2,11 +2,9 @@ import urllib.request
 import pathlib
 from imctools.converters import ome2analysis
 from imctools.converters import ome2histocat
-from imctools.converters import mcdfolder2imcfolder
 from imctools.converters import exportacquisitioncsv
-from snakemake.io import regex, strip_wildcard_constraints
 
-import helpers as hpr
+from scripts import helpers as hpr
 
 # Cellprofiler rules
 include: 'rules/cellprofiler.smk'

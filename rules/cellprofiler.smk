@@ -1,5 +1,6 @@
 import json
-import helpers as hpr
+from scripts import helpers as hpr
+
 
 def define_cellprofiler_rules(cp_configs, base_folder):
     """

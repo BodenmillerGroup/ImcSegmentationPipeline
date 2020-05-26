@@ -1,5 +1,5 @@
-import helpers as hpr
-import pathlib
+from scripts import helpers as hpr
+
 
 def define_ilastik_rules(ilastik_configs, base_folder):
     fol_batch = base_folder/ 'ilastik' / 'batch_{batchname}'
@@ -64,7 +64,6 @@ def define_ilastik_rules(ilastik_configs, base_folder):
             script='combine'
         script:
                 '../helpers.py'
-
 
     for batchname in ilastik_configs.keys():
         rule:
