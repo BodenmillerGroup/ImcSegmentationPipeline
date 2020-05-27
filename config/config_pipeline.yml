@@ -1,0 +1,22 @@
+# Please look at the .schema.yml for documentation of the values
+input_data_folders:
+  - example_data
+input_file_regexp: ".*.zip"
+output_folder: data
+csv_panel: 'config/example_pannel.csv'
+csv_panel_metal: 'Metal Tag'
+csv_panel_ilastik: 'ilastik'
+csv_panel_full: 'full'
+fn_cell_classifier: 'classifiers/cell_classifier.ilp'
+
+# optional:
+ilastik_mem_mb: 10000
+ilastik_threads: 8
+
+example_data_urls:
+  -
+    - '20170905_Fluidigmworkshopfinal_SEAJa.zip'
+    - 'https://www.dropbox.com/s/awyq9p7n7dexgyt/20170905_Fluidigmworkshopfinal_SEAJa.zip?dl=1'
+  -
+    - '20170906_FluidigmONfinal_SE.zip'
+    -  'https://www.dropbox.com/s/0pdt1ke4b07v7zd/20170906_FluidigmONfinal_SE.zip?dl=1'

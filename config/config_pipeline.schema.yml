@@ -1,0 +1,64 @@
+$schema: "https://json-schema.org/draft-06/schema#"
+description: a configuration for the imc segmentation pipeline
+properties:
+  input_data_folders:
+    type: array
+    description: list of input data folders[example_data]
+    required: true
+
+  input_file_regexp:
+    type: string
+    description: regexp pattern that files/folders need to much to be considered to contain input `.mcd` files
+    required: true
+
+  output_folder:
+    type: string
+    default: data
+    description: path to output data
+    required: false
+
+  csv_panel:
+    type: string
+    description: path to the panel csv
+    required: true
+
+  csv_panel_metal:
+    type: string
+    default: 'Metal Tag'
+    description: The column in the panel csv indicating the metal in form MetalMass (eg Ir191)
+    required: false
+
+  csv_panel_ilastik:
+    type: string
+    default: ilastik
+    description: The boolean column in the panel csv indicating metals to be used for the ilastik pixel classification
+    required: false
+
+  csv_panel_full:
+    type: string
+    default: full
+    description: boolean column in the panel csv indicating metals to be used for quantification
+    required: true
+
+  fn_cell_classifier:
+    type: string
+    description: path where the (trained) cell classifier will be saved
+    required: true
+
+  ilastik_threads:
+    type: integer
+    default: 4
+    description: number of threads to use per ilastik run
+    required: false
+
+  ilastik_mem_mb:
+    type: integer
+    default: 10000
+    description: memory footprint of an ilastik run in mb
+    required: false
+
+  example_data_urls:
+    type: array
+    description: optional list urls to retrieve example data. Only needed in case example data is to be used
+    required: false
+
