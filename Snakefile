@@ -2,36 +2,40 @@ import urllib.request
 import pathlib
 from imctools.converters import ome2analysis
 from imctools.converters import ome2histocat
+from imctools.converters import mcdfolder2imcfolder
 from imctools.converters import exportacquisitioncsv
 
 from scripts import helpers as hpr
 
-# Cellprofiler rules
+# Cellprofiler/Ilastik rules
 include: 'rules/cellprofiler.smk'
 include: 'rules/ilastik.smk'
 
-### Config (should be changed)
-# TODO: Add to configuration file and write configuration file schema
+# Read Configuration
 configfile: 'config_pipeline.yml'
 
-## Required
-# Data input
+
+# Extract variables from configuration
+## Input/output
 input_data_folders = config['input_data_folders']
 input_file_regexp = config['input_file_regexp']
 
+folder_base = pathlib.Path(config['output_folder'])
+
 fn_cell_classifier = config['fn_cell_classifier']
 
-# pannel
+# Optional example data folder
+fol_example = pathlib.Path(input_data_folders[0])
+
+## Panel
 csv_panel = config['csv_panel']
 csv_panel_metal = config['csv_panel_metal']
 csv_panel_ilastik = config['csv_panel_ilastik']
 csv_panel_full = config['csv_panel_full']
 
 
-folder_base = pathlib.Path(config['output_folder'])
-### Variables (only adapt if pipeline is adapted)
-
-# Define input_data_folders
+# Define hardcoded variables
+## Define basic folder structrue
 folder_analysis = folder_base / 'tiffs'
 folder_ilastik = folder_base / 'ilastik'
 folder_ome = folder_base / 'ometiff'
@@ -42,8 +46,20 @@ folder_uncertainty = folder_base / 'uncertainty'
 folder_crop = folder_base / 'ilastik_training_data'
 folder_classifiers = folder_base / 'classifiers'
 
-fn_cell_class_ut = 'classifiers/cell_untrained.ilp'
-# Define suffixes
+## Define Output files
+fn_image = folder_cp / 'Image.csv'
+fn_cell = folder_cp / 'cell.csv'
+fn_experiment = folder_cp / 'Experiment.csv'
+fn_object_rel = folder_cp / 'Object relationships.csv'
+fn_cell_class_ut = folder_classifiers / 'cell_untrained.ilp'
+fn_acmeta = folder_cp / 'acquisition_metadata.csv'
+# Identify a dictionary of input folders/zips containing .mcd files to process
+dict_zip_fns = hpr.get_filenames_by_re(input_data_folders, input_file_regexp)
+# Produce a list of all cellprofiler output files
+cp_meas_output = [fn_image, fn_cell, fn_experiment, fn_object_rel]
+
+
+## Define suffixes
 suffix_full = '_full'
 suffix_ilastik = '_ilastik'
 suffix_scale = '_s2'
@@ -53,147 +69,140 @@ suffix_tiff = '.tiff'
 suffix_h5 = '.h5'
 suffix_done = '.done'
 suffix_crop = '_{crop, x[0-9]+_y[0-9]+_w[0-9]+_h[0-9]+}'
-basename_image = '{img_session}_{img_acquisition, s[0-9]+_a[0-9]+_ac}'
+
+## Define derived file patterns
+pat_basename_image = '{img_session}_{img_acquisition, s[0-9]+_a[0-9]+_ac}'
+pat_fol_ome = folder_ome / '{img_session}'
+pat_fn_ome = pat_fol_ome / (pat_basename_image + '.ome.tiff')
+pat_fn_full = folder_analysis / (f'{pat_basename_image}{suffix_full}{suffix_tiff}')
+pat_fn_ilastik = folder_analysis / (f'{pat_basename_image}{suffix_ilastik}{suffix_tiff}')
+pat_fn_ilastik_scaled = folder_analysis / (f'{pat_basename_image}{suffix_ilastik}{suffix_scale}{suffix_h5}')
+pat_fn_ilastik_crop = folder_crop / '{batchname}' / (f'{pat_basename_image}{suffix_ilastik}{suffix_scale}{suffix_crop}{suffix_h5}')
+pat_fn_cell_probabilities = folder_analysis / (f'{pat_basename_image}{suffix_ilastik}{suffix_scale}{suffix_probablities}{suffix_tiff}')
+pat_fn_mask= folder_analysis / (f'{pat_basename_image}{suffix_ilastik}{suffix_scale}{suffix_probablities}{suffix_mask}{suffix_tiff}')
+pat_fn_mask_cpout= folder_cp / (f'{pat_basename_image}{suffix_ilastik}{suffix_scale}{suffix_probablities}{suffix_mask}{suffix_tiff}')
+pat_fn_mcdparse_done = folder_base / 'zips' / ('{zipfol}' + suffix_done)
+
+# Define dynamic files
+## Define (dynamic) input file functions
+def fkt_fns_ome(wildcards):
+    """
+    Generates dynamically a list of .ome.tiff files once the `all_mcd_converted` checkpoint
+    is finished.
+    :param wildcards: wildcards dynamically provided by snakemake
+    :return: A list of all `.ome.tiffs` generated.
+    """
+    checkpoints.all_mcd_converted.get()
+    fns = [str(p) for p in  hpr.get_filenames_by_re([folder_ome], '.*.ome.tiff').values()]
+    return fns
 
 
-
-fn_image = folder_cp / 'Image.csv'
-fn_cell = folder_cp / 'cell.csv'
-fn_experiment = folder_cp / 'Experiment.csv'
-fn_object_rel = folder_cp / 'Object relationships.csv'
-
-# Example data folder
-fol_example = pathlib.Path(input_data_folders[0])
-
-# Define derived file patterns
-FOL_OME = folder_ome / '{img_session}'
-FN_OME = FOL_OME / (basename_image + '.ome.tiff')
-FN_FULL = folder_analysis / (f'{basename_image}{suffix_full}{suffix_tiff}')
-FN_ILASTIK = folder_analysis / (f'{basename_image}{suffix_ilastik}{suffix_tiff}')
-FN_ILASTIK_SCALED = folder_analysis / (f'{basename_image}{suffix_ilastik}{suffix_scale}{suffix_h5}')
-FN_ILASTIK_CROP = folder_crop / '{batchname}' / (f'{basename_image}{suffix_ilastik}{suffix_scale}{suffix_crop}{suffix_h5}')
-FN_CELL_PROBABILITIES = folder_analysis / (f'{basename_image}{suffix_ilastik}{suffix_scale}{suffix_probablities}{suffix_tiff}')
-FN_MASK= folder_analysis / (f'{basename_image}{suffix_ilastik}{suffix_scale}{suffix_probablities}{suffix_mask}{suffix_tiff}')
-
-FN_MASK_CPOUT= folder_cp / (f'{basename_image}{suffix_ilastik}{suffix_scale}{suffix_probablities}{suffix_mask}{suffix_tiff}')
-
-FN_ACMETA = folder_cp / 'acquisition_metadata.csv'
-FN_MCDPARSE_DONE = folder_base / 'zips' / ('{zipfol}' + suffix_done)
+## Define derived (dynamic) input files functions
+## This generates functions to define input filenames based on other input filename functions
+fkt_fns_full = hpr.get_derived_input_fkt(fkt_fns_ome, pat_fn_ome, pat_fn_full)
+fkt_fns_ilastik = hpr.get_derived_input_fkt(fkt_fns_ome, pat_fn_ome, pat_fn_ilastik)
+fkt_fns_ilastik_scaled = hpr.get_derived_input_fkt(fkt_fns_ilastik, pat_fn_ilastik,
+                                                   pat_fn_ilastik_scaled)
+fkt_fns_cell_probabilities = hpr.get_derived_input_fkt(fkt_fns_ome, pat_fn_ome,
+                                                       pat_fn_cell_probabilities)
+fkt_fns_mask = hpr.get_derived_input_fkt(fkt_fns_ome, pat_fn_ome, pat_fn_mask)
+fkt_fns_mask_cpout = hpr.get_derived_input_fkt(fkt_fns_ome, pat_fn_ome, pat_fn_mask_cpout)
 
 
-### Dynamic output helpers functions
-
-def get_fns_ome_fkt(files_zip):
-    def fkt(wildcards):
-        checkpoints.all_mcd_converted.get()
-        fns = [str(p) for p in  hpr.get_filenames_by_re([folder_ome], '.*.ome.tiff').values()]
-        return fns
-    return fkt
-
-dict_zip_fns = hpr.get_filenames_by_re(input_data_folders, input_file_regexp)
-FNS_OME = get_fns_ome_fkt(dict_zip_fns)
-FNS_FULL = hpr.get_derived_input_fkt(FNS_OME, FN_OME, FN_FULL)
-FNS_ILASTIK = hpr.get_derived_input_fkt(FNS_OME, FN_OME, FN_ILASTIK)
-FNS_ILASTIK_SCALED = hpr.get_derived_input_fkt(FNS_OME, FN_OME, FN_ILASTIK_SCALED)
-FNS_CELL_PROBABILITIES = hpr.get_derived_input_fkt(FNS_OME, FN_OME, FN_CELL_PROBABILITIES)
-FNS_MASK = hpr.get_derived_input_fkt(FNS_OME, FN_OME, FN_MASK)
-FNS_MASK_CPOUT = hpr.get_derived_input_fkt(FNS_OME, FN_OME, FN_MASK_CPOUT)
-
-cp_meas_output = [fn_image, fn_cell, fn_experiment, fn_object_rel]
-
-def get_fns_crop_fkt(batchname):
+def get_fkt_fns_crop(batchname):
     def fkt(wildcards):
         fol_out = checkpoints.cp_combine_batch_output.get(batchname=batchname).output[0]
         fol_out = pathlib.Path(fol_out)
-        pat_name = FN_ILASTIK_CROP.name
+        pat_name = pat_fn_ilastik_crop.name
         pat = fol_out / pat_name
 
-        fkt_cropfol = hpr.get_derived_input_fkt(FNS_OME, FN_OME, pat, extra_wildcards={'batchname': batchname})
-        fkt_target = hpr.get_derived_input_fkt(FNS_OME, FN_OME, FN_ILASTIK_CROP, extra_wildcards={'batchname': batchname})
+        fkt_cropfol = hpr.get_derived_input_fkt(fkt_fns_ome, pat_fn_ome, pat, extra_wildcards={'batchname': batchname})
+        fkt_target = hpr.get_derived_input_fkt(fkt_fns_ome, pat_fn_ome, pat_fn_ilastik_crop, extra_wildcards={'batchname': batchname})
         fns_out = []
         for fn_crop, fn_target in zip(fkt_cropfol(wildcards), fkt_target(wildcards)):
             wcs = glob_wildcards(fn_crop)
             fns_out.append(expand(fn_target, crop=wcs.crop)[0])
-        print(fns_out)
         return fns_out
     return fkt
 
-FNS_ILASTIK_CROP = get_fns_crop_fkt('prepilastik')
+fkt_fns_ilastik_crop = get_fkt_fns_crop('prepilastik')
 
-
-CP_CONFIG_DICT = {
+# Configuration for cellprofiler pipeline steps
+# (Please look at rules/cellprofiler.smk for the documentation of this structure)
+config_dict_cp = {
     'prepilastik': {
-        'batchsize': 3,
+        'run_size': 3,
         'plugins': '/home/vitoz/Git/ImcPluginsCP/plugins',
         'pipeline': 'cp3_pipelines/1_prepare_ilastik.cppipe',
-        'input_files': [FNS_ILASTIK],
-        'output_patterns': [FN_ILASTIK_SCALED, FN_ILASTIK_CROP],
+        'input_files': [fkt_fns_ilastik],
+        'output_patterns': [pat_fn_ilastik_scaled, pat_fn_ilastik_crop],
     },
     'segmasks': {
-        'batchsize': 2,
+        'run_size': 2,
         'plugins': '/home/vitoz/Git/ImcPluginsCP/plugins',
         'pipeline': 'cp3_pipelines/2_segment_ilastik.cppipe',
-        'input_files': [FNS_CELL_PROBABILITIES],
-        'output_patterns': [FN_MASK],
+        'input_files': [fkt_fns_cell_probabilities],
+        'output_patterns': [pat_fn_mask],
     },
     'measuremasks': {
-        'batchsize': 2,
+        'run_size': 2,
         'plugins': '/home/vitoz/Git/ImcPluginsCP/plugins',
         'pipeline': 'cp3_pipelines/3_measure_mask_basic.cppipe',
-        'input_files': [FNS_MASK, FNS_FULL, FNS_CELL_PROBABILITIES],
-        'output_patterns': cp_meas_output + [FN_MASK_CPOUT],
+        'input_files': [fkt_fns_mask, fkt_fns_full, fkt_fns_cell_probabilities],
+        'output_patterns': cp_meas_output + [pat_fn_mask_cpout],
     }
 }
 
-ILASTIK_CONFIG_DICT = {
+# Configuration for Ilastik steps
+# (Please look at rules/cellprofiler.smk for the documentation of this structure)
+config_dict_ilastik = {
     'cell':
         {'project': fn_cell_classifier,
-         'batchsize': 5,
+         'run_size': 5,
          'output_format': 'tiff',
          'output_filename': f'{{nickname}}{suffix_probablities}{suffix_tiff}',
          'export_source': 'Probabilities',
          'export_dtype': 'uint16',
          'pipeline_result_drange': '"(0.0, 1.0)"',
-         'input_files': FNS_ILASTIK_SCALED,
-         'output_pattern': FN_CELL_PROBABILITIES
+         'input_files': fkt_fns_ilastik_scaled,
+         'output_pattern': pat_fn_cell_probabilities
          }
 }
 # Target rules
 rule all:
-    input: FNS_OME, FNS_FULL, FNS_ILASTIK, FNS_ILASTIK_SCALED, FNS_CELL_PROBABILITIES, FNS_MASK,\
-    cp_meas_output, FNS_MASK_CPOUT
+    input: fkt_fns_ome, fkt_fns_full, fkt_fns_ilastik, fkt_fns_ilastik_scaled, fkt_fns_cell_probabilities, fkt_fns_mask, \
+         cp_meas_output, fkt_fns_mask_cpout
 
 rule cell_probabilities:
-    input: FNS_CELL_PROBABILITIES
+    input: fkt_fns_cell_probabilities
 
 rule prep_cell_classifier:
-    input: FNS_ILASTIK_CROP
+    input: fkt_fns_ilastik_crop
 
 rule files_ilastik_scaled:
-    input: FNS_ILASTIK_SCALED
+    input: fkt_fns_ilastik_scaled
 
 rule files_ilastik:
-    input: FNS_ILASTIK
+    input: fkt_fns_ilastik
 
 rule files_ome:
-    input: FNS_OME
+    input: fkt_fns_ome
 
 rule files_crops:
-    input: FNS_ILASTIK_CROP
+    input: fkt_fns_ilastik_crop
 
 
 # MCD to ome conversion
 rule mcdfolder2imcfolder:
-    output: touch(FN_MCDPARSE_DONE)
+    output: touch(pat_fn_mcdparse_done)
     threads: 1
     run:
-        # TODO: add asserts to not overwrite
         mcdfolder2imcfolder.mcdfolder_to_imcfolder(
 	        str(dict_zip_fns[wildcards.zipfol]), output_folder=folder_ome,
             create_zip=False)
 
 checkpoint all_mcd_converted:
-    input: expand(str(FN_MCDPARSE_DONE), zipfol=dict_zip_fns.keys())
+    input: expand(str(pat_fn_mcdparse_done), zipfol=dict_zip_fns.keys())
     output:
         touch('data/all_mcd_converted.done')
 
@@ -201,12 +210,12 @@ checkpoint all_mcd_converted:
 # OME to analysis tiff conversion
 rule ome2full:
     input:
-        image=FN_OME,
-        panel=csv_panel
+        image = pat_fn_ome,
+         panel = csv_panel
     output:
-        FN_FULL
+        pat_fn_full
     params:
-        outname =basename_image + suffix_full
+        outname =pat_basename_image + suffix_full
     threads: 1
     run:
         ome2analysis.omefile_2_analysisfolder(input.image, output_folder=folder_analysis,
@@ -215,12 +224,12 @@ rule ome2full:
 
 rule ome2ilastik:
     input:
-        image=FN_OME,
-        panel=csv_panel
+        image = pat_fn_ome,
+         panel = csv_panel
     output:
-        FN_ILASTIK
+        pat_fn_ilastik
     params:
-          outname =basename_image + suffix_ilastik
+          outname =pat_basename_image + suffix_ilastik
     threads: 1
     run:
         ome2analysis.omefile_2_analysisfolder(input.image, output_folder=folder_analysis,
@@ -230,18 +239,18 @@ rule ome2ilastik:
 # rule
 rule prepare_cell_classifier:
     input:
-        FNS_ILASTIK_CROP
+        fkt_fns_ilastik_crop
 
 rule exportacmeta:
-    input: FNS_OME
-    output: FN_ACMETA
+    input: fkt_fns_ome
+    output: fn_acmeta
     run:
         exportacquisitioncsv.export_acquisition_csv(folder_ome, output_folder=folder_cp)
 
 
 ## Rules to target Cellprofiler batch runs
-define_cellprofiler_rules(CP_CONFIG_DICT, folder_base)
-define_ilastik_rules(ILASTIK_CONFIG_DICT, folder_base)
+define_cellprofiler_rules(config_dict_cp, folder_base)
+define_ilastik_rules(config_dict_ilastik, folder_base)
 
 ### Varia
 
