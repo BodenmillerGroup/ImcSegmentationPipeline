@@ -6,14 +6,15 @@ from imctools.converters import mcdfolder2imcfolder
 from imctools.converters import exportacquisitioncsv
 
 from scripts import helpers as hpr
+from snakemake.utils import validate
 
 # Cellprofiler/Ilastik rules
 include: 'rules/cellprofiler.smk'
 include: 'rules/ilastik.smk'
 
 # Read Configuration
-configfile: 'config_pipeline.yml'
-
+configfile: 'config/config_pipeline.yml'
+validate(config, "config/config_pipeline.schema.yml")
 
 # Extract variables from configuration
 ## Input/output
@@ -34,8 +35,8 @@ csv_panel_ilastik = config['csv_panel_ilastik']
 csv_panel_full = config['csv_panel_full']
 
 ## Ilastik run config
-ilastik_threads = config.get('ilastik_threads', 4)
-ilastik_mem_mb = config.get('ilastik_memory', 10000)
+ilastik_threads = config['ilastik_threads']
+ilastik_mem_mb = config['ilastik_mem_mb']
 
 # Define hardcoded variables
 ## Define basic folder structrue
