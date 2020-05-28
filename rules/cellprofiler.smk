@@ -37,7 +37,7 @@ def define_cellprofiler_rules(configs_cp, folder_base,
     """
 
     # Define file/folder patterns
-    pat_fol_batch = folder_base / 'cp/_{batchname}'
+    pat_fol_batch = folder_base / 'cp_{batchname}'
     pat_fol_plugins = pat_fol_batch / 'plugins'
     pat_fn_filelist = pat_fol_batch / 'filelist.txt'
     pat_fol_run = pat_fol_batch / 'run_{start}_{end}'
