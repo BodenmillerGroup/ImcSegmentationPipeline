@@ -54,8 +54,8 @@ def define_cellprofiler_rules(configs_cp, folder_base,
         """Function to retrieve pipeline filename"""
         return configs_cp[wildcards.batchname]['pipeline']
 
-    def fkt_fns_batch(wildcards):
-        """
+    def fkt_fols_run(wildcards):
+        """dCosmetic comment removal.
         Function to dynamically generate batch filenames based on the
         `cp_get_groups` checkpoint.
         :param wildcards:
@@ -67,11 +67,11 @@ def define_cellprofiler_rules(configs_cp, folder_base,
         with open(fn_grpfile) as json_file:
             data = json.load(json_file)
             total_size = len(data)
-        fns_batch = []
+        fols_run = []
         for start, end in hpr.get_chunks(total_size, run_size):
-            fns_batch.append(expand(str(pat_fol_run ), start=start, end=end,
+            fols_run.append(expand(str(pat_fol_run), start=start, end=end,
                                     **wildcards)[0])
-        return fns_batch
+        return fols_run
 
     # Define batch specific rules
     for batchname, cur_config in configs_cp.items():
@@ -143,7 +143,7 @@ def define_cellprofiler_rules(configs_cp, folder_base,
 
 
     checkpoint cp_combine_batch_output:
-        input: fkt_fns_batch  # function that retrieves all groups for a batch
+        input: fkt_fols_run  # function that retrieves all groups for a batch
         output: directory(pat_fol_batch_combined)
         params:
               script='combine'

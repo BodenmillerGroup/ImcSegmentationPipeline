@@ -48,18 +48,18 @@ def define_ilastik_rules(configs_ilastik, folder_base,
         """Function to retrieve project filename"""
         return configs_ilastik[wildcards.batchname]['project']
 
-    def fkt_fol_run(wildcards):
+    def fkt_fols_run(wildcards):
         """
         :param wildcards:
         :return:
         """
         fns = configs_ilastik[wildcards.batchname]['input_files'](wildcards)
         run_size = configs_ilastik[wildcards.batchname]['run_size']
-        fols_subbatch = []
+        fols_run = []
         for start, end in hpr.get_chunks(len(fns), run_size):
-            fols_subbatch.append(expand(str(pat_fol_run), start=start, end=end,
+            fols_run.append(expand(str(pat_fol_run), start=start, end=end,
                                         **wildcards)[0])
-        return fols_subbatch
+        return fols_run
 
     def fkt_fns_run(wildcards):
         fns = configs_ilastik[wildcards.batchname]['input_files'](wildcards)
@@ -110,7 +110,7 @@ def define_ilastik_rules(configs_ilastik, folder_base,
 
     checkpoint ilastik_combine_batch_output:
         input:
-            fkt_fol_run  # function that retrieves all groups for a batch
+            fkt_fols_run  # function that retrieves all groups for a batch
         output: directory(pat_fol_combined)
         params:
             script='combine'
