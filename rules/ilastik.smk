@@ -85,6 +85,7 @@ def define_ilastik_rules(configs_ilastik, folder_base,
         output:
               outfolder = directory(pat_fol_run)
         container: container_ilastik
+        message: 'Run Ilastik batch run. Note: this is affected by '
         threads: threads
         resources:
             mem_mb = mem_mb
@@ -94,17 +95,19 @@ def define_ilastik_rules(configs_ilastik, folder_base,
             output_filename=lambda wildcards: configs_ilastik[wildcards.batchname]['output_filename'],
             export_source=lambda wildcards: configs_ilastik[wildcards.batchname]['export_source'],
             export_dtype=lambda wildcards: configs_ilastik[wildcards.batchname]['export_dtype'],
-            pipeline_result_drange=lambda wildcards: configs_ilastik[wildcards.batchname]['pipeline_result_drange']
-
+            pipeline_result_drange=lambda wildcards: configs_ilastik[wildcards.batchname]['pipeline_result_drange'],
+            fkt_fns = fkt_fns_run
         shell:
             'LAZYFLOW_THREADS={threads} LAZYFLOW_TOTAL_RAM_MB={resources.mem_mb} {params.bin_ilastik} --headless --project={input.project} '
             '--output_format={params.output_format} '
             '--output_filename_format={output.outfolder}/{params.output_filename} '
             '--export_source={params.export_source} '
             '--export_dtype={params.export_dtype} '
-            '--pipeline_result_drange={params.pipeline_result_drange} '\
+            '--pipeline_result_drange={params.pipeline_result_drange} '
             '--readonly '
-            '{input.fns} {input.fns[0]}'
+            '{params.fkt_fns} {params.fkt_fns[0]}'
+            #'{input.fns} {input.fns[0]}' # Above is a temporary fix for issue #55 of snakemake
+            # The first file is added again as Ilastik seems to ignore the first input file :/
 
     checkpoint ilastik_combine_batch_output:
         input:
