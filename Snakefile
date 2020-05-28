@@ -257,7 +257,7 @@ rule exportacmeta:
 
 
 ## Rules to target Cellprofiler batch runs
-define_cellprofiler_rules(config_dict_cp, folder_base, container_cellprofiler=cellprofiler_container)
+define_cellprofiler_rules(config_dict_cp, folder_base, container_cp=cellprofiler_container)
 define_ilastik_rules(config_dict_ilastik, folder_base, threads=ilastik_threads,
                      mem_mb=ilastik_mem_mb, container_ilastik=ilastik_container)
 
