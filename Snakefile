@@ -35,10 +35,12 @@ csv_panel_ilastik = config['csv_panel_ilastik']
 csv_panel_full = config['csv_panel_full']
 
 ## Ilastik run config
+ilastik_container = config['ilastik_container']
 ilastik_threads = config['ilastik_threads']
 ilastik_mem_mb = config['ilastik_mem_mb']
 
 # Cellprofiler default config
+cellprofiler_container = config['cellprofiler_container']
 cp_plugins = config['cellprofiler_plugins']
 # Define hardcoded variables
 ## Define basic folder structrue
@@ -255,9 +257,9 @@ rule exportacmeta:
 
 
 ## Rules to target Cellprofiler batch runs
-define_cellprofiler_rules(config_dict_cp, folder_base)
+define_cellprofiler_rules(config_dict_cp, folder_base, container_cellprofiler=cellprofiler_container)
 define_ilastik_rules(config_dict_ilastik, folder_base, threads=ilastik_threads,
-                     mem_mb=ilastik_mem_mb)
+                     mem_mb=ilastik_mem_mb, container_ilastik=ilastik_container)
 
 ### Varia
 

@@ -1,4 +1,4 @@
-$schema: "https://json-schema.org/draft-06/schema#"
+$schema: "https://json-schema.org/draft-07/schema#"
 description: a configuration for the imc segmentation pipeline
 properties:
   input_data_folders:
@@ -45,11 +45,23 @@ properties:
     description: path where the (trained) cell classifier will be saved
     required: true
 
+  cellprofiler_container:
+    type: string
+    default: 'docker://cellprofiler/cellprofiler:3.1.9'
+    description: Default cellprofiler singularity container
+    required: fals
+
   cellprofiler_plugins:
     type: string
     default: cp_plugins/ImcPluginsCP/plugins
     description: path to the default cellprofiler plugins to be used
     required: false
+
+  ilastik_container:
+    type: string
+    default: 'docker://ilastik/ilastik-from-binary:1.3.3b1'
+    description: Default Ilastik singularity container
+    required: fals
 
   ilastik_threads:
     type: integer
