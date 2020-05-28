@@ -267,6 +267,7 @@ rule clean:
 
 rule download_example_data:
     run:
+        fol_example.mkdir(parents=True, exist_ok=True)
         for fn, url in config['example_data_urls']:
             fn = fol_example / fn
             if ~fn.exists():
