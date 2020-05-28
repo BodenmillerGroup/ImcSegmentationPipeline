@@ -22,6 +22,11 @@ To run the pipeline, the following software needs to be installed:
 Make sure this software packages work.
 
 ## Setup the environment
+Clone the github repository and the submodules.
+
+```
+git clone --recurse-submodules -b snakemake git@github.com:BodenmillerGroup/ImcSegmentationPipeline.git
+```
 
 Initialize the conda snakemake environment:
 

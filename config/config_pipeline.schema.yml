@@ -45,6 +45,12 @@ properties:
     description: path where the (trained) cell classifier will be saved
     required: true
 
+  cellprofiler_plugins:
+    type: string
+    default: cp_plugins/ImcPluginsCP/plugins
+    description: path to the default cellprofiler plugins to be used
+    required: false
+
   ilastik_threads:
     type: integer
     default: 4

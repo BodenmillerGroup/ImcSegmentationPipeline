@@ -38,6 +38,8 @@ csv_panel_full = config['csv_panel_full']
 ilastik_threads = config['ilastik_threads']
 ilastik_mem_mb = config['ilastik_mem_mb']
 
+# Cellprofiler default config
+cp_plugins = config['cellprofiler_plugins']
 # Define hardcoded variables
 ## Define basic folder structrue
 folder_analysis = folder_base / 'tiffs'
@@ -136,21 +138,21 @@ fkt_fns_ilastik_crop = get_fkt_fns_crop('prepilastik')
 config_dict_cp = {
     'prepilastik': {
         'run_size': 3,
-        'plugins': '/home/vitoz/Git/ImcPluginsCP/plugins',
+        'plugins': cp_plugins,
         'pipeline': 'cp3_pipelines/1_prepare_ilastik.cppipe',
         'input_files': [fkt_fns_ilastik],
         'output_patterns': [pat_fn_ilastik_scaled, pat_fn_ilastik_crop],
     },
     'segmasks': {
         'run_size': 2,
-        'plugins': '/home/vitoz/Git/ImcPluginsCP/plugins',
+        'plugins': cp_plugins,
         'pipeline': 'cp3_pipelines/2_segment_ilastik.cppipe',
         'input_files': [fkt_fns_cell_probabilities],
         'output_patterns': [pat_fn_mask],
     },
     'measuremasks': {
         'run_size': 2,
-        'plugins': '/home/vitoz/Git/ImcPluginsCP/plugins',
+        'plugins': cp_plugins,
         'pipeline': 'cp3_pipelines/3_measure_mask_basic.cppipe',
         'input_files': [fkt_fns_mask, fkt_fns_full, fkt_fns_cell_probabilities],
         'output_patterns': cp_meas_output + [pat_fn_mask_cpout],
@@ -175,7 +177,7 @@ config_dict_ilastik = {
 # Target rules
 rule all:
     input: fkt_fns_ome, fkt_fns_full, fkt_fns_ilastik, fkt_fns_ilastik_scaled, fkt_fns_cell_probabilities, fkt_fns_mask, \
-         cp_meas_output, fkt_fns_mask_cpout
+         cp_meas_output, fkt_fns_mask_cpout, fkt_fns_ilastik_crop
 
 rule cell_probabilities:
     input: fkt_fns_cell_probabilities
