@@ -113,8 +113,3 @@ def combine_directories(fols_input, fol_out):
         for dp, dn, filenames in os.walk(d_root):
             for f in filenames:
                 _copy_cp_file(path_source=os.path.join(dp, f), fol_source=d_root, fol_target=fol_out)
-
-if __name__ == '__main__':
-    """ This is a temporary hack to get the combine folders to work."""
-    if snakemake.params.script == 'combine':
-        combine_directories(snakemake.input, snakemake.output[0])

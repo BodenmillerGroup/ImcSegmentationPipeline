@@ -146,6 +146,6 @@ def define_cellprofiler_rules(configs_cp, folder_base,
         input: fkt_fols_run  # function that retrieves all groups for a batch
         output: directory(pat_fol_batch_combined)
         params:
-              script='combine'
-        script:
-              '../scripts/helpers.py'
+              fkt_input=fkt_fols_run
+        run:
+            hpr.combine_directories(params.fkt_input, output)
