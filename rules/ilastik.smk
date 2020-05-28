@@ -85,7 +85,6 @@ def define_ilastik_rules(configs_ilastik, folder_base,
         output:
               outfolder = directory(pat_fol_run)
         container: container_ilastik
-        message: 'Run Ilastik batch run. Note: this is affected by '
         threads: threads
         resources:
             mem_mb = mem_mb
