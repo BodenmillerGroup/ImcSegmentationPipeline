@@ -1,5 +1,6 @@
 import json
 from scripts import helpers as hpr
+import pathlib
 
 def define_cellprofiler_rules(configs_cp, folder_base,
                               container_cp="docker://cellprofiler/cellprofiler:3.1.9"):
@@ -83,9 +84,10 @@ def define_cellprofiler_rules(configs_cp, folder_base,
             output: expand(str(pat_fn_filelist), batchname=batchname)
             params: *cur_config['input_files']
             run:
-                fns = [f for inp in {params} for f in inp]
-                with open({output}, mode='w') as f:
-                    f.writelines(fns)
+                fns = [pathlib.Path(f).resolve() for inp in params for f in inp]
+                with open(output[0], mode='w') as f:
+                    for fn in fns:
+                        f.write("%s\n" % fn)
 
         for i, outfile in enumerate(cur_config['output_patterns']):
             rule:
