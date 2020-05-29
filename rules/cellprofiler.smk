@@ -55,7 +55,7 @@ def define_cellprofiler_rules(configs_cp, folder_base,
         return configs_cp[wildcards.batchname]['pipeline']
 
     def fkt_fols_run(wildcards):
-        """dCosmetic comment removal.
+        """
         Function to dynamically generate batch filenames based on the
         `cp_get_groups` checkpoint.
         :param wildcards:
@@ -81,8 +81,10 @@ def define_cellprofiler_rules(configs_cp, folder_base,
         rule:
             input:  *cur_config['input_files']
             output: expand(str(pat_fn_filelist), batchname=batchname)
+            params:
+                fkt_input = *cur_config['input_files']
             shell:
-                'for f in {input}\n'
+                'for f in {params.fkt_input}\n'
                 '        do\n'
                 '            echo $(realpath $f) >> {output}\n'
                 '        done\n'
