@@ -82,11 +82,10 @@ def define_cellprofiler_rules(configs_cp, folder_base,
             input:  *cur_config['input_files']
             output: expand(str(pat_fn_filelist), batchname=batchname)
             params: *cur_config['input_files']
-            shell:
-                'for f in {params}\n'
-                '        do\n'
-                '            echo $(realpath $f) >> {output}\n'
-                '        done\n'
+            run:
+                fns = [f for inp in {params} for f in inp]
+                with open({output}, mode='w') as f:
+                    f.writelines(fns)
 
         for i, outfile in enumerate(cur_config['output_patterns']):
             rule:
