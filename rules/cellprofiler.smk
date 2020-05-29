@@ -81,10 +81,9 @@ def define_cellprofiler_rules(configs_cp, folder_base,
         rule:
             input:  *cur_config['input_files']
             output: expand(str(pat_fn_filelist), batchname=batchname)
-            params:
-                fkt_input = *cur_config['input_files']
+            params: *cur_config['input_files']
             shell:
-                'for f in {params.fkt_input}\n'
+                'for f in {params}\n'
                 '        do\n'
                 '            echo $(realpath $f) >> {output}\n'
                 '        done\n'
