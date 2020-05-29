@@ -110,8 +110,8 @@ def define_cellprofiler_rules(configs_cp, folder_base,
     rule cp_create_batch_data:
         input:
             filelist=pat_fn_filelist,
-             pipeline=fkt_fn_pipeline,
-             plugins=pat_fol_plugins
+            pipeline=fkt_fn_pipeline,
+            plugins=pat_fol_plugins
         output:
             batchfile=pat_fn_batchfile
         params:
