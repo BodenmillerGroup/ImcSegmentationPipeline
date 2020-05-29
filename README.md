@@ -70,3 +70,49 @@ snakemake --use-singularity --cores 32
 
 The Cellprofiler output will be in `data/cpout`
 
+
+# How to run this workflow on a slurm cluster (UZH science cluster)
+
+First retrieve the github repository & install the conda environment as above.
+
+## Make a default configuration
+
+Generate this file in the path `~/.config/snakemake/cluster_config.yml`
+```
+__default__:
+  time: "00:15:00"
+```
+This defines the default batch run parameters.
+
+## Install the slurm cluster profile
+
+Follow the instructions from:  
+`https://github.com/Snakemake-Profiles/slurm`
+
+Use the following settings:  
+`profile_name`: slurm  
+`sbatch_defaults`:  
+`cluster_config`: ../cluser_config.yml  
+`advanced_argument_conversion`: 1 (Actually I have never tried this, might be worth a try) 
+
+To run the pipeline, the following modules are required and need to be loaded in this order:
+```
+module load generic
+module load anaconda3 
+module load singularity
+conda activate snakemake_imc
+```
+
+
+To run the snakemake command on the cluster, the following flags are needed:
+- `--profile slurm` flag to specify the profile
+- `--use-singularity` to use singularity
+- `--singularity-args "\-u"` to use non-privileged singularity mode
+- `--jobs #` to have at most # number of concurrent jobs submitted (eg `--jobs 50`)
+
+After the example data has been downloaded (see above) the following command would run the full pipeline:
+
+```
+snakemake --profile slurm --use-singularity --singularity-args "\-u" --jobs 50
+```
+
