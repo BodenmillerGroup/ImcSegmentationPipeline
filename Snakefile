@@ -1,11 +1,9 @@
 import urllib.request
 import pathlib
 from imctools.converters import ome2analysis
-from imctools.converters import ome2histocat
-from imctools.converters import mcdfolder2imcfolder
 from imctools.converters import exportacquisitioncsv
 
-from scripts import helpers as hpr
+from workflow.scripts import helpers as hpr
 from snakemake.utils import validate
 
 # Cellprofiler/Ilastik rules
