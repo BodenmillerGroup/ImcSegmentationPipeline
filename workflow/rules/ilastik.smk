@@ -5,7 +5,7 @@ def define_ilastik_rules(configs_ilastik, folder_base,
                          threads=8,
                          mem_mb=10000,
                          bin_ilastik = '/ilastik-release/run_ilastik.sh',
-                         container_ilastik ='docker://ilastik/ilastik-from-binary:1.3.3b1'
+                         container_ilastik ='docker://ilastik/ilastik-from-binary:1.3.3post3'
                          ):
     """
     Defines rules for ilastik batch runs.
