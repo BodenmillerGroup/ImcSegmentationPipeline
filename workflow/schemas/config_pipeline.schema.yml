@@ -11,12 +11,6 @@ properties:
     description: regexp pattern that files/folders need to much to be considered to contain input `.mcd` files
     required: true
 
-  output_folder:
-    type: string
-    default: data
-    description: path to output data
-    required: false
-
   csv_panel:
     type: string
     description: path to the panel csv
@@ -53,7 +47,7 @@ properties:
 
   cellprofiler_plugins:
     type: string
-    default: cp_plugins/ImcPluginsCP/plugins
+    default: resources/cp_plugins/ImcPluginsCP/plugins
     description: path to the default cellprofiler plugins to be used
     required: false
 

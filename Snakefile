@@ -2,25 +2,23 @@ import urllib.request
 import pathlib
 from imctools.converters import ome2analysis
 from imctools.converters import exportacquisitioncsv
+from imctools.converters import mcdfolder2imcfolder
 
 from workflow.scripts import helpers as hpr
 from snakemake.utils import validate
 
 # Cellprofiler/Ilastik rules
-include: 'rules/cellprofiler.smk'
-include: 'rules/ilastik.smk'
+include: 'workflow/rules/cellprofiler.smk'
+include: 'workflow/rules/ilastik.smk'
 
 # Read Configuration
 configfile: 'config/config_pipeline.yml'
-validate(config, "config/config_pipeline.schema.yml")
+validate(config, "workflow/schemas/config_pipeline.schema.yml")
 
 # Extract variables from configuration
 ## Input/output
 input_data_folders = config['input_data_folders']
 input_file_regexp = config['input_file_regexp']
-
-folder_base = pathlib.Path(config['output_folder'])
-
 fn_cell_classifier = config['fn_cell_classifier']
 
 # Optional example data folder
@@ -42,6 +40,7 @@ cellprofiler_container = config['cellprofiler_container']
 cp_plugins = config['cellprofiler_plugins']
 # Define hardcoded variables
 ## Define basic folder structrue
+folder_base = pathlib.Path('results')
 folder_analysis = folder_base / 'tiffs'
 folder_ilastik = folder_base / 'ilastik'
 folder_ome = folder_base / 'ometiff'
@@ -139,21 +138,21 @@ config_dict_cp = {
     'prepilastik': {
         'run_size': 3,
         'plugins': cp_plugins,
-        'pipeline': 'cp3_pipelines/1_prepare_ilastik.cppipe',
+        'pipeline': 'resources/cp3_pipelines/1_prepare_ilastik.cppipe',
         'input_files': [fkt_fns_ilastik],
         'output_patterns': [pat_fn_ilastik_scaled, pat_fn_ilastik_crop],
     },
     'segmasks': {
         'run_size': 2,
         'plugins': cp_plugins,
-        'pipeline': 'cp3_pipelines/2_segment_ilastik.cppipe',
+        'pipeline': 'resources/cp3_pipelines/2_segment_ilastik.cppipe',
         'input_files': [fkt_fns_cell_probabilities],
         'output_patterns': [pat_fn_mask],
     },
     'measuremasks': {
         'run_size': 2,
         'plugins': cp_plugins,
-        'pipeline': 'cp3_pipelines/3_measure_mask_basic.cppipe',
+        'pipeline': 'resources/cp3_pipelines/3_measure_mask_basic.cppipe',
         'input_files': [fkt_fns_mask, fkt_fns_full, fkt_fns_cell_probabilities],
         'output_patterns': cp_meas_output + [pat_fn_mask_cpout],
     }

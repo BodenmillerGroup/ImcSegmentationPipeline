@@ -1,13 +1,13 @@
 # Please look at the .schema.yml for documentation of the values
 input_data_folders:
-  - example_data
+  - "resources/example_data"
 input_file_regexp: ".*.zip"
 output_folder: data
 csv_panel: 'config/example_pannel.csv'
 csv_panel_metal: 'Metal Tag'
 csv_panel_ilastik: 'ilastik'
 csv_panel_full: 'full'
-fn_cell_classifier: 'classifiers/cell_classifier.ilp'
+fn_cell_classifier: 'resources/classifiers/cell_classifier.ilp'
 
 # optional:
 ilastik_mem_mb: 10000
