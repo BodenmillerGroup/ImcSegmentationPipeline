@@ -62,9 +62,9 @@ snakemake download_example_data --use-singularity --cores 32
 snakemake prepare_cell_classifier --use-singularity --cores 32
 ```
 
-This will generate random crops to train the Ilastik cell pixel classifier in `data/ilastik_training_data`
+This will generate random crops to train the Ilastik cell pixel classifier in `results/ilastik_training_data`
 
-Use these cropped images to train an ilastik classifier for pixel classes: `nuclei`, `cytoplasma/membrane/nucleiborder`, `background`
+Use these cropped images to train an ilastik classifier for pixel classes: `nuclei`, `cytoplasm/membrane/nucleiborder`, `background`
 and save the trained classifier under the `fn_cell_classifier` in the configuration file.
 
 ### Run the full pipeline
@@ -73,7 +73,7 @@ and save the trained classifier under the `fn_cell_classifier` in the configurat
 snakemake --use-singularity --cores 32
 ```
 
-The Cellprofiler output will be in `data/cpout`
+The Cellprofiler output will be in `results/cpout`
 
 
 # How to run this workflow on a slurm cluster (UZH science cluster)
@@ -97,7 +97,7 @@ Follow the instructions from:
 Use the following settings:  
 `profile_name`: slurm  
 `sbatch_defaults`:  
-`cluster_config`: ../cluser_config.yml  
+`cluster_config`: ../cluster_config.yml  
 `advanced_argument_conversion`: 1 (Actually I have never tried this, might be worth a try) 
 
 To run the pipeline, the following modules are required and need to be loaded in this order:
