@@ -27,11 +27,16 @@ Clone the github repository and the submodules.
 ```
 git clone --recurse-submodules -b snakemake git@github.com:BodenmillerGroup/ImcSegmentationPipeline.git
 ```
+Change directory into the Git folder
+
+```
+cd ImcSegmentationPipeline
+```
 
 Initialize the conda snakemake environment:
 
 ```
-conda env create -f envs/env_snakemake_imc.yml
+conda env create -f envs/env_imcsegpipe.yml
 ```
 
 Activate the environment
