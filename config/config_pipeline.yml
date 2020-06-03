@@ -1,7 +1,7 @@
 # Please look at the .schema.yml for documentation of the values
 input_data_folders:
   - "resources/example_data"
-input_file_regexp: ".*\.zip"
+input_file_regexp: ".*\\.zip"
 output_folder: data
 csv_panel: 'resources/example_panel.csv'
 csv_panel_metal: 'Metal Tag'
