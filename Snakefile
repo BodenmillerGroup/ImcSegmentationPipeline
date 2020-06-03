@@ -61,7 +61,7 @@ fn_acmeta = folder_cp / 'acquisition_metadata.csv'
 # Identify a dictionary of input folders/zips containing .mcd files to process
 dict_zip_fns = hpr.get_filenames_by_re(input_data_folders, input_file_regexp)
 # Produce a list of all cellprofiler output files
-cp_meas_output = [fn_image, fn_cell, fn_experiment, fn_object_rel]
+cp_measurements_output = [fn_image, fn_cell, fn_experiment, fn_object_rel]
 
 
 ## Define suffixes
@@ -100,7 +100,7 @@ def fkt_fns_ome(wildcards):
     :return: A list of all `.ome.tiffs` generated.
     """
     checkpoints.all_mcd_converted.get()
-    fns = [str(p) for p in  hpr.get_filenames_by_re([folder_ome], '.*.ome.tiff').values()]
+    fns = [str(p) for p in  hpr.get_filenames_by_re([folder_ome], '.*\.ome\.tiff').values()]
     return fns
 
 
@@ -156,7 +156,7 @@ config_dict_cp = {
         'plugins': cp_plugins,
         'pipeline': 'resources/cp3_pipelines/3_measure_mask_basic.cppipe',
         'input_files': [fkt_fns_mask, fkt_fns_full, fkt_fns_cell_probabilities],
-        'output_patterns': cp_meas_output + [pat_fn_mask_cpout],
+        'output_patterns': cp_measurements_output + [pat_fn_mask_cpout],
     }
 }
 
@@ -178,7 +178,7 @@ config_dict_ilastik = {
 # Target rules
 rule all:
     input: fkt_fns_ome, fkt_fns_full, fkt_fns_ilastik, fkt_fns_ilastik_scaled, fkt_fns_cell_probabilities, fkt_fns_mask, \
-         cp_meas_output, fkt_fns_mask_cpout, fkt_fns_ilastik_crop
+         cp_measurements_output, fkt_fns_mask_cpout, fkt_fns_ilastik_crop
 
 rule cell_probabilities:
     input: fkt_fns_cell_probabilities

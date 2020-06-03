@@ -1,8 +1,8 @@
 # A flexible  image segmentation pipeline for heterogneous multiplexed tissue images based on pixel classification
 *This is the experimental `snakemake` branch*
 
-The pipline is based on `CellProfiler` (http://cellprofiler.org/, v1.3.5) for segmentation and `Ilastik` (http://ilastik.org/) for
-for pixel classification. It is streamlined by using the specially developped `imctools` python package (https://github.com/BodenmillerGroup/imctools) 
+The pipline is based on `CellProfiler` (http://cellprofiler.org/) for segmentation and `Ilastik` (http://ilastik.org/) for
+for pixel classification. It is streamlined by using the specially developed `imctools` python package (https://github.com/BodenmillerGroup/imctools) 
 package as well as custom CellProfiler modules (https://github.com/BodenmillerGroup/ImcPluginsCP, develop-cp3 branch!).
 
 This pipline was developped in the Bodenmiller laboratory of the University of Zurich (http://www.bodenmillerlab.org/) to segment hundereds of highly multiplexed
