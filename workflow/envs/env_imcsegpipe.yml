@@ -5,10 +5,8 @@ channels:
   - defaults
 dependencies:
   - numpy
-  - python
+  - python=3.8
   - pandas
-  - xarray
-  - ipykernel
   - snakemake
   - pip
   - pip:
