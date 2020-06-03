@@ -69,7 +69,7 @@ folder_base = '/home/vitoz/Data/Analysis/2020_cp_segmentation_example'
 
 
 # pannel
-csv_pannel = '../cp_config/example_pannel.csv'
+csv_pannel = '../cp_config/example_panel.csv'
 csv_pannel_metal = 'Metal Tag'
 csv_pannel_ilastik = 'ilastik'
 csv_pannel_full = 'full'

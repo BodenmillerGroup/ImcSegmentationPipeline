@@ -42,11 +42,11 @@ conda env create -f envs/env_imcsegpipe.yml
 Activate the environment
 
 ```
-conda activate snakemake_imc
+conda activate imcsegpipe
 ```
 
 ## Edit the configuration
-To customize your analysis run, edit the configuration file: `config_pipeline.yml`
+To customize your analysis run, edit the configuration file: `config/config_pipeline.yml`
 
 ## Run the pipeline
 
