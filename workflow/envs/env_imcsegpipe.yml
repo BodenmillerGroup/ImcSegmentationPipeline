@@ -1,6 +1,7 @@
 name: imcsegpipe
 channels:
   - conda-forge
+  - bioconda
   - defaults
 dependencies:
   - numpy
