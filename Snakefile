@@ -71,6 +71,7 @@ suffix_scale = '_s2'
 suffix_mask = '_mask'
 suffix_probablities = '_Probabilities'
 suffix_tiff = '.tiff'
+suffix_csv = '.csv'
 suffix_h5 = '.h5'
 suffix_done = '.done'
 suffix_crop = '_{crop, x[0-9]+_y[0-9]+_w[0-9]+_h[0-9]+}'
@@ -80,6 +81,7 @@ pat_basename_image = '{img_session}_{img_acquisition, s[0-9]+_a[0-9]+_ac}'
 pat_fol_ome = folder_ome / '{img_session}'
 pat_fn_ome = pat_fol_ome / (pat_basename_image + '.ome.tiff')
 pat_fn_full = folder_analysis / (f'{pat_basename_image}{suffix_full}{suffix_tiff}')
+pat_fn_full_csv = folder_analysis / (f'{pat_basename_image}{suffix_full}{suffix_csv}')
 pat_fn_ilastik = folder_analysis / (f'{pat_basename_image}{suffix_ilastik}{suffix_tiff}')
 pat_fn_ilastik_scaled = folder_analysis / (f'{pat_basename_image}{suffix_ilastik}{suffix_scale}{suffix_h5}')
 pat_fn_ilastik_crop = folder_crop / '{batchname}' / (f'{pat_basename_image}{suffix_ilastik}{suffix_scale}{suffix_crop}{suffix_h5}')
@@ -218,7 +220,7 @@ rule ome2full:
         image = pat_fn_ome,
          panel = csv_panel
     output:
-        pat_fn_full
+        pat_fn_full, pat_fn_full_csv
     params:
         outname =pat_basename_image + suffix_full
     threads: 1
