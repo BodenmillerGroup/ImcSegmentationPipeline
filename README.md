@@ -36,7 +36,7 @@ cd ImcSegmentationPipeline
 Initialize the conda snakemake environment:
 
 ```
-conda env create -f envs/env_imcsegpipe.yml
+conda env create -f workflow/envs/env_imcsegpipe.yml
 ```
 
 Activate the environment
