@@ -3,7 +3,7 @@ input_data_folders:
   - "resources/example_data"
 input_file_regexp: ".*.zip"
 output_folder: data
-csv_panel: 'config/example_panel.csv'
+csv_panel: 'resources/example_panel.csv'
 csv_panel_metal: 'Metal Tag'
 csv_panel_ilastik: 'ilastik'
 csv_panel_full: 'full'
