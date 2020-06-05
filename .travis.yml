@@ -20,7 +20,7 @@ install:
   - conda config --add channels conda-forge
   - conda config --add channels bioconda
   - conda install -q -c conda-forge mamba
-  - conda create -q -n snakemake bioconda::snakemake
+  - conda create -q -n snakemake bioconda::snakemake=5.19
 
 script:
   - source activate snakemake
