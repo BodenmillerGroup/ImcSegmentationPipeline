@@ -20,10 +20,10 @@ install:
   - conda config --add channels conda-forge
   - conda config --add channels bioconda
   - conda install -q -c conda-forge mamba
-  - mamba env create -q -f workflow/envs/env_imcsegpipe.yml
+  - mamba create -q -n snakemake snakemake
 
 script:
-  - source activate imcsegpipe
+  - source activate snakemake
   # run the workflow
   - snakemake download_example_data --use-singularity --cores 2
   - snakemake --use-conda --use-singularity --cores 2 --config ilastik_mem_mb=4000
