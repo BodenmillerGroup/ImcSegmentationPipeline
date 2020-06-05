@@ -11,6 +11,11 @@ properties:
     description: regexp pattern that files/folders need to much to be considered to contain input `.mcd` files
     required: true
 
+  min_image_size:
+    type: integer
+    description: minimum image size in x and y in pixels. This prevents errors with pixel classifiers.
+    required: true
+
   csv_panel:
     type: string
     description: path to the panel csv

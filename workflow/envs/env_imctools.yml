@@ -1,4 +1,4 @@
-name: imcsegpipe
+name: imctools
 channels:
   - conda-forge
   - bioconda
@@ -7,7 +7,6 @@ dependencies:
   - numpy
   - python=3.8
   - pandas
-  - snakemake
   - pip
   - pip:
       - git+https://github.com/BodenmillerGroup/imctools.git@next

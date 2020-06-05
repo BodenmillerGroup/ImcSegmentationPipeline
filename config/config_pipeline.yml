@@ -9,6 +9,8 @@ csv_panel_ilastik: 'ilastik'
 csv_panel_full: 'full'
 fn_cell_classifier: 'resources/classifiers/cell_classifier.ilp'
 
+min_image_size: 50
+
 # optional:
 ilastik_mem_mb: 10000
 ilastik_threads: 8
