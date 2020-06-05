@@ -1,4 +1,4 @@
-from workflow.scripts import helpers as hpr
+from scripts import helpers as hpr
 
 
 def define_ilastik_rules(configs_ilastik, folder_base,

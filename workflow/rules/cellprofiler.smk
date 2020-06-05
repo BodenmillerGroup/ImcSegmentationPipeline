@@ -1,5 +1,5 @@
 import json
-from workflow.scripts import helpers as hpr
+from scripts import helpers as hpr
 import pathlib
 
 def define_cellprofiler_rules(configs_cp, folder_base,
