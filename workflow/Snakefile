@@ -4,16 +4,16 @@ from imctools.converters import ome2analysis
 from imctools.converters import exportacquisitioncsv
 from imctools.converters import mcdfolder2imcfolder
 
-from workflow.scripts import helpers as hpr
+from scripts import helpers as hpr
 from snakemake.utils import validate
 
 # Cellprofiler/Ilastik rules
-include: 'workflow/rules/cellprofiler.smk'
-include: 'workflow/rules/ilastik.smk'
+include: 'rules/cellprofiler.smk'
+include: 'rules/ilastik.smk'
 
 # Read Configuration
 configfile: 'config/config_pipeline.yml'
-validate(config, "workflow/schemas/config_pipeline.schema.yml")
+validate(config, "schemas/config_pipeline.schema.yml")
 
 # Extract variables from configuration
 ## Input/output
