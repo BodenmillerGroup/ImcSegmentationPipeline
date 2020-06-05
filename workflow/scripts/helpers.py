@@ -15,12 +15,12 @@ def get_filenames_by_re(folders, fn_regexp):
     Returns:
         Dict with key=Filename and values=Folders
     """
-    fns = {}
+    fns = []
     re_fn = re.compile(fn_regexp)
     for fol in folders:
         for file in pathlib.Path(fol).rglob('*'):
-            if re_fn.match(file.name):
-                fns[file.stem] = file
+            if re_fn.match(str(file)):
+                fns.append(file)
     return fns
 
 
@@ -94,7 +94,7 @@ def _copy_cp_file(path_source, fol_source, fol_target):
         if not os.path.exists(subfol):
             # create the subfolder if it does not yet exist
             os.makedirs(os.path.dirname(path_target))
-        shutil.copy(path_source, path_target)
+        shutil.move(path_source, path_target)
         return True
 
 

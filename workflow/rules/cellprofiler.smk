@@ -1,6 +1,7 @@
 import json
 from scripts import helpers as hpr
 import pathlib
+from snakemake.io import get_flag_value
 
 def define_cellprofiler_rules(configs_cp, folder_base,
                               container_cp="docker://cellprofiler/cellprofiler:3.1.9"):
@@ -17,8 +18,10 @@ def define_cellprofiler_rules(configs_cp, folder_base,
                             input_files_b, # input file definitions
                             input_filec_c
                             ),
-             'output_files': [pattern_a, # list of output file
-                              pattern_b], # patterns
+             'output_files': {'.': # Dictionary with folder location relative to
+                                    # output folder
+                                [pattern_a, # list of output file
+                              pattern_b]}, # patterns
     }
 
 
@@ -84,20 +87,48 @@ def define_cellprofiler_rules(configs_cp, folder_base,
             output: expand(str(pat_fn_filelist), batchname=batchname)
             params: *cur_config['input_files']
             run:
-                fns = [pathlib.Path(f).resolve() for inp in params for f in inp]
                 with open(output[0], mode='w') as f:
-                    for fn in fns:
-                        f.write("%s\n" % fn)
+                    fns_list = [inp for inp in params]
+                    for pfn in fns_list:
+                        if isinstance(pfn,pathlib.Path):
+                            if pfn.is_dir():
+                                fns = pfn.rglob('*')
+                            else:
+                                fns = [pfn]
+                        else:
+                            fns = pfn
+                        for fn in fns:
+                            fn = pathlib.Path(fn)
+                            f.write("%s\n" % fn.resolve())
 
-        for i, outfile in enumerate(cur_config['output_patterns']):
-            rule:
-                input:
-                     fol_combined=expand(str(pat_fol_batch_combined), batchname=batchname)
-                output: outfile
-                message: 'Define CP pipeline output files'
-                threads: 1
-                shell:
-                    'cp {input}/"$(basename "{output}")" "{output}"'
+        for subfol, outval in cur_config['output_patterns'].items():
+            if get_flag_value(outval, 'directory') == True:
+                rule:
+                    input:
+                         fol_combined=expand(str(pat_fol_batch_combined), batchname=batchname)
+                    output: outval
+                    message: 'Define CP pipeline output files'
+                    threads: 1
+                    params:
+                        subfol = subfol
+                    shell:
+                         """
+                         mv  $(realpath {input.fol_combined}/{params.subfol}) {output[0]}
+                         """
+            else:
+                for outfile in outval:
+                    rule:
+                        input:
+                             fol_combined=expand(str(pat_fol_batch_combined), batchname=batchname)
+                        output: outfile
+                        message: 'Move CP pipeline output files'
+                        threads: 1
+                        params:
+                            subfol = subfol
+                        shell:
+                            """
+                            mv $(realpath {input.fol_combined}/{params.subfol}/"$(basename "{output[0]}")") "{output[0]}"
+                            """
 
     # Define Cellprofiler specific rules
     rule cp_get_plugins:

@@ -1,11 +1,13 @@
 from scripts import helpers as hpr
-
+from snakemake.io import get_flag_value
+import pathlib
+import functools
 
 def define_ilastik_rules(configs_ilastik, folder_base,
                          threads=8,
                          mem_mb=10000,
                          bin_ilastik = '/ilastik-release/run_ilastik.sh',
-                         container_ilastik ='docker://ilastik/ilastik-from-binary:1.3.3post3'
+                         container_ilastik ='docker://ilastik/ilastik-from-binary:1.3.3b1'
                          ):
     """
     Defines rules for ilastik batch runs.
@@ -42,18 +44,42 @@ def define_ilastik_rules(configs_ilastik, folder_base,
     pat_fol_batch = folder_base / 'ilastik_{batchname}'
     pat_fol_run = pat_fol_batch / 'run_{start}_{end}'
     pat_fol_combined = pat_fol_batch / 'combined'
+    pat_fn_hasinput = pat_fol_batch / 'hasinput.done'
 
     # Define file functions
     def fkt_fn_project(wildcards):
         """Function to retrieve project filename"""
         return configs_ilastik[wildcards.batchname]['project']
 
+    @functools.lru_cache()
+    def list_fns(folder):
+        fns = [str(fn) for fn in pathlib.Path(folder).rglob('*') if not fn.stem.startswith('.')]
+        return fns
+
+    def get_fns(wildcards):
+        checkpoints.ilastik_input_exists.get(**wildcards).output
+        var_input = configs_ilastik[wildcards.batchname]['input_files']
+        if callable(var_input):
+            fns = configs_ilastik[wildcards.batchname]['input_files'](wildcards)
+        else:
+            fns = list_fns(var_input)
+        return fns
+
+
+    def fkt_ilastik_input(wildcards):
+        var_input = configs_ilastik[wildcards.batchname]['input_files']
+        if callable(var_input):
+            fns = configs_ilastik[wildcards.batchname]['input_files'](wildcards)
+        else:
+            fns = str(pathlib.Path(var_input))
+        return fns
+
     def fkt_fols_run(wildcards):
         """
         :param wildcards:
         :return:
         """
-        fns = configs_ilastik[wildcards.batchname]['input_files'](wildcards)
+        fns = get_fns(wildcards)
         run_size = configs_ilastik[wildcards.batchname]['run_size']
         fols_run = []
         for start, end in hpr.get_chunks(len(fns), run_size):
@@ -62,20 +88,35 @@ def define_ilastik_rules(configs_ilastik, folder_base,
         return fols_run
 
     def fkt_fns_run(wildcards):
-        fns = configs_ilastik[wildcards.batchname]['input_files'](wildcards)
+        fns = get_fns(wildcards)
         start = int(wildcards.start)-1
         end = int(wildcards.end)
         return fns[start:end]
 
     # Define batch specific rules
     for batchname in configs_ilastik.keys():
-        rule:
-            input:
-                 expand(str(pat_fol_combined), batchname=batchname)
-            output:
-                  configs_ilastik[batchname]['output_pattern']
-            shell:
-                 'cp {input}/"$(basename "{output}")" "{output}"'
+        outval = configs_ilastik[batchname]['output_pattern']
+        if get_flag_value(outval, 'directory') == True:
+            rule:
+                input:
+                     expand(str(pat_fol_combined), batchname=batchname)
+                output: outval
+                message: 'Move folder'
+                params:
+                shell:
+                    """
+                    mv {input[0]} {output[0]}
+                    """
+        else:
+            rule:
+                input:
+                     expand(str(pat_fol_combined), batchname=batchname)
+                output: outval
+                message: 'Move file'
+                shell:
+                    """
+                    mv {input[0]}/"$(basename "{output[0}")" "{output[0]}"'
+                    """
 
     # Define rules
     rule ilastik_run_batch:
@@ -105,6 +146,8 @@ def define_ilastik_rules(configs_ilastik, folder_base,
             '--pipeline_result_drange={params.pipeline_result_drange} '
             '--readonly 1 '
             '{params.fkt_fns}'
+            #'{input.fns} {input.fns[0]}' # Above is a temporary fix for issue #55 of snakemake
+            # The first file is added again as Ilastik seems to ignore the first input file :/
 
     checkpoint ilastik_combine_batch_output:
         input:
@@ -114,3 +157,7 @@ def define_ilastik_rules(configs_ilastik, folder_base,
             fkt_input=fkt_fols_run
         run:
             hpr.combine_directories(params.fkt_input, output[0])
+
+    checkpoint ilastik_input_exists:
+        input: fkt_ilastik_input
+        output: touch(pat_fn_hasinput)
