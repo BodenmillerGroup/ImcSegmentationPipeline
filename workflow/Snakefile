@@ -100,7 +100,7 @@ def fkt_fns_ome(wildcards):
     :return: A list of all `.ome.tiffs` generated.
     """
     checkpoints.all_mcd_converted.get()
-    fns = [str(p) for p in  hpr.get_filenames_by_re([folder_ome], '.*\.ome\.tiff').values()]
+    fns = [str(p) for p in hpr.get_filenames_by_re([folder_ome], '.*\.ome\.tiff')]
     return fns
 
 
