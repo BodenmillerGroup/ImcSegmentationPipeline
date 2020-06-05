@@ -149,7 +149,7 @@ config_dict_cp = {
         'plugins': cp_plugins,
         'pipeline': 'resources/cp3_pipelines/2_segment_ilastik.cppipe',
         'input_files': [fkt_fns_cell_probabilities],
-        'output_patterns': {'.': pat_fn_mask}
+        'output_patterns': {'.': [pat_fn_mask]}
     },
     'measuremasks': {
         'run_size': 2,
