@@ -33,7 +33,7 @@ if __name__ == '__main__':
         try:
             ome2analysis.omefile_2_analysisfolder(str(path),
                                                   output_folder=fol_out,
-                                                  basename=basename,
+                                                  basename=basename+suffix,
                                                   panel_csv_file=panel,
                                                   metalcolumn=column_metal,
                                                   usedcolumn=column_used,
