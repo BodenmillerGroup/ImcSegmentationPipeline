@@ -25,5 +25,5 @@ install:
 script:
   - source activate snakemake
   # run the workflow
-  - snakemake download_example_data --use-singularity --cores 2 --use-conda
-  - snakemake --use-conda --use-singularity --cores 2 --config ilastik_mem_mb=4000 --use-conda
+  - snakemake download_example_data --use-singularity --cores 2 --use-conda --conda-frontend mamba
+  - snakemake --use-conda --use-singularity --cores 2 --config ilastik_mem_mb=4000 --use-conda --conda-frontend mamba

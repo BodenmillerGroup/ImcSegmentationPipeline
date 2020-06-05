@@ -12,7 +12,7 @@ configfile: 'config/config_pipeline.yml'
 validate(config, "schemas/config_pipeline.schema.yml")
 
 # Default container
-container: "docker://continuumio/miniconda3:4.4.10"
+container: "shub://votti/singularity-builds:miniconda3mamba"
 
 # Extract variables from configuration
 ## Input/output
