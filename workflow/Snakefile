@@ -11,9 +11,6 @@ include: 'rules/ilastik.smk'
 configfile: 'config/config_pipeline.yml'
 validate(config, "schemas/config_pipeline.schema.yml")
 
-# Default container
-container: "docker://votti/miniconda3mamba:mamba0.3.0"
-
 # Extract variables from configuration
 ## Input/output
 input_data_folders = config['input_data_folders']
@@ -107,7 +104,7 @@ config_dict_cp = {
         'plugins': cp_plugins,
         'pipeline': 'resources/cp3_pipelines/2_segment_ilastik.cppipe',
         'input_files': [folder_probabilities],
-        'output_patterns': {'.': [folder_cellmasks]}
+        'output_patterns': {'.': directory(folder_cellmasks)}
     },
     'measuremasks': {
         'run_size': 5,
@@ -173,8 +170,8 @@ rule mcdfolder2imcfolder:
     threads: 1
     params:
           fol_ome = folder_ome
-    conda:
-         'envs/env_imctools.yml'
+    container:
+          'docker://votti/imctools2:next'
     script:
           'scripts/convert_imcfolder.py'
 
@@ -198,8 +195,8 @@ rule ome2full:
     output:
           directory(folder_full)
     threads: 32
-    conda:
-         'envs/env_imctools.yml'
+    container:
+          'docker://votti/imctools2:next'
     script:
           'scripts/imc2analysis.py'
 
@@ -210,8 +207,8 @@ rule ome2ilastik:
          done = fn_all_mcd_converted
     output:
           directory(folder_ilastik)
-    conda:
-        'envs/env_imctools.yml'
+    container:
+          'docker://votti/imctools2:next'
     params:
           column_used = 'ilastik',
           column_metal = csv_panel_metal,
@@ -229,8 +226,8 @@ rule exportacmeta:
     output: fn_acmeta
     params:
         folder_out = str(fn_acmeta.parent)
-    conda:
-        'envs/env_imctools.yml'
+    container:
+        'docker://votti/imctools2:next'
     shell:
         ' imctools export-acquisition-csv {input.folder_ome} {params.folder_out}'
 
