@@ -2,6 +2,7 @@ import json
 from scripts import helpers as hpr
 import pathlib
 from snakemake.io import get_flag_value
+import shutil
 
 def define_cellprofiler_rules(configs_cp, folder_base,
                               container_cp="docker://cellprofiler/cellprofiler:3.1.9"):
@@ -110,11 +111,9 @@ def define_cellprofiler_rules(configs_cp, folder_base,
                     message: 'Define CP pipeline output files'
                     threads: 1
                     params:
-                        subfol = subfol
-                    shell:
-                         """
-                         mv  $(realpath {input.fol_combined}/{params.subfol}) {output[0]}
-                         """
+                          subfol = subfol
+                    run:
+                        shutil.move(pathlib.Path(input.fol_combined) / params.subfol, output[0])
             else:
                 for outfile in outval:
                     rule:
@@ -124,11 +123,10 @@ def define_cellprofiler_rules(configs_cp, folder_base,
                         message: 'Move CP pipeline output files'
                         threads: 1
                         params:
-                            subfol = subfol
-                        shell:
-                            """
-                            mv $(realpath {input.fol_combined}/{params.subfol}/"$(basename "{output[0]}")") "{output[0]}"
-                            """
+                              subfol = subfol
+                        run:
+                            shutil.move(((pathlib.Path(input.fol_combined) / params.subfol) / pathlib.Path(output[0]).name).resolve(),
+                                        output[0])
 
     # Define Cellprofiler specific rules
     rule cp_get_plugins:
