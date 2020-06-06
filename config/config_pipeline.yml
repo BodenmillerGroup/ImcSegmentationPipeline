@@ -18,7 +18,7 @@ ilastik_threads: 8
 example_data_urls:
   -
     - '20170905_Fluidigmworkshopfinal_SEAJa.zip'
-    - 'https://www.dropbox.com/s/awyq9p7n7dexgyt/20170905_Fluidigmworkshopfinal_SEAJa.zip?dl=1'
+    - 'https://polybox.ethz.ch/index.php/s/mxuWXq98MbYHgq2/download'
   -
     - '20170906_FluidigmONfinal_SE.zip'
-    -  'https://www.dropbox.com/s/0pdt1ke4b07v7zd/20170906_FluidigmONfinal_SE.zip?dl=1'
+    -  'https://polybox.ethz.ch/index.php/s/BrcPanUzBzbdK7t/download'
