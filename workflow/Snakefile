@@ -59,7 +59,7 @@ folder_cp_masks = folder_cp / 'masks'
 fn_image = folder_cp / 'Image.csv'
 fn_cell = folder_cp / 'cell.csv'
 fn_experiment = folder_cp / 'Experiment.csv'
-fn_object_rel = folder_cp / 'Object relationships.csv'
+fn_object_rel = folder_cp / 'Object\ relationships.csv'
 fn_cell_class_ut = folder_classifiers / 'cell_untrained.ilp'
 fn_acmeta = folder_cp / 'acquisition_metadata.csv'
 # Identify a dictionary of input folders/zips containing .mcd files to process
