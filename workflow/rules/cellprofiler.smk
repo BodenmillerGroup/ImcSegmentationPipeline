@@ -113,7 +113,7 @@ def define_cellprofiler_rules(configs_cp, folder_base,
                     params:
                           subfol = subfol
                     run:
-                        shutil.move(pathlib.Path(input.fol_combined) / params.subfol, output[0])
+                        shutil.move(pathlib.Path(input.fol_combined[0]) / params.subfol, output[0])
             else:
                 for outfile in outval:
                     rule:
@@ -125,7 +125,7 @@ def define_cellprofiler_rules(configs_cp, folder_base,
                         params:
                               subfol = subfol
                         run:
-                            shutil.move(((pathlib.Path(input.fol_combined) / params.subfol) / pathlib.Path(output[0]).name).resolve(),
+                            shutil.move(((pathlib.Path(input.fol_combined[0]) / params.subfol) / pathlib.Path(output[0]).name).resolve(),
                                         output[0])
 
     # Define Cellprofiler specific rules
