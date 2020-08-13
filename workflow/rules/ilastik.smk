@@ -51,6 +51,15 @@ def define_ilastik_rules(configs_ilastik, folder_base,
         """Function to retrieve project filename"""
         return configs_ilastik[wildcards.batchname]['project']
 
+    def fkt_resourcs(wildcards):
+        return configs_ilastik[wildcards.batchname].get('resources', {})
+
+    def fkt_resources_mem_mb(wildcards):
+        return fkt_resourcs(wildcards).get('mem_mb', mem_mb)
+
+    def fkt_resources_threads(wildcards):
+        return fkt_resourcs(wildcards).get('threads', threads)
+
     @functools.lru_cache()
     def list_fns(folder):
         fns = [str(fn) for fn in pathlib.Path(folder).rglob('*') if not fn.stem.startswith('.')]
@@ -124,11 +133,11 @@ def define_ilastik_rules(configs_ilastik, folder_base,
              fns = fkt_fns_run,
              project = fkt_fn_project
         output:
-              outfolder = directory(pat_fol_run)
+              outfolder = temporary(directory(pat_fol_run))
         container: container_ilastik
-        threads: threads
+        threads: fkt_resources_threads
         resources:
-            mem_mb = mem_mb
+            mem_mb = fkt_resources_mem_mb
         params:
             bin_ilastik=bin_ilastik,
             output_format=lambda wildcards: configs_ilastik[wildcards.batchname]['output_format'],
@@ -152,7 +161,7 @@ def define_ilastik_rules(configs_ilastik, folder_base,
     checkpoint ilastik_combine_batch_output:
         input:
             fkt_fols_run  # function that retrieves all groups for a batch
-        output: directory(pat_fol_combined)
+        output: temporary(directory(pat_fol_combined))
         params:
             fkt_input=fkt_fols_run
         run:
