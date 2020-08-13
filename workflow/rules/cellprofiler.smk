@@ -55,6 +55,12 @@ def define_cellprofiler_rules(configs_cp, folder_base,
         """Function to retrieve plugin folders"""
         return configs_cp[wildcards.batchname]['plugins']
 
+    def fkt_resourcs(wildcards):
+        return configs_cp[wildcards.batchname].get('resources', {})
+
+    def fkt_resources_mem_mb(wildcards):
+        return fkt_resourcs(wildcards).get('mem_mb', 8000)
+
     def fkt_fn_pipeline(wildcards):
         """Function to retrieve pipeline filename"""
         return configs_cp[wildcards.batchname]['pipeline']
@@ -83,6 +89,7 @@ def define_cellprofiler_rules(configs_cp, folder_base,
         """
         Initializes all rules for the defined CellProfiler pipelines.
         """
+        # resources:
         rule:
             input:  *cur_config['input_files']
             output: expand(str(pat_fn_filelist), batchname=batchname)
@@ -157,12 +164,25 @@ def define_cellprofiler_rules(configs_cp, folder_base,
              batchfile=pat_fn_batchfile,
              plugins=pat_fol_plugins
         output:
-              outfolder=directory(pat_fol_batch / 'run_{start}_{end}')
+              outfolder=temporary(directory(pat_fol_batch / 'run_{start}_{end}'))
         container: container_cp
         threads: 1
+        resources:
+            mem_mb=fkt_resources_mem_mb
         shell:
-            ("cellprofiler -c -r -p {input.batchfile} -f {wildcards.start} -l {wildcards.end}"
-            " --do-not-write-schema --plugins-directory={input.plugins} -o {output.outfolder} || true")
+            """
+            set +e
+            cellprofiler -c -r -p {input.batchfile} -f {wildcards.start} -l {wildcards.end} \
+                --do-not-write-schema --plugins-directory={input.plugins} -o {output.outfolder}
+            exitcode=$?
+            if [ $exitcode -ge 0 ]
+            then
+                exit 0
+            else
+                exit 1
+            fi
+            """
+
 
     checkpoint cp_get_groups:
         input: pat_fn_batchfile,
@@ -175,7 +195,7 @@ def define_cellprofiler_rules(configs_cp, folder_base,
 
     checkpoint cp_combine_batch_output:
         input: fkt_fols_run  # function that retrieves all groups for a batch
-        output: directory(pat_fol_batch_combined)
+        output: temporary(directory(pat_fol_batch_combined))
         params:
               fkt_input=fkt_fols_run
         run:
