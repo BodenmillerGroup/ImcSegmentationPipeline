@@ -1,4 +1,4 @@
-name: imctools
+name: ImcSegmentationPipeline
 channels:
   - conda-forge
   - defaults
@@ -11,9 +11,9 @@ dependencies:
   - matplotlib
   - notebook
   - numpy
-  - python=3.6.6
+  - python=3.8
   - scikit-image
   - scipy
   - git
   - pip:
-        - imctools==1.0.7
+        - imctools>=2.1
