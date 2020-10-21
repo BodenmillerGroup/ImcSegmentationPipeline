@@ -9,4 +9,4 @@ dependencies:
   - pandas
   - pip
   - pip:
-      - git+https://github.com/BodenmillerGroup/imctools.git@next
+      - imctools>=2.1
