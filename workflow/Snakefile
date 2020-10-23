@@ -96,7 +96,7 @@ config_dict_cp = {
     'prepilastik': {
         'run_size': 10,
         'plugins': cp_plugins,
-        'pipeline': 'resources/cp3_pipelines/1_prepare_ilastik.cppipe',
+        'pipeline': 'resources/cp4_pipelines/1_prepare_ilastik.cppipe',
         'input_files': [folder_ilastik],
         'output_patterns': {'scaled': directory(folder_ilastik_h5),
                             'crops': directory(folder_crop)}
@@ -104,14 +104,14 @@ config_dict_cp = {
     'segmasks': {
         'run_size': 10,
         'plugins': cp_plugins,
-        'pipeline': 'resources/cp3_pipelines/2_segment_ilastik.cppipe',
+        'pipeline': 'resources/cp4_pipelines/2_segment_ilastik.cppipe',
         'input_files': [folder_probabilities],
         'output_patterns': {'.': directory(folder_cellmasks)}
     },
     'measuremasks': {
         'run_size': 5,
         'plugins': cp_plugins,
-        'pipeline': 'resources/cp3_pipelines/3_measure_mask_basic.cppipe',
+        'pipeline': 'resources/cp4_pipelines/3_measure_mask_basic.cppipe',
         'input_files': [folder_cellmasks, folder_full, folder_probabilities],
         'output_patterns': {'.': cp_measurements_output,
                             'cellmasks': directory(folder_cp_masks)}
