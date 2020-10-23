@@ -74,6 +74,12 @@ properties:
     description: memory footprint of an ilastik run in mb
     required: false
 
+  imctools_container:
+    type: string
+    default: 'docker://votti/imctools:v2.1.0'
+    description: Default Ilastik singularity container
+    required: fals
+
   example_data_urls:
     type: array
     description: optional list urls to retrieve example data. Only needed in case example data is to be used

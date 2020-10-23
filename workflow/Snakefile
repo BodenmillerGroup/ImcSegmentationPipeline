@@ -36,6 +36,8 @@ img_minsize = config['min_image_size']
 # Cellprofiler default config
 cellprofiler_container = config['cellprofiler_container']
 cp_plugins = config['cellprofiler_plugins']
+
+imctools_container = config['imctools_container']
 # Define hardcoded variables
 ## Define basic folder structrue
 folder_base = pathlib.Path('results')
@@ -171,7 +173,7 @@ rule mcdfolder2imcfolder:
     params:
           fol_ome = folder_ome
     container:
-          'docker://votti/imctools2:next'
+          imctools_container
     script:
           'scripts/convert_imcfolder.py'
 
@@ -196,7 +198,7 @@ rule ome2full:
           directory(folder_full)
     threads: 32
     container:
-          'docker://votti/imctools2:next'
+          imctools_container
     script:
           'scripts/imc2analysis.py'
 
@@ -208,7 +210,7 @@ rule ome2ilastik:
     output:
           directory(folder_ilastik)
     container:
-          'docker://votti/imctools2:next'
+          imctools_container
     params:
           column_used = 'ilastik',
           column_metal = csv_panel_metal,
@@ -227,7 +229,7 @@ rule exportacmeta:
     params:
         folder_out = str(fn_acmeta.parent)
     container:
-        'docker://votti/imctools2:next'
+        imctools_container
     shell:
         ' imctools export-acquisition-csv {input.folder_ome} {params.folder_out}'
 
