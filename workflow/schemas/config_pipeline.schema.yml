@@ -76,7 +76,7 @@ properties:
 
   imctools_container:
     type: string
-    default: 'docker://votti/imctools:v2.1.0'
+    default: 'docker://votti/imctools2:2.1.0'
     description: Default Ilastik singularity container
     required: fals
 
