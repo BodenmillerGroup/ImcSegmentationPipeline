@@ -1,16 +1,23 @@
 # A flexible  image segmentation pipeline for heterogneous multiplexed tissue images based on pixel classification
 *This is the experimental `snakemake` branch*
 
-The pipline is based on `CellProfiler` (http://cellprofiler.org/) for segmentation and `Ilastik` (http://ilastik.org/) for
+[![Snakemake](https://img.shields.io/badge/snakemake-≥5.7.0-brightgreen.svg)](https://snakemake.bitbucket.io)
+[![Build Status](https://travis-ci.org/snakemake-workflows/misegmentation.svg?branch=master)](https://travis-ci.org/snakemake-workflows/misegmentation)
+
+The pipeline is based on `CellProfiler` (http://cellprofiler.org/) for segmentation and `Ilastik` (http://ilastik.org/) for
 for pixel classification. It is streamlined by using the specially developed `imctools` python package (https://github.com/BodenmillerGroup/imctools) 
 package as well as custom CellProfiler modules (https://github.com/BodenmillerGroup/ImcPluginsCP, develop-cp3 branch!).
 
-This pipline was developped in the Bodenmiller laboratory of the University of Zurich (http://www.bodenmillerlab.org/) to segment hundereds of highly multiplexed
-imaging mass cytometry (IMC) images. However we think it might also be usefull for other multiplexed imaging techniques.
+This pipeline was developed in the Bodenmiller laboratory of the University of Zurich (http://www.bodenmillerlab.org/) to segment hundereds of highly multiplexed
+imaging mass cytometry (IMC) images. However it also has been already been sucessfully applied to other multiplexed
+imaging modalities..
 
 The PDF found describes the conceptual basis: 'Documentation/201709_imctools_guide.pdf'. While still conceputually valid the installation procedures described are outdated.
 
-## Requirements
+## Usage
+If you use this workflow in a paper, don't forget to give credits to the authors by citing the URL of this (original) repository and, if available, its DOI (see above).
+
+### Step 0: install systems requirements
 To run the pipeline, the following software needs to be installed:
 - `conda`: A reproducible package manager
    - Installation: https://docs.conda.io/projects/conda/en/latest/user-guide/install/
@@ -21,42 +28,64 @@ To run the pipeline, the following software needs to be installed:
 
 Make sure this software packages work.
 
-## Setup the environment
-Clone the github repository and the submodules.
+### Step 1: Obtain a copy of this workflow
 
-```
-git clone --recurse-submodules -b snakemake git@github.com:BodenmillerGroup/ImcSegmentationPipeline.git
-```
-Change directory into the Git folder
+1. Create a new github repository using this workflow [as a template](https://help.github.com/en/articles/creating-a-repository-from-a-template).
+2. [Clone](https://help.github.com/en/articles/cloning-a-repository) the newly created repository
+to your local system, into the place where you want to perform the data analysis.
 
-```
-cd ImcSegmentationPipeline
-```
 
-Initialize the conda snakemake environment:
+###  Step2: Install Snakemake
+Install Snakemake using [conda](https://conda.io/projects/conda/en/latest/user-guide/install/index.html):
 
-```
-conda create -n imcsegpipe -c bioconda bioconda::snakemake=5.19
-```
+    conda create -c bioconda -c conda-forge -n snakemake snakemake
 
-Activate the environment
+For installation details, see the [instructions in the Snakemake documentation](https://snakemake.readthedocs.io/en/stable/getting_started/installation.html).
 
-```
-conda activate imcsegpipe
-```
+### Step 3: Configure workflow
 
-## Edit the configuration
-To customize your analysis run, edit the configuration file: `config/config_pipeline.yml`
+Configure the workflow according to your needs via editing the files in the `config/` folder.
+Adjust `config.yaml` to configure the workflow execution.
 
-## Run the pipeline
+### Step 4: Execute workflow
 
-### Optional: download the example data
+Activate the conda environment:
+
+    conda activate snakemake
+
+Test your configuration by performing a dry-run via
+
+    snakemake --use-conda -n --use-singularity
+
+
+Execute the workflow locally via
+
+    snakemake --use-conda --cores $N --use-singularity
+
+using `$N` cores or run it in a cluster environment via
+
+    snakemake --use-conda --cluster qsub --jobs 100 --use-singularity
+
+or
+
+    snakemake --use-conda --drmaa --jobs 100 --use-singularity
+
+The Cellprofiler output will be in `results/cpout`. All other folders should be considered
+temporary output.
+
+See section 'UZH slurm cluster' to get more details how to run this on the cluster
+of the University of Zurich
+
+
+## Optional:
+
+### Step: download the example data
 
 ```
 snakemake download_example_data --use-singularity --cores 32
 ```
 
-### Run the pipeline until the Ilastik classifier
+### Step: Run the pipeline until the Ilastik classifier
 
 ```
 snakemake prepare_cell_classifier --use-singularity --cores 32
@@ -67,20 +96,11 @@ This will generate random crops to train the Ilastik cell pixel classifier in `r
 Use these cropped images to train an ilastik classifier for pixel classes: `nuclei`, `cytoplasm/membrane/nucleiborder`, `background`
 and save the trained classifier under the `fn_cell_classifier` in the configuration file.
 
-### Run the full pipeline
-
-```
-snakemake --use-singularity --cores 32
-```
-
-The Cellprofiler output will be in `results/cpout`
-
-
-# How to run this workflow on a slurm cluster (UZH science cluster)
+### Step: UZH cluster: How to run this workflow on a slurm cluster (UZH science cluster)
 
 First retrieve the github repository & install the conda environment as above.
 
-## Make a default configuration
+#### Make a default configuration
 
 Generate this file in the path `~/.config/snakemake/cluster_config.yml`
 ```
@@ -89,7 +109,7 @@ __default__:
 ```
 This defines the default batch run parameters.
 
-## Install the slurm cluster profile
+#### Install the slurm cluster profile
 
 Follow the instructions from:  
 `https://github.com/Snakemake-Profiles/slurm`
