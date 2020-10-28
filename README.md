@@ -10,7 +10,7 @@ Please consider the current state of this repository as 'Beta'.
 Notable changes to older version is change to CellProfiler 3 and that the ImcPluginsCP work now with any CP3 installation without special installation procedure.
 
 The pipeline is based on CellProfiler (http://cellprofiler.org/, v1.3.5) for segmentation and Ilastik (http://ilastik.org/) for
-for pixel classification. It is streamlined by using the specially developped imctools python package (https://github.com/BodenmillerGroup/imctools) as well as custom CellProfiler modules (https://github.com/BodenmillerGroup/ImcPluginsCP, develop-cp3 branch!).
+for pixel classification. It is streamlined by using the specially developped imctools python package (https://github.com/BodenmillerGroup/imctools) as well as custom CellProfiler modules (https://github.com/BodenmillerGroup/ImcPluginsCP/tree/master-cp3, master-cp3 branch!).
 
 This pipeline was developped in the Bodenmiller laboratory at the University of Zurich (http://www.bodenmillerlab.org/) to segment hundreds of highly multiplexed imaging mass cytometry (IMC) images. However we think it might also be usefull for other multiplexed imaging techniques.
 
