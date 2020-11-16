@@ -155,19 +155,12 @@ rule files_ome:
 
 # MCD to ome conversion
 def get_zip_fn(wildcards):
-    return dict_zip_fns[wildcards.zipfol]
-
-rule retrieve_zip:
-    output: pat_file_path_zip
-    params:
-          fn = get_zip_fn
-    shell:
-         'cp {params.fn} {output[0]}'
+    return str(dict_zip_fns[wildcards.zipfol])
 
 # MCD to ome conversion
 rule mcdfolder2imcfolder:
     input:
-         fn_zip = pat_file_path_zip
+         fn_zip = get_zip_fn
     output: touch(pat_file_path_mcdparse_done)
     threads: 1
     params:
