@@ -1,87 +1,108 @@
 $schema: "http://json-schema.org/draft-07/schema#"
 description: a configuration for the imc segmentation pipeline
 properties:
-  input_data_folders:
-    type: array
-    description: list of input data folders[example_data]
-    required: true
+  input:
+    type: object
+    properties:
 
-  input_file_regexp:
-    type: string
-    description: regexp pattern that files/folders need to much to be considered to contain input `.mcd` files
-    required: true
+      folders:
+        type: array
+        description: list of input data folders[example_data]
+        items:
+          type: string
+          required: true
 
-  min_image_size:
-    type: integer
-    description: minimum image size in x and y in pixels. This prevents errors with pixel classifiers.
-    required: true
+      file_regexp:
+        type: string
+        description: regexp pattern that files/folders need to much to be considered to contain input `.mcd` files
+        required: true
 
-  csv_panel:
-    type: string
-    description: path to the panel csv
-    required: true
+  panel:
+    type: object
+    properties:
+      path:
+        type: string
+        default: 'config/panel.csv'
+        required: true
 
-  csv_panel_metal:
-    type: string
-    default: 'Metal Tag'
-    description: The column in the panel csv indicating the metal in form MetalMass (eg Ir191)
-    required: false
+      col_metal:
+        type: string
+        default: 'Metal Tag'
+        description: The column in the panel csv indicating the metal in form MetalMass (eg Ir191)
 
-  csv_panel_ilastik:
-    type: string
-    default: ilastik
-    description: The boolean column in the panel csv indicating metals to be used for the ilastik pixel classification
-    required: false
+      stacks:
+        type: object
+        additionalProperties:
+          type: object
+          properties:
 
-  csv_panel_full:
-    type: string
-    default: full
-    description: boolean column in the panel csv indicating metals to be used for quantification
-    required: true
+            col_bool:
+              type: string
+              required: true
 
-  fn_cell_classifier:
-    type: string
-    description: path where the (trained) cell classifier will be saved
-    required: true
+            min_image_size:
+              type: integer
+              description: minimum image size in x and y in pixels. This prevents errors with pixel classifiers.
+              default: 50
 
-  cellprofiler_container:
-    type: string
-    default: 'docker://cellprofiler/cellprofiler:3.1.9'
-    description: Default cellprofiler singularity container
-    required: fals
 
-  cellprofiler_plugins:
-    type: string
-    default: resources/cp_plugins/ImcPluginsCP/plugins
-    description: path to the default cellprofiler plugins to be used
-    required: false
 
-  ilastik_container:
-    type: string
-    default: 'docker://ilastik/ilastik-from-binary:1.3.3post3'
-    description: Default Ilastik singularity container
-    required: fals
+  cellprofiler:
+    type: object
+    description: Cellprofiler defaults
+    properties:
 
-  ilastik_threads:
-    type: integer
-    default: 4
-    description: number of threads to use per ilastik run
-    required: false
+      container:
+        type: string
+        default: 'docker://cellprofiler/cellprofiler:3.1.9'
+        description: Default cellprofiler singularity container
 
-  ilastik_mem_mb:
-    type: integer
-    default: 10000
-    description: memory footprint of an ilastik run in mb
-    required: false
+      plugins:
+        type: string
+        default: resources/cp_plugins/ImcPluginsCP/plugins
+        description: path to the default cellprofiler plugins to be used
 
-  imctools_container:
-    type: string
-    default: 'docker://votti/imctools2:2.1.0'
-    description: Default Ilastik singularity container
-    required: fals
+  ilastik:
+    type: object
+    description: Ilastik defaults
+    properties:
 
-  example_data_urls:
-    type: array
-    description: optional list urls to retrieve example data. Only needed in case example data is to be used
-    required: false
+      container:
+        type: string
+        default: 'docker://ilastik/ilastik-from-binary:1.3.3post3'
+        description: Default Ilastik singularity container
+        required: false
+
+      threads:
+        type: integer
+        default: 4
+        description: number of threads to use per ilastik run
+        required: false
+
+      mem_mb:
+        type: integer
+        default: 10000
+        description: memory footprint of an ilastik run in mb
+        required: false
+
+
+  varia:
+    type: object
+    properties:
+      fn_cell_classifier:
+        type: string
+        description: path where the (trained) cell classifier will be saved
+        required: true
+
+      imctools_container:
+        type: string
+        default: 'docker://votti/imctools2:2.1.0'
+        description: Default imctools singularity container
+        required: false
+
+      example_data_urls:
+        type: array
+        description: optional list urls to retrieve example data. Only needed in case example data is to be used
+        required: false
+
 

@@ -13,31 +13,33 @@ validate(config, "schemas/config_pipeline.schema.yml")
 
 # Extract variables from configuration
 ## Input/output
-input_data_folders = config['input_data_folders']
-input_file_regexp = config['input_file_regexp']
-file_path_cell_classifier = config['fn_cell_classifier']
+input_data_folders = config['input']['folders']
+input_file_regexp = config['input']['file_regexp']
+file_path_cell_classifier = config['varia']['fn_cell_classifier']
 
 # Optional example data folder
 fol_example = pathlib.Path(input_data_folders[0])
 
 ## Panel
-csv_panel = config['csv_panel']
-csv_panel_metal = config['csv_panel_metal']
-csv_panel_ilastik = config['csv_panel_ilastik']
-csv_panel_full = config['csv_panel_full']
+config_panel = config['panel']
+csv_panel = config['panel']['path']
+csv_panel_metal = config_panel['col_metal']
+config_stacks = config_panel['stacks']
+csv_panel_ilastik = config_stacks['ilastik']['col_bool']
+csv_panel_full = config_stacks['full']['col_bool']
 
 ## Ilastik run config
-ilastik_container = config['ilastik_container']
-ilastik_threads = config['ilastik_threads']
-ilastik_mem_mb = config['ilastik_mem_mb']
+config_ilastik = config['ilastik']
+ilastik_container = config_ilastik['container']
+ilastik_threads = config_ilastik['threads']
+ilastik_mem_mb = config_ilastik['mem_mb']
 
 # varia
-img_minsize = config['min_image_size']
 # Cellprofiler default config
-cellprofiler_container = config['cellprofiler_container']
-cp_plugins = config['cellprofiler_plugins']
+cellprofiler_container = config['cellprofiler']['container']
+cp_plugins = config['cellprofiler']['plugins']
 
-imctools_container = config['imctools_container']
+imctools_container = config['varia']['imctools_container']
 # Define hardcoded variables
 ## Define basic folder structrue
 fol_path_base = pathlib.Path('results')
@@ -193,7 +195,7 @@ rule ome2full:
           column_used = 'full',
           column_metal = csv_panel_metal,
           suffix = suffix_full,
-          min_imgsize = img_minsize
+          min_imgsize = config_stacks['full']['min_image_size']
     output:
           directory(fol_path_full)
     threads: 32
@@ -215,7 +217,7 @@ rule ome2ilastik:
           column_used = 'ilastik',
           column_metal = csv_panel_metal,
           suffix = suffix_ilastik,
-          min_imgsize = img_minsize
+          min_imgsize = config_stacks['ilastik']['min_image_size']
     threads: 32
     script:
           'scripts/imc2analysis.py'
