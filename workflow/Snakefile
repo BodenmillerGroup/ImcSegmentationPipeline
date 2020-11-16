@@ -44,8 +44,8 @@ imctools_container = config['varia']['imctools_container']
 ## Define basic folder structrue
 fol_path_base = pathlib.Path('results')
 fol_path_analysis = fol_path_base / 'tiffs'
-fol_path_full = fol_path_analysis / 'full'
-fol_path_ilastik = fol_path_analysis / 'ilastik'
+fol_path_full = fol_path_analysis / 'stack_full'
+fol_path_ilastik = fol_path_analysis / 'stack_ilastik'
 fol_path_ilastik_h5 = fol_path_analysis / 'ilastik_h5'
 fol_path_probabilities = fol_path_analysis / 'probabilities'
 fol_path_cellmasks = fol_path_analysis / 'cellmasks'
@@ -56,7 +56,7 @@ fol_path_histocat = fol_path_base / 'histocat'
 fol_path_uncertainty = fol_path_base / 'uncertainty'
 fol_path_crop = fol_path_base / 'ilastik_training_data'
 fol_path_classifiers = fol_path_base / 'classifiers'
-
+fol_pat_stack = fol_path_analysis / 'stack_{stack}'
 fol_path_cp_masks = fol_path_cp / 'masks'
 
 ## Define Output files
@@ -186,38 +186,22 @@ checkpoint all_mcd_converted:
 
 
 # OME to analysis tiff conversion
-rule ome2full:
-    input:
-         fol_ome = fol_path_ome,
-         panel = csv_panel,
-         done = file_path_all_mcd_converted
-    params:
-          column_used = 'full',
-          column_metal = csv_panel_metal,
-          suffix = suffix_full,
-          min_imgsize = config_stacks['full']['min_image_size']
-    output:
-          directory(fol_path_full)
-    threads: 32
-    container:
-          imctools_container
-    script:
-          'scripts/imc2analysis.py'
-
-rule ome2ilastik:
+rule ome2analysis:
     input:
          fol_ome = fol_path_ome,
          panel = csv_panel,
          done = file_path_all_mcd_converted
     output:
-          directory(fol_path_ilastik)
+          directory(fol_pat_stack)
     container:
-          imctools_container
+             imctools_container
     params:
-          column_used = 'ilastik',
+          column_used = lambda wildcards: config_stacks[wildcards.stack][
+              'col_bool'],
           column_metal = csv_panel_metal,
-          suffix = suffix_ilastik,
-          min_imgsize = config_stacks['ilastik']['min_image_size']
+          suffix = '{stack}',
+          min_imgsize = lambda wildcards: config_stacks[wildcards.stack][
+              'min_image_size']
     threads: 32
     script:
           'scripts/imc2analysis.py'
