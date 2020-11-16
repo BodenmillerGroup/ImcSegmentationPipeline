@@ -1,5 +1,6 @@
 import urllib.request
 import pathlib
+import pandas as pd
 from scripts import helpers as hpr
 from snakemake.utils import validate
 
@@ -12,6 +13,7 @@ configfile: 'config/config_pipeline.yml'
 validate(config, "schemas/config_pipeline.schema.yml")
 
 # Extract variables from configuration
+file_path_samples = 'resources/samples.csv'
 ## Input/output
 input_data_folders = config['input']['folders']
 input_file_regexp = config['input']['file_regexp']
@@ -25,8 +27,6 @@ config_panel = config['panel']
 csv_panel = config['panel']['path']
 csv_panel_metal = config_panel['col_metal']
 config_stacks = config_panel['stacks']
-csv_panel_ilastik = config_stacks['ilastik']['col_bool']
-csv_panel_full = config_stacks['full']['col_bool']
 
 ## Ilastik run config
 config_ilastik = config['ilastik']
@@ -50,7 +50,6 @@ fol_path_ilastik_h5 = fol_path_analysis / 'ilastik_h5'
 fol_path_probabilities = fol_path_analysis / 'probabilities'
 fol_path_cellmasks = fol_path_analysis / 'cellmasks'
 fol_path_ome = fol_path_base / 'ometiff'
-fol_path_tmp = fol_path_base / 'tmp'
 fol_path_cp = fol_path_base / 'cpout'
 fol_path_histocat = fol_path_base / 'histocat'
 fol_path_uncertainty = fol_path_base / 'uncertainty'
@@ -66,8 +65,7 @@ file_path_experiment = fol_path_cp / 'Experiment.csv'
 file_path_object_rel = fol_path_cp / 'Object relationships.csv'
 file_path_cell_class_ut = fol_path_classifiers / 'cell_untrained.ilp'
 file_path_acmeta = fol_path_cp / 'acquisition_metadata.csv'
-# Identify a dictionary of input folders/zips containing .mcd files to process
-dict_zip_fns = {fn.stem: fn for fn in hpr.get_filenames_by_re(input_data_folders, input_file_regexp)}
+
 # Produce a list of all cellprofiler output files
 cp_measurements_output = [file_path_image, file_path_cell, file_path_experiment, file_path_object_rel]
 
@@ -83,7 +81,6 @@ suffix_done = '.done'
 suffix_crop = '_{crop, x[0-9]+_y[0-9]+_w[0-9]+_h[0-9]+}'
 
 ## Define derived file patterns
-pat_file_path_zip = fol_path_base / 'zips' / ('{zipfol}' + '.zip')
 pat_file_path_mcdparse_done = fol_path_base / 'zips' / ('{zipfol}' + suffix_done)
 file_path_all_mcd_converted = fol_path_base / 'all_mcd_converted.done'
 
@@ -152,10 +149,32 @@ rule files_ilastik:
 rule files_ome:
     input: fol_path_ome
 
+checkpoint generate_sample_list:
+    input: input_data_folders
+    output:
+        file_path_samples
+    run:
+       fns = hpr.get_filenames_by_re(input_data_folders, input_file_regexp)
+       pd.DataFrame({'mcd_folders': fns}).to_csv(output[0], index=False)
 
-# MCD to ome conversion
+_sample_dict = None
+
+def get_sample_dict():
+    global _sample_dict
+    if _sample_dict is None:
+        checkpoints.generate_sample_list.get()
+        dat_samples = pd.read_csv(file_path_samples)
+        _sample_dict = {pathlib.Path(x).stem: x for x in dat_samples[
+            'mcd_folders']}
+    return _sample_dict
+
 def get_zip_fn(wildcards):
-    return str(dict_zip_fns[wildcards.zipfol])
+    sample_dict = get_sample_dict()
+    return str(sample_dict[wildcards.zipfol])
+
+def get_expected_mcd_done(wildcards):
+    sample_dict = get_sample_dict()
+    return expand(str(pat_file_path_mcdparse_done), zipfol=sample_dict.keys())
 
 # MCD to ome conversion
 rule mcdfolder2imcfolder:
@@ -171,7 +190,7 @@ rule mcdfolder2imcfolder:
           'scripts/convert_imcfolder.py'
 
 checkpoint all_mcd_converted:
-    input: expand(str(pat_file_path_mcdparse_done), zipfol=dict_zip_fns.keys())
+    input: get_expected_mcd_done
     output:
           touch(file_path_all_mcd_converted)
 
@@ -222,6 +241,7 @@ rule clean:
         "rm -R {fol_path_base}"
 
 rule download_example_data:
+    output: directory(fol_example)
     run:
         fol_example.mkdir(parents=True, exist_ok=True)
         for fn, url in config['varia']['example_data_urls']:
