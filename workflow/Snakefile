@@ -73,8 +73,6 @@ cp_measurements_output = [file_path_image, file_path_cell, file_path_experiment,
 
 
 ## Define suffixes
-suffix_full = '_full'
-suffix_ilastik = '_ilastik'
 suffix_scale = '_s2'
 suffix_mask = '_mask'
 suffix_probablities = '_Probabilities'
@@ -199,7 +197,7 @@ rule ome2analysis:
           column_used = lambda wildcards: config_stacks[wildcards.stack][
               'col_bool'],
           column_metal = csv_panel_metal,
-          suffix = '{stack}',
+          suffix = '_{stack}',
           min_imgsize = lambda wildcards: config_stacks[wildcards.stack][
               'min_image_size']
     threads: 32
