@@ -15,7 +15,7 @@ validate(config, "schemas/config_pipeline.schema.yml")
 ## Input/output
 input_data_folders = config['input_data_folders']
 input_file_regexp = config['input_file_regexp']
-fn_cell_classifier = config['fn_cell_classifier']
+file_path_cell_classifier = config['fn_cell_classifier']
 
 # Optional example data folder
 fol_example = pathlib.Path(input_data_folders[0])
@@ -40,34 +40,34 @@ cp_plugins = config['cellprofiler_plugins']
 imctools_container = config['imctools_container']
 # Define hardcoded variables
 ## Define basic folder structrue
-folder_base = pathlib.Path('results')
-folder_analysis = folder_base / 'tiffs'
-folder_full = folder_analysis / 'full'
-folder_ilastik = folder_analysis / 'ilastik'
-folder_ilastik_h5 = folder_analysis / 'ilastik_h5'
-folder_probabilities = folder_analysis / 'probabilities'
-folder_cellmasks = folder_analysis / 'cellmasks'
-folder_ome = folder_base / 'ometiff'
-folder_tmp = folder_base / 'tmp'
-folder_cp = folder_base / 'cpout'
-folder_histocat = folder_base / 'histocat'
-folder_uncertainty = folder_base / 'uncertainty'
-folder_crop = folder_base / 'ilastik_training_data'
-folder_classifiers = folder_base / 'classifiers'
+fol_path_base = pathlib.Path('results')
+fol_path_analysis = fol_path_base / 'tiffs'
+fol_path_full = fol_path_analysis / 'full'
+fol_path_ilastik = fol_path_analysis / 'ilastik'
+fol_path_ilastik_h5 = fol_path_analysis / 'ilastik_h5'
+fol_path_probabilities = fol_path_analysis / 'probabilities'
+fol_path_cellmasks = fol_path_analysis / 'cellmasks'
+fol_path_ome = fol_path_base / 'ometiff'
+fol_path_tmp = fol_path_base / 'tmp'
+fol_path_cp = fol_path_base / 'cpout'
+fol_path_histocat = fol_path_base / 'histocat'
+fol_path_uncertainty = fol_path_base / 'uncertainty'
+fol_path_crop = fol_path_base / 'ilastik_training_data'
+fol_path_classifiers = fol_path_base / 'classifiers'
 
-folder_cp_masks = folder_cp / 'masks'
+fol_path_cp_masks = fol_path_cp / 'masks'
 
 ## Define Output files
-fn_image = folder_cp / 'Image.csv'
-fn_cell = folder_cp / 'cell.csv'
-fn_experiment = folder_cp / 'Experiment.csv'
-fn_object_rel = folder_cp / 'Object relationships.csv'
-fn_cell_class_ut = folder_classifiers / 'cell_untrained.ilp'
-fn_acmeta = folder_cp / 'acquisition_metadata.csv'
+file_path_image = fol_path_cp / 'Image.csv'
+file_path_cell = fol_path_cp / 'cell.csv'
+file_path_experiment = fol_path_cp / 'Experiment.csv'
+file_path_object_rel = fol_path_cp / 'Object relationships.csv'
+file_path_cell_class_ut = fol_path_classifiers / 'cell_untrained.ilp'
+file_path_acmeta = fol_path_cp / 'acquisition_metadata.csv'
 # Identify a dictionary of input folders/zips containing .mcd files to process
 dict_zip_fns = {fn.stem: fn for fn in hpr.get_filenames_by_re(input_data_folders, input_file_regexp)}
 # Produce a list of all cellprofiler output files
-cp_measurements_output = [fn_image, fn_cell, fn_experiment, fn_object_rel]
+cp_measurements_output = [file_path_image, file_path_cell, file_path_experiment, file_path_object_rel]
 
 
 ## Define suffixes
@@ -83,12 +83,12 @@ suffix_done = '.done'
 suffix_crop = '_{crop, x[0-9]+_y[0-9]+_w[0-9]+_h[0-9]+}'
 
 ## Define derived file patterns
-pat_fn_zip = folder_base / 'zips' / ('{zipfol}' + '.zip')
-pat_fn_mcdparse_done = folder_base / 'zips' / ('{zipfol}' + suffix_done)
-fn_all_mcd_converted = folder_base / 'all_mcd_converted.done'
+pat_file_path_zip = fol_path_base / 'zips' / ('{zipfol}' + '.zip')
+pat_file_path_mcdparse_done = fol_path_base / 'zips' / ('{zipfol}' + suffix_done)
+file_path_all_mcd_converted = fol_path_base / 'all_mcd_converted.done'
 
 ## Init dirs
-folder_ome.mkdir(parents=True, exist_ok=True)
+fol_path_ome.mkdir(parents=True, exist_ok=True)
 
 # Configuration for cellprofiler pipeline steps
 # (Please look at rules/cellprofiler.smk for the documentation of this structure)
@@ -97,24 +97,24 @@ config_dict_cp = {
         'run_size': 10,
         'plugins': cp_plugins,
         'pipeline': 'resources/cp4_pipelines/1_prepare_ilastik.cppipe',
-        'input_files': [folder_ilastik],
-        'output_patterns': {'scaled': directory(folder_ilastik_h5),
-                            'crops': directory(folder_crop)}
+        'input_files': [fol_path_ilastik],
+        'output_patterns': {'scaled': directory(fol_path_ilastik_h5),
+                            'crops': directory(fol_path_crop)}
     },
     'segmasks': {
         'run_size': 10,
         'plugins': cp_plugins,
         'pipeline': 'resources/cp4_pipelines/2_segment_ilastik.cppipe',
-        'input_files': [folder_probabilities],
-        'output_patterns': {'.': directory(folder_cellmasks)}
+        'input_files': [fol_path_probabilities],
+        'output_patterns': {'.': directory(fol_path_cellmasks)}
     },
     'measuremasks': {
         'run_size': 5,
         'plugins': cp_plugins,
         'pipeline': 'resources/cp4_pipelines/3_measure_mask_basic.cppipe',
-        'input_files': [folder_cellmasks, folder_full, folder_probabilities],
+        'input_files': [fol_path_cellmasks, fol_path_full, fol_path_probabilities],
         'output_patterns': {'.': cp_measurements_output,
-                            'cellmasks': directory(folder_cp_masks)}
+                            'cellmasks': directory(fol_path_cp_masks)}
     }
 }
 
@@ -122,35 +122,35 @@ config_dict_cp = {
 # (Please look at rules/cellprofiler.smk for the documentation of this structure)
 config_dict_ilastik = {
     'cell':
-        {'project': fn_cell_classifier,
+        {'project': file_path_cell_classifier,
          'run_size': 10,
          'output_format': 'tiff',
          'output_filename': f'{{nickname}}{suffix_probablities}{suffix_tiff}',
          'export_source': 'Probabilities',
          'export_dtype': 'uint16',
          'pipeline_result_drange': '"(0.0, 1.0)"',
-         'input_files': folder_ilastik_h5,
-         'output_pattern': directory(folder_probabilities)
+         'input_files': fol_path_ilastik_h5,
+         'output_pattern': directory(fol_path_probabilities)
          }
 }
 # Target rules
 rule all:
-    input: folder_ome, folder_cp_masks, cp_measurements_output
+    input: fol_path_ome, fol_path_cp_masks, cp_measurements_output
 
 rule cell_probabilities:
-    input: folder_probabilities
+    input: fol_path_probabilities
 
 rule prep_cell_classifier:
-    input: folder_crop
+    input: fol_path_crop
 
 rule files_ilastik_scaled:
-    input: folder_ilastik_h5
+    input: fol_path_ilastik_h5
 
 rule files_ilastik:
-    input: folder_ilastik
+    input: fol_path_ilastik
 
 rule files_ome:
-    input: folder_ome
+    input: fol_path_ome
 
 
 # MCD to ome conversion
@@ -158,7 +158,7 @@ def get_zip_fn(wildcards):
     return dict_zip_fns[wildcards.zipfol]
 
 rule retrieve_zip:
-    output: pat_fn_zip
+    output: pat_file_path_zip
     params:
           fn = get_zip_fn
     shell:
@@ -167,35 +167,35 @@ rule retrieve_zip:
 # MCD to ome conversion
 rule mcdfolder2imcfolder:
     input:
-         fn_zip = pat_fn_zip
-    output: touch(pat_fn_mcdparse_done)
+         fn_zip = pat_file_path_zip
+    output: touch(pat_file_path_mcdparse_done)
     threads: 1
     params:
-          fol_ome = folder_ome
+          fol_ome = fol_path_ome
     container:
           imctools_container
     script:
           'scripts/convert_imcfolder.py'
 
 checkpoint all_mcd_converted:
-    input: expand(str(pat_fn_mcdparse_done), zipfol=dict_zip_fns.keys())
+    input: expand(str(pat_file_path_mcdparse_done), zipfol=dict_zip_fns.keys())
     output:
-          touch(fn_all_mcd_converted)
+          touch(file_path_all_mcd_converted)
 
 
 # OME to analysis tiff conversion
 rule ome2full:
     input:
-         fol_ome = folder_ome,
+         fol_ome = fol_path_ome,
          panel = csv_panel,
-         done = fn_all_mcd_converted
+         done = file_path_all_mcd_converted
     params:
           column_used = 'full',
           column_metal = csv_panel_metal,
           suffix = suffix_full,
           min_imgsize = img_minsize
     output:
-          directory(folder_full)
+          directory(fol_path_full)
     threads: 32
     container:
           imctools_container
@@ -204,11 +204,11 @@ rule ome2full:
 
 rule ome2ilastik:
     input:
-         fol_ome = folder_ome,
+         fol_ome = fol_path_ome,
          panel = csv_panel,
-         done = fn_all_mcd_converted
+         done = file_path_all_mcd_converted
     output:
-          directory(folder_ilastik)
+          directory(fol_path_ilastik)
     container:
           imctools_container
     params:
@@ -223,26 +223,26 @@ rule ome2ilastik:
 # rule
 rule exportacmeta:
     input:
-        folder_ome = folder_ome,
-        all_converted = fn_all_mcd_converted
-    output: fn_acmeta
+        fol_path_ome = fol_path_ome,
+        all_converted = file_path_all_mcd_converted
+    output: file_path_acmeta
     params:
-        folder_out = str(fn_acmeta.parent)
+        fol_path_out = str(file_path_acmeta.parent)
     container:
         imctools_container
     shell:
-        ' imctools export-acquisition-csv {input.folder_ome} {params.folder_out}'
+        ' imctools export-acquisition-csv {input.fol_path_ome} {params.fol_path_out}'
 
 ## Rules to target Cellprofiler batch runs
-define_cellprofiler_rules(config_dict_cp, folder_base, container_cp=cellprofiler_container)
-define_ilastik_rules(config_dict_ilastik, folder_base, threads=ilastik_threads,
+define_cellprofiler_rules(config_dict_cp, fol_path_base, container_cp=cellprofiler_container)
+define_ilastik_rules(config_dict_ilastik, fol_path_base, threads=ilastik_threads,
                      mem_mb=ilastik_mem_mb, container_ilastik=ilastik_container)
 
 ### Varia
 
 rule clean:
     shell:
-        "rm -R {folder_base}"
+        "rm -R {fol_path_base}"
 
 rule download_example_data:
     run:
