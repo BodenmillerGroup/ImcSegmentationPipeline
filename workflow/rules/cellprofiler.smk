@@ -74,6 +74,22 @@ def define_cellprofiler_rules(configs_cp, folder_base,
         """Function to retrieve plugin folders"""
         return configs_cp[wildcards.batchname].get('input_folder', '.')
 
+    def fkt_input_files(wildcards):
+        """Unpack input files"""
+        input_files = configs_cp[wildcards.batchname]['input_files']
+        return_list = []
+        for inp in input_files:
+            if callable(inp):
+                # If this is a function, call it to get the
+                # output
+                inp = inp(wildcards)
+            if (isinstance(inp, str) | isinstance(inp, pathlib.Path)):
+                # If it is neither a string or a path
+                # convert it to a list
+                inp = [inp]
+            return_list += inp
+        return [str(val) for val in return_list]
+
     def fkt_fols_run(wildcards):
         """
         Function to dynamically generate batch filenames based on the
@@ -98,30 +114,6 @@ def define_cellprofiler_rules(configs_cp, folder_base,
         """
         Initializes all rules for the defined CellProfiler pipelines.
         """
-        # resources:
-        fn_batch_filelist = expand(str(pat_fn_filelist),
-                  batchname=batchname)
-
-        rule:
-            message: f'Generate a file list of input files for CellProfiler run "{batchname}"'
-            input:  *cur_config['input_files']
-            output: temporary(fn_batch_filelist)
-            params: *cur_config['input_files']
-            run:
-                with open(output[0], mode='w') as f:
-                    fns_list = [inp for inp in params]
-                    for pfn in fns_list:
-                        if isinstance(pfn,pathlib.Path):
-                            if pfn.is_dir():
-                                fns = pfn.rglob('*')
-                            else:
-                                fns = [pfn]
-                        else:
-                            fns = pfn
-                        for fn in fns:
-                            fn = pathlib.Path(fn)
-                            f.write("%s\n" % fn.resolve())
-
         for subfol, outval in cur_config['output_patterns'].items():
             if get_flag_value(outval, 'directory') == True:
                 rule:
@@ -157,6 +149,22 @@ def define_cellprofiler_rules(configs_cp, folder_base,
              'mkdir -p {output} && '
              'cp -R {input}/* {output}'
 
+    rule generate_file_list:
+        message: f'Generate a file list of input files for CellProfiler run "{batchname}"'
+        input:  fkt_input_files
+        output: pat_fn_filelist
+        run:
+            with open(output[0], mode='w') as f:
+                fns_list = [inp for inp in input]
+                for pfn in fns_list:
+                    pfn = pathlib.Path(pfn)
+                    if pfn.is_dir():
+                        fns = pfn.rglob('*')
+                    else:
+                        fns = [pfn]
+                    for fn in fns:
+                        f.write("%s\n" % fn.resolve())
+
     rule cp_create_batch_data:
         message: 'Prepare batch file from file list for CellProfiler run "{wildcards.batchname}"'
         input:
@@ -164,7 +172,7 @@ def define_cellprofiler_rules(configs_cp, folder_base,
             pipeline=fkt_fn_pipeline,
             plugins=pat_fol_plugins
         output:
-            batchfile=temporary(pat_fn_batchfile)
+            pat_fn_batchfile
         params:
             outfolder=str(pat_fol_batch),
             inputfolder=fkt_input_folder
@@ -172,15 +180,28 @@ def define_cellprofiler_rules(configs_cp, folder_base,
 
         message: 'Prepares a batch file'
         shell:
-            "cellprofiler -c -r --file-list={input.filelist} --plugins-directory {input.plugins} "
-            "-p {input.pipeline} -o {params.outfolder} -i {params.inputfolder}"
-            "|| true"
+            """
+            set +e
+            cellprofiler -c -r --file-list={input.filelist} \
+                --plugins-directory {input.plugins}  \
+                -p {input.pipeline} -o {params.outfolder} -i {params.inputfolder}
+            exitcode=$?
+            if [ $exitcode -ge 0 ]
+            then
+                exit 0
+            else
+                echo "No valid image set identified! Check the input files\
+                      or pipeline!"
+                exit 1
+            fi
+            """
 
     rule cp_run_batch:
         message: 'Run image sets {wildcards.start} to {wildcards.end} for CellProfiler run "{wildcards.batchname}"'
         input:
              batchfile=pat_fn_batchfile,
-             plugins=pat_fol_plugins
+             plugins=pat_fol_plugins,
+             batchgroups=pat_fn_batchgroups
         output:
               outfolder=temporary(directory(pat_fol_batch / 'run_{start}_{end}'))
         params:
