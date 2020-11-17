@@ -23,6 +23,11 @@ def define_cellprofiler_rules(configs_cp, folder_base,
                                     # output folder
                                 [pattern_a, # list of output file
                               pattern_b]}, # patterns
+             'input_folder': 'path/to/inputfolder' # Path to cellprofiler
+                                                   # Input folder
+                                                   # -> required if eg metadata
+                                                   # file paths specified
+                                                   # relative to input folder.
     }
 
 
@@ -64,6 +69,10 @@ def define_cellprofiler_rules(configs_cp, folder_base,
     def fkt_fn_pipeline(wildcards):
         """Function to retrieve pipeline filename"""
         return configs_cp[wildcards.batchname]['pipeline']
+
+    def fkt_input_folder(wildcards):
+        """Function to retrieve plugin folders"""
+        return configs_cp[wildcards.batchname].get('input_folder', '.')
 
     def fkt_fols_run(wildcards):
         """
@@ -155,12 +164,14 @@ def define_cellprofiler_rules(configs_cp, folder_base,
             batchfile=pat_fn_batchfile
         params:
             outfolder=str(pat_fol_batch),
+            inputfolder=fkt_input_folder
         container: container_cp
 
         message: 'Prepares a batch file'
         shell:
             "cellprofiler -c -r --file-list={input.filelist} --plugins-directory {input.plugins} "
-            "-p {input.pipeline} -o {params.outfolder} || true"
+            "-p {input.pipeline} -o {params.outfolder} -i {params.inputfolder}"
+            "|| true"
 
     rule cp_run_batch:
         message: 'Run image sets {wildcards.start} to {wildcards.end} for CellProfiler run "{wildcards.batchname}"'
@@ -169,6 +180,8 @@ def define_cellprofiler_rules(configs_cp, folder_base,
              plugins=pat_fol_plugins
         output:
               outfolder=temporary(directory(pat_fol_batch / 'run_{start}_{end}'))
+        params:
+              inputfolder=fkt_input_folder
         container: container_cp
         threads: 1
         resources:
@@ -177,7 +190,8 @@ def define_cellprofiler_rules(configs_cp, folder_base,
             """
             set +e
             cellprofiler -c -r -p {input.batchfile} -f {wildcards.start} -l {wildcards.end} \
-                --do-not-write-schema --plugins-directory={input.plugins} -o {output.outfolder}
+                --do-not-write-schema --plugins-directory={input.plugins} -o {output.outfolder} \
+                -i {params.inputfolder}
             exitcode=$?
             if [ $exitcode -ge 0 ]
             then
