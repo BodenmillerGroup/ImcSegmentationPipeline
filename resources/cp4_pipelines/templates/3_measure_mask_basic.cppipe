@@ -124,7 +124,7 @@ MeasureObjectNeighbors:[module_num:8|svn_version:'Unknown'|variable_revision_num
 MeasureObjectIntensityMultichannel:[module_num:9|svn_version:'Unknown'|variable_revision_number:4|show_window:False|notes:["Measures the object intensities. Each channel will have a number corresponding to the plane number. The metals corresponding to the indices, e.g. _c1, _c2, can be found by looking at the `_full.csv` files in the `tiffs` folder.'", '', "Adapt the number of channels corresponding to the number of planes in the stack. Can be again seen in the  `_full.csv` files in the `tiffs` folder.'"]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select images to measure:FullStack, FullStackFiltered
     Select objects to measure:cell
-    How many channels does the image have?:24
+    How many channels does the image have?:{nchan_full}
 
 MeasureObjectIntensityMultichannel:[module_num:10|svn_version:'Unknown'|variable_revision_number:4|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select images to measure:ProbSegmentation
@@ -135,7 +135,7 @@ MeasureImageIntensityMultichannel:[module_num:11|svn_version:'Unknown'|variable_
     Select images to measure:FullStackFiltered, FullStack
     Measure the intensity only from areas enclosed by objects?:No
     Select input object sets:
-    How many channels does the image have?:24
+    How many channels does the image have?:{nchan_full}
 
 MeasureImageIntensityMultichannel:[module_num:12|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select images to measure:ProbSegmentation

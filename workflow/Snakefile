@@ -9,9 +9,6 @@ from scripts import helpers as hpr
 from snakemake.utils import validate
 from snakemake.remote.HTTP import RemoteProvider as HTTPRemoteProvider
 
-HTTP = HTTPRemoteProvider()
-
-
 ## Rules to run cellprofiler and ilastik
 include: 'rules/cellprofiler.smk'
 include: 'rules/ilastik.smk'
@@ -94,7 +91,7 @@ file_path_cell_class_ut = fol_path_classifiers / 'cell_untrained.ilp'
 fol_path_cp_input = fol_path_base / 'cpinput'
 file_path_acmeta = fol_path_cp_input / 'acquisition_metadata.csv'
 file_pat_channelmeta = fol_path_cp_input / '{stack}_channelmeta.csv'
-file_path_channelmeta_full = expand(str(file_pat_channelmeta), stack='full')
+file_path_channelmeta_full = str(file_pat_channelmeta).format(stack='full')
 
 
 # Produce a list of all cellprofiler output files
@@ -362,6 +359,26 @@ rule exportacmeta:
         imctools_container
     shell:
         ' imctools export-acquisition-csv {input.fol_path_ome} {params.fol_path_out}'
+
+## Add the number of channels to the measure_mask pipeline
+
+rule modify_measurement_pipeline:
+    input:
+        pipeline='resources/cp4_pipelines/templates/3_measure_mask_basic.cppipe',
+        channels_fullstack=str(file_path_channelmeta_full)
+    output:
+        'resources/cp4_pipelines/3_measure_mask_basic.cppipe'
+    run:
+        outfol = pathlib.Path('results/pipelines')
+        outfol.mkdir(exist_ok=True)
+        n_channel = sum(1 for line in open(input.channels_fullstack) if
+                        line.rstrip())
+        with open(input.pipeline, 'r') as f:
+            old_pipe = f.read()
+        new_pipe = old_pipe.replace('{nchan_full}', str(n_channel))
+
+        with open(output[0], 'w') as f:
+            f.write(new_pipe)
 
 ## Rules to target Cellprofiler batch runs
 define_cellprofiler_rules(config_dict_cp, fol_path_base, container_cp=cellprofiler_container)
