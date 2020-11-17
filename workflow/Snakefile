@@ -1,20 +1,34 @@
+# Initialize all dependencies
+# ==========================
+## Libraries
 import urllib.request
 import pathlib
+import shutil
 import pandas as pd
 from scripts import helpers as hpr
 from snakemake.utils import validate
 
-# Cellprofiler/Ilastik rules
+## Rules to run cellprofiler and ilastik
 include: 'rules/cellprofiler.smk'
 include: 'rules/ilastik.smk'
 
 # Read Configuration
+# ==================
+# Path to configuration file
 configfile: 'config/config_pipeline.yml'
+
+# Path to sample file
+# (If not provided this will be generated based on the folders and regular
+#  expresssion indicated in the configuration)
+file_path_samples = 'resources/samples.csv'
+
+# Validate the configuration file using the schema
+# -> This also sets all the default values
 validate(config, "schemas/config_pipeline.schema.yml")
 
 # Extract variables from configuration
-file_path_samples = 'resources/samples.csv'
-## Input/output
+# -> The meaning of the variables is documented in the schema file
+# Input/output
 input_data_folders = config['input']['folders']
 input_file_regexp = config['input']['file_regexp']
 file_path_cell_classifier = config['varia']['fn_cell_classifier']
@@ -22,25 +36,28 @@ file_path_cell_classifier = config['varia']['fn_cell_classifier']
 # Optional example data folder
 fol_example = pathlib.Path(input_data_folders[0])
 
-## Panel
+# Panel metadata
 config_panel = config['panel']
 csv_panel = config['panel']['path']
 csv_panel_metal = config_panel['col_metal']
 config_stacks = config_panel['stacks']
 
-## Ilastik run config
+# Varia:
+# Ilastik run config
 config_ilastik = config['ilastik']
 ilastik_container = config_ilastik['container']
 ilastik_threads = config_ilastik['threads']
 ilastik_mem_mb = config_ilastik['mem_mb']
 
-# varia
-# Cellprofiler default config
+# Cellprofiler run config
 cellprofiler_container = config['cellprofiler']['container']
 cp_plugins = config['cellprofiler']['plugins']
 
+# Imctools container
 imctools_container = config['varia']['imctools_container']
+
 # Define hardcoded variables
+# --------------------------
 ## Define basic folder structrue
 fol_path_base = pathlib.Path('results')
 fol_path_analysis = fol_path_base / 'tiffs'
@@ -58,19 +75,21 @@ fol_path_classifiers = fol_path_base / 'classifiers'
 fol_pat_stack = fol_path_analysis / 'stack_{stack}'
 fol_path_cp_masks = fol_path_cp / 'masks'
 
-## Define Output files
+# Define Output files
 file_path_image = fol_path_cp / 'Image.csv'
 file_path_cell = fol_path_cp / 'cell.csv'
 file_path_experiment = fol_path_cp / 'Experiment.csv'
 file_path_object_rel = fol_path_cp / 'Object relationships.csv'
 file_path_cell_class_ut = fol_path_classifiers / 'cell_untrained.ilp'
 file_path_acmeta = fol_path_cp / 'acquisition_metadata.csv'
+file_pat_channelmeta = fol_path_cp / '{stack}_channelmeta.csv'
+file_path_channelmeta_full = expand(str(file_pat_channelmeta), stack='full')
 
 # Produce a list of all cellprofiler output files
 cp_measurements_output = [file_path_image, file_path_cell, file_path_experiment, file_path_object_rel]
 
 
-## Define suffixes
+## Define suffixes for files
 suffix_scale = '_s2'
 suffix_mask = '_mask'
 suffix_probablities = '_Probabilities'
@@ -80,59 +99,144 @@ suffix_h5 = '.h5'
 suffix_done = '.done'
 suffix_crop = '_{crop, x[0-9]+_y[0-9]+_w[0-9]+_h[0-9]+}'
 
-## Define derived file patterns
+# Define derived file patterns
 pat_file_path_mcdparse_done = fol_path_base / 'zips' / ('{zipfol}' + suffix_done)
 file_path_all_mcd_converted = fol_path_base / 'all_mcd_converted.done'
 
 ## Init dirs
 fol_path_ome.mkdir(parents=True, exist_ok=True)
 
+# Snakemake rules
+# Target rules
+rule all:
+    message: "Run complete pipeline"
+    input: cp_measurements_output
+
+
+
+# The rules are roughly in order that they are use
 # Configuration for cellprofiler pipeline steps
 # (Please look at rules/cellprofiler.smk for the documentation of this structure)
 config_dict_cp = {
     'prepilastik': {
+        'message':  """\
+                    Prepare image stack for ilastik pixel classification
+                    
+                    This includes: 
+                    - Filtering out outlier pixels
+                    - Prepending scaled mean of all channels a first channel
+                    - Scaling images to 2x resolution
+                        -> Should make it easier to draw pixels
+                    - Taking a random crop of each image as training set
+                    """,
         'run_size': 10,
         'plugins': cp_plugins,
         'pipeline': 'resources/cp4_pipelines/1_prepare_ilastik.cppipe',
-        'input_files': [fol_path_ilastik],
-        'output_patterns': {'scaled': directory(fol_path_ilastik_h5),
-                            'crops': directory(fol_path_crop)}
+        'input_files': [fol_path_ilastik, # Folder containing Ilastik stacks
+                        ],
+        'output_patterns': {'scaled':
+                                # Folder containing 2x scaled hdf5 images
+                                # for Ilastik
+                                directory(fol_path_ilastik_h5),
+                            'crops':
+                                # Folder containing random crops as training
+                                # data
+                                directory(fol_path_crop)}
     },
-    'segmasks': {
-        'run_size': 10,
-        'plugins': cp_plugins,
-        'pipeline': 'resources/cp4_pipelines/2_segment_ilastik.cppipe',
-        'input_files': [fol_path_probabilities],
-        'output_patterns': {'.': directory(fol_path_cellmasks)}
-    },
-    'measuremasks': {
-        'run_size': 5,
-        'plugins': cp_plugins,
-        'pipeline': 'resources/cp4_pipelines/3_measure_mask_basic.cppipe',
-        'input_files': [fol_path_cellmasks, fol_path_full, fol_path_probabilities],
-        'output_patterns': {'.': cp_measurements_output,
-                            'cellmasks': directory(fol_path_cp_masks)}
-    }
-}
 
+}
 # Configuration for Ilastik steps
 # (Please look at rules/cellprofiler.smk for the documentation of this structure)
 config_dict_ilastik = {
     'cell':
-        {'project': file_path_cell_classifier,
+        {'message': """\
+                    Run the ilastik cell pixel classifier
+                    
+                    This is a trained classifier to identify pixels of three
+                    classes:
+                    - "Nuclear" pixels: Pixels at the center of cells/nuclei
+                    - "Cytoplasm/Membrane" pixels: Pixels that represent 
+                    cytoplasm/membrane or are separating clumped nuclei
+                    - "Background" pixels: Pixels that represent empty 
+                    background in the image
+                    
+                    This classier needs to be trained for a specific 
+                    combination of antibodies in specific channels. The 
+                    training should be done as described in the paper.
+                    
+                    This produces probability maps that are easy to segment.
+                    """,
+         'project': file_path_cell_classifier,
          'run_size': 10,
          'output_format': 'tiff',
          'output_filename': f'{{nickname}}{suffix_probablities}{suffix_tiff}',
          'export_source': 'Probabilities',
          'export_dtype': 'uint16',
          'pipeline_result_drange': '"(0.0, 1.0)"',
-         'input_files': fol_path_ilastik_h5,
-         'output_pattern': directory(fol_path_probabilities)
+         'input_files':
+             # Folder containing process hdf5
+             # images for ilastik pixel classification
+             fol_path_ilastik_h5,
+         'output_pattern':
+            # Folder containing probability maps for segmentation
+            directory(fol_path_probabilities)
          }
 }
-# Target rules
-rule all:
-    input: fol_path_ome, fol_path_cp_masks, cp_measurements_output
+
+#
+config_dict_cp ={**config_dict_cp,
+    'segmasks': {
+        'message':  """\
+                    Identify cellular masks from probability masks 
+                    
+                    Segment probability maps into:
+                    - Cell masks
+                    - Nuclear masks
+                    - Cytoplasmic masks
+                    """,
+        'run_size': 10,
+        'plugins': cp_plugins,
+        'pipeline': 'resources/cp4_pipelines/2_segment_ilastik.cppipe',
+        'input_files': [
+            # Folder containing probability maps for segmentation
+            fol_path_probabilities,
+        ],
+        'output_patterns': {'.':
+                    # Folder containing segmentation masks
+                    directory(fol_path_cellmasks),
+                            }
+    },
+    'measuremasks': {
+        'message':  """\
+                    Measure masks 
+                    
+                    Measure segmentation masks
+                    """,
+        'run_size': 5,
+        'plugins': cp_plugins,
+        'pipeline': 'resources/cp4_pipelines/3_measure_mask_basic.cppipe',
+        'input_files': [
+            # Folder containing segmentation masks
+            fol_path_cellmasks,
+            # Folder containing image stacks to measure
+            fol_path_full,
+            # Folder containing cell probabilities
+            fol_path_probabilities,
+            # Acquisition metadata
+            file_path_acmeta,
+            # Channel metadata
+            file_path_channelmeta_full
+            ],
+        'output_patterns': {'.':
+                            # Folder containing cellprofiler measurement
+                            cp_measurements_output,
+                            # Subfolder containing segmentation masks used
+                            # For the measurements
+                            'cellmasks': directory(fol_path_cp_masks)}
+    }
+                 }
+
+
 
 rule cell_probabilities:
     input: fol_path_probabilities
@@ -149,6 +253,7 @@ rule files_ilastik:
 rule files_ome:
     input: fol_path_ome
 
+# Helper rules
 checkpoint generate_sample_list:
     input: input_data_folders
     output:
@@ -158,7 +263,6 @@ checkpoint generate_sample_list:
        pd.DataFrame({'mcd_folders': fns}).to_csv(output[0], index=False)
 
 _sample_dict = None
-
 def get_sample_dict():
     global _sample_dict
     if _sample_dict is None:
@@ -215,6 +319,16 @@ rule ome2analysis:
     threads: 32
     script:
           'scripts/imc2analysis.py'
+
+rule analysis2channelmeta:
+    input:
+        fol_pat_stack
+    output:
+        file_pat_channelmeta
+    run:
+        fn_csv = next(pathlib.Path(input[0]).glob(f'*{wildcards.stack}.csv'))
+        shutil.copy(fn_csv, output[0])
+
 
 # rule
 rule exportacmeta:
