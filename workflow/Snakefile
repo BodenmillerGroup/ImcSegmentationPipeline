@@ -7,6 +7,10 @@ import shutil
 import pandas as pd
 from scripts import helpers as hpr
 from snakemake.utils import validate
+from snakemake.remote.HTTP import RemoteProvider as HTTPRemoteProvider
+
+HTTP = HTTPRemoteProvider()
+
 
 ## Rules to run cellprofiler and ilastik
 include: 'rules/cellprofiler.smk'
@@ -364,17 +368,24 @@ define_cellprofiler_rules(config_dict_cp, fol_path_base, container_cp=cellprofil
 define_ilastik_rules(config_dict_ilastik, fol_path_base, threads=ilastik_threads,
                      mem_mb=ilastik_mem_mb, container_ilastik=ilastik_container)
 
+## Rules to download data
+HTTP = HTTPRemoteProvider()
+dict_examples = {fn: HTTP.remote(url) for fn, url in
+                 config['varia']['example_data_urls']}
+
+rule download_example_data:
+    input: **dict_examples
+    output: directory(fol_example)
+    run:
+        fol_example = pathlib.Path(output[0])
+        pathlib.Path(fol_example).mkdir(parents=True, exist_ok=True)
+        for fn, fn_cache in input.items():
+            fn = fol_example / fn
+            if ~fn.exists():
+                shutil.move(fn_cache[0], fn)
+
 ### Varia
 
 rule clean:
     shell:
         "rm -R {fol_path_base}"
-
-rule download_example_data:
-    output: directory(fol_example)
-    run:
-        fol_example.mkdir(parents=True, exist_ok=True)
-        for fn, url in config['varia']['example_data_urls']:
-            fn = fol_example / fn
-            if ~fn.exists():
-                urllib.request.urlretrieve(url, fn)
