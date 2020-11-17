@@ -99,10 +99,13 @@ def define_cellprofiler_rules(configs_cp, folder_base,
         Initializes all rules for the defined CellProfiler pipelines.
         """
         # resources:
+        fn_batch_filelist = expand(str(pat_fn_filelist),
+                  batchname=batchname)
+
         rule:
             message: f'Generate a file list of input files for CellProfiler run "{batchname}"'
             input:  *cur_config['input_files']
-            output: expand(str(pat_fn_filelist), batchname=batchname)
+            output: temporary(fn_batch_filelist)
             params: *cur_config['input_files']
             run:
                 with open(output[0], mode='w') as f:
@@ -161,7 +164,7 @@ def define_cellprofiler_rules(configs_cp, folder_base,
             pipeline=fkt_fn_pipeline,
             plugins=pat_fol_plugins
         output:
-            batchfile=pat_fn_batchfile
+            batchfile=temporary(pat_fn_batchfile)
         params:
             outfolder=str(pat_fol_batch),
             inputfolder=fkt_input_folder
