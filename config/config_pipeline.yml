@@ -9,7 +9,7 @@ varia:
   fn_cell_classifier: 'resources/classifiers/cell_classifier.ilp'
 
 panel:
-  path: 'resources/example_panel.csv'
+  path: 'resources/20191128_HubMAP_panel.csv'
   col_metal: 'Metal Tag'
   stacks:
     ilastik:
@@ -28,8 +28,14 @@ cellprofiler:
   container: 'docker://votti/cellprofiler:develop'
 
 varia:
-  fn_cell_classifier: 'resources/classifiers/cell_classifier.ilp'
+  fn_cell_classifier: 'resources/classifiers/HubMAP_20191211.ilp'
   example_data_urls:
     -
-      - '20170905_Fluidigmworkshopfinal_SEAJa.zip'
-      - 'https://polybox.ethz.ch/index.php/s/mxuWXq98MbYHgq2/download'
+      - '20191203_HuBMAP_Spleen_ED.zip'
+      - 'https://polybox.ethz.ch/index.php/s/rcwZEXfk1WwMfjF/download'
+    -
+      - '20191202_HuBMAP_Thymus_ED.zip'
+      - 'https://polybox.ethz.ch/index.php/s/dt3CV99aJjx2NXi/download'
+    -
+      - '20191202_HuBMAP_LympNode_ED.zip'
+      - 'https://polybox.ethz.ch/index.php/s/gPmN61s0RBWf3aP/download'
