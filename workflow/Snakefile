@@ -368,6 +368,19 @@ define_cellprofiler_rules(config_dict_cp, fol_path_base, container_cp=cellprofil
 define_ilastik_rules(config_dict_ilastik, fol_path_base, threads=ilastik_threads,
                      mem_mb=ilastik_mem_mb, container_ilastik=ilastik_container)
 
+###############################################################################
+# Rules to retrieve data
+# It is good practice to not rely on files being present but collect them
+# before running this pipeline
+# This can be done by:
+#  - Setting an input folder that doesnt exist yet
+#  - Adding a rule bellow that generates an input folder and
+#    downloads/collects files into it.
+#
+# This is shown here using the example folder which when set as input folder
+# Will automatically be populated via the 'download_example_data' rule.
+#
+
 ## Rules to download data
 HTTP = HTTPRemoteProvider()
 dict_examples = {fn: HTTP.remote(url) for fn, url in
