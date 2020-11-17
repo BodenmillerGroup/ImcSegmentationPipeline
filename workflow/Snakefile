@@ -34,7 +34,9 @@ input_file_regexp = config['input']['file_regexp']
 file_path_cell_classifier = config['varia']['fn_cell_classifier']
 
 # Optional example data folder
-fol_example = pathlib.Path(input_data_folders[0])
+# -> If this is selected as the input folder, the example data is automatically
+#    downloaded.
+fol_example = 'resources/example_data'
 
 # Panel metadata
 config_panel = config['panel']
@@ -117,6 +119,8 @@ file_path_all_mcd_converted = fol_path_base / 'all_mcd_converted.done'
 ## Init dirs
 fol_path_ome.mkdir(parents=True, exist_ok=True)
 
+###############################################################################
+# Start with the workflow definition:
 # Snakemake rules
 # Target rules
 rule all:
