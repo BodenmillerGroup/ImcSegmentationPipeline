@@ -80,6 +80,7 @@ fol_pat_stack = fol_path_analysis / 'stack_{stack}'
 # Define Output files
 fol_path_cp = fol_path_base / 'cpout'
 fol_path_cp_masks = fol_path_cp / 'masks'
+fol_path_cp_images = fol_path_cp / 'images'
 file_path_image = fol_path_cp / 'Image.csv'
 file_path_cell = fol_path_cp / 'cell.csv'
 file_path_varcell = fol_path_cp / 'var_cell.csv'
@@ -95,12 +96,16 @@ file_path_channelmeta_full = str(file_pat_channelmeta).format(stack='full')
 
 
 # Produce a list of all cellprofiler output files
-cp_measurements_output = [file_path_image,
+cp_measurements_output_files = [file_path_image,
                           file_path_cell,
                           file_path_experiment,
                           file_path_object_rel,
                           file_path_varcell
                           ]
+cp_measurements_output = cp_measurements_output_files +  [
+                           fol_path_cp_masks,
+                           fol_path_cp_images,
+                           ]
 
 
 ## Define suffixes for files
@@ -230,7 +235,7 @@ config_dict_cp ={**config_dict_cp,
                     """,
         'run_size': 5,
         'plugins': cp_plugins,
-        'pipeline': 'resources/cp4_pipelines/3_measure_mask_basic.cppipe',
+        'pipeline': 'resources/cp4_pipelines/adapted/3_measure_mask_basic.cppipe',
         'input_files': [
             # Folder containing segmentation masks
             fol_path_cellmasks,
@@ -245,15 +250,16 @@ config_dict_cp ={**config_dict_cp,
             ],
         'output_patterns': {'.':
                             # Folder containing cellprofiler measurement
-                            cp_measurements_output,
+                            cp_measurements_output_files,
                             # Subfolder containing segmentation masks used
-                            # For the measurements
-                            'cellmasks': directory(fol_path_cp_masks)},
+                            # for the measurements
+                            'masks': directory(fol_path_cp_masks),
+                            # Subfolder containing the images used for the
+                            # measurements.
+                            'images': directory(fol_path_cp_images)},
         'input_folder': fol_path_cp_input
     }
                  }
-
-
 
 rule cell_probabilities:
     input: fol_path_probabilities
@@ -338,6 +344,10 @@ rule ome2analysis:
           'scripts/imc2analysis.py'
 
 rule analysis2channelmeta:
+    message: """\
+             Copy a csv containing the channel metals for the
+             stack "{wildcards.stack}" to the cp input folder.
+             """
     input:
         fol_pat_stack
     output:
@@ -362,17 +372,18 @@ rule exportacmeta:
 
 ## Add the number of channels to the measure_mask pipeline
 
-rule modify_measurement_pipeline:
+rule modify_measurement_basic_pipeline:
     input:
-        pipeline='resources/cp4_pipelines/templates/3_measure_mask_basic.cppipe',
+        pipeline='resources/cp4_pipelines/templates/3_measure_mask_basic'
+                 '.cppipe',
         channels_fullstack=str(file_path_channelmeta_full)
     output:
-        'resources/cp4_pipelines/3_measure_mask_basic.cppipe'
+        'resources/cp4_pipelines/adapted/3_measure_mask_basic.cppipe'
     run:
-        outfol = pathlib.Path('results/pipelines')
-        outfol.mkdir(exist_ok=True)
-        n_channel = sum(1 for line in open(input.channels_fullstack) if
-                        line.rstrip())
+        fn_out = pathlib.Path(output[0])
+        fn_out.parent.mkdir(exist_ok=True)
+        n_channel = sum(1 for line in open(input.channels_fullstack)
+                        if line.rstrip())
         with open(input.pipeline, 'r') as f:
             old_pipe = f.read()
         new_pipe = old_pipe.replace('{nchan_full}', str(n_channel))

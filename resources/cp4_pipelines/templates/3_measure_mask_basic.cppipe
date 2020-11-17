@@ -1,8 +1,8 @@
 CellProfiler Pipeline: http://www.cellprofiler.org
 Version:5
-DateRevision:406
+DateRevision:403
 GitHash:
-ModuleCount:18
+ModuleCount:20
 HasImagePlaneDetails:False
 
 Images:[module_num:1|svn_version:'Unknown'|variable_revision_number:2|show_window:False|notes:['Choose the whole `tiffs` folder.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
@@ -159,7 +159,7 @@ SaveImages:[module_num:14|svn_version:'Unknown'|variable_revision_number:15|show
     Append a suffix to the image file name?:No
     Text to append to the image name:_mask
     Saved file format:tiff
-    Output file location:Default Output Folder sub-folder|cellmasks
+    Output file location:Default Output Folder sub-folder|masks
     Image bit depth:16-bit integer
     Overwrite existing files without warning?:Yes
     When to save:Every cycle
@@ -168,7 +168,45 @@ SaveImages:[module_num:14|svn_version:'Unknown'|variable_revision_number:15|show
     Base image folder:Elsewhere...|
     How to save the series:T (Time)
 
-ExportToSpreadsheet:[module_num:15|svn_version:'Unknown'|variable_revision_number:13|show_window:False|notes:['Save the data to csv.', "Note that the intensity values are all scaled by a scaling factor corresponding to the bit depth (can be found in the Image.csv 'Scale' column.", 'For uint16 everything is divided by 2**16 = 65535']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+SaveImages:[module_num:15|svn_version:'Unknown'|variable_revision_number:15|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select the type of image to save:Image
+    Select the image to save:FullStackFiltered
+    Select method for constructing file names:From image filename
+    Select image name for file prefix:FullStack
+    Enter single file name:OrigBlue
+    Number of digits:4
+    Append a suffix to the image file name?:Yes
+    Text to append to the image name:Filtered
+    Saved file format:tiff
+    Output file location:Default Output Folder sub-folder|images
+    Image bit depth:16-bit integer
+    Overwrite existing files without warning?:Yes
+    When to save:Every cycle
+    Record the file and path information to the saved image?:Yes
+    Create subfolders in the output folder?:No
+    Base image folder:Elsewhere...|
+    How to save the series:T (Time)
+
+SaveImages:[module_num:16|svn_version:'Unknown'|variable_revision_number:15|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select the type of image to save:Image
+    Select the image to save:ProbSegmentation
+    Select method for constructing file names:From image filename
+    Select image name for file prefix:ProbabStack
+    Enter single file name:OrigBlue
+    Number of digits:4
+    Append a suffix to the image file name?:Yes
+    Text to append to the image name:1x
+    Saved file format:tiff
+    Output file location:Default Output Folder sub-folder|images
+    Image bit depth:16-bit integer
+    Overwrite existing files without warning?:Yes
+    When to save:Every cycle
+    Record the file and path information to the saved image?:Yes
+    Create subfolders in the output folder?:No
+    Base image folder:Elsewhere...|
+    How to save the series:T (Time)
+
+ExportToSpreadsheet:[module_num:17|svn_version:'Unknown'|variable_revision_number:13|show_window:False|notes:['Save the data to csv.', "Note that the intensity values are all scaled by a scaling factor corresponding to the bit depth (can be found in the Image.csv 'Scale' column.", 'For uint16 everything is divided by 2**16 = 65535']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select the column delimiter:Comma (",")
     Add image metadata columns to your object data file?:No
     Add image file and folder names to your object data file?:No
@@ -192,7 +230,7 @@ ExportToSpreadsheet:[module_num:15|svn_version:'Unknown'|variable_revision_numbe
     File name:DATA.csv
     Use the object name for the file name?:Yes
 
-ExportToSpreadsheet:[module_num:16|svn_version:'Unknown'|variable_revision_number:13|show_window:False|notes:['This is necessary to also save the `Object Relationships` table = neightbourhood graph structure.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+ExportToSpreadsheet:[module_num:18|svn_version:'Unknown'|variable_revision_number:13|show_window:False|notes:['This is necessary to also save the `Object Relationships` table = neightbourhood graph structure.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select the column delimiter:Comma (",")
     Add image metadata columns to your object data file?:No
     Add image file and folder names to your object data file?:No
@@ -216,7 +254,7 @@ ExportToSpreadsheet:[module_num:16|svn_version:'Unknown'|variable_revision_numbe
     File name:DATA.csv
     Use the object name for the file name?:Yes
 
-ExportVarCsv:[module_num:17|svn_version:'Unknown'|variable_revision_number:1|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+ExportVarCsv:[module_num:19|svn_version:'Unknown'|variable_revision_number:1|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Output file location:Default Output Folder|
     Add a prefix to file names?:Yes
     Filename prefix:var_
@@ -226,7 +264,7 @@ ExportVarCsv:[module_num:17|svn_version:'Unknown'|variable_revision_number:1|sho
     Metadata file location:Default Input Folder|Git/ImcSegmentationPipelineHubMap/results/cpout
     Metadata file name:full_channelmeta.csv
 
-CreateBatchFiles:[module_num:18|svn_version:'Unknown'|variable_revision_number:8|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+CreateBatchFiles:[module_num:20|svn_version:'Unknown'|variable_revision_number:8|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Store batch files in default output folder?:Yes
     Output folder path:/mnt/f2160748-a937-44bd-aca8-3adb8a839612/Data/Analysis/cp4_segmentation_example/cpout
     Are the cluster computers running Windows?:No
