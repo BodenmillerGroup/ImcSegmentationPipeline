@@ -67,26 +67,37 @@ fol_path_ilastik_h5 = fol_path_analysis / 'ilastik_h5'
 fol_path_probabilities = fol_path_analysis / 'probabilities'
 fol_path_cellmasks = fol_path_analysis / 'cellmasks'
 fol_path_ome = fol_path_base / 'ometiff'
-fol_path_cp = fol_path_base / 'cpout'
+
 fol_path_histocat = fol_path_base / 'histocat'
 fol_path_uncertainty = fol_path_base / 'uncertainty'
 fol_path_crop = fol_path_base / 'ilastik_training_data'
 fol_path_classifiers = fol_path_base / 'classifiers'
 fol_pat_stack = fol_path_analysis / 'stack_{stack}'
-fol_path_cp_masks = fol_path_cp / 'masks'
 
 # Define Output files
+fol_path_cp = fol_path_base / 'cpout'
+fol_path_cp_masks = fol_path_cp / 'masks'
 file_path_image = fol_path_cp / 'Image.csv'
 file_path_cell = fol_path_cp / 'cell.csv'
+file_path_varcell = fol_path_cp / 'var_cell.csv'
 file_path_experiment = fol_path_cp / 'Experiment.csv'
 file_path_object_rel = fol_path_cp / 'Object relationships.csv'
 file_path_cell_class_ut = fol_path_classifiers / 'cell_untrained.ilp'
-file_path_acmeta = fol_path_cp / 'acquisition_metadata.csv'
-file_pat_channelmeta = fol_path_cp / '{stack}_channelmeta.csv'
+
+# CP input folder
+fol_path_cp_input = fol_path_base / 'cpinput'
+file_path_acmeta = fol_path_cp_input / 'acquisition_metadata.csv'
+file_pat_channelmeta = fol_path_cp_input / '{stack}_channelmeta.csv'
 file_path_channelmeta_full = expand(str(file_pat_channelmeta), stack='full')
 
+
 # Produce a list of all cellprofiler output files
-cp_measurements_output = [file_path_image, file_path_cell, file_path_experiment, file_path_object_rel]
+cp_measurements_output = [file_path_image,
+                          file_path_cell,
+                          file_path_experiment,
+                          file_path_object_rel,
+                          file_path_varcell
+                          ]
 
 
 ## Define suffixes for files
@@ -232,7 +243,8 @@ config_dict_cp ={**config_dict_cp,
                             cp_measurements_output,
                             # Subfolder containing segmentation masks used
                             # For the measurements
-                            'cellmasks': directory(fol_path_cp_masks)}
+                            'cellmasks': directory(fol_path_cp_masks)},
+        'input_folder': fol_path_cp_input
     }
                  }
 
