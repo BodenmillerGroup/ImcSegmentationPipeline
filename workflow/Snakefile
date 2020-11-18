@@ -249,7 +249,8 @@ config_dict_cp ={**config_dict_cp,
             # Acquisition metadata
             file_path_acmeta,
             # Channel metadata
-            file_path_channelmeta_full
+            file_path_channelmeta_full,
+            file_path_channelmeta_cellprobab
             ],
         'output_patterns': {'.':
                             # Folder containing cellprofiler measurement
@@ -405,6 +406,13 @@ rule get_untrained_ilastik:
         /ilastik-release/bin/python workflow/scripts/get_untrained_project.py\
             {output[0]} {input[0]}
         """
+
+rule generate_channelmeta_probab:
+    output: file_path_channelmeta_cellprobab
+    run:
+        probab_meta = ["CellCenter", "CellBorder", "Background"]
+        with open(output[0], 'w') as f:
+            f.writelines(probab_meta)
 
 ## Rules to target Cellprofiler batch runs
 define_cellprofiler_rules(config_dict_cp, fol_path_base, container_cp=cellprofiler_container)
