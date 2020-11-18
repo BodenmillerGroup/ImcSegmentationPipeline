@@ -3,6 +3,7 @@ import pathlib
 import os
 import shutil
 from snakemake.io import regex, strip_wildcard_constraints, expand
+import filecmp
 
 
 ### Varia
@@ -34,6 +35,7 @@ def get_derived_input_fkt(source_fkt, source_pattern, target_pattern, extra_wild
     """
     if extra_wildcards is None:
         extra_wildcards = {}
+
     def get_fns_analysis(wildcards):
         fns = []
         re_fn = re.compile(regex(str(source_pattern)))
@@ -42,7 +44,9 @@ def get_derived_input_fkt(source_fkt, source_pattern, target_pattern, extra_wild
             pattern = strip_wildcard_constraints(str(target_pattern))
             fns.append(expand(pattern, **match, **extra_wildcards, allow_missing=True)[0])
         return fns
+
     return get_fns_analysis
+
 
 ### Cellprofiler helpers
 
@@ -78,7 +82,9 @@ def _copy_cp_file(path_source, fol_source, fol_target):
     fn_source_rel = os.path.relpath(path_source, fol_source)
     path_target = os.path.join(fol_target, fn_source_rel)
     if os.path.exists(path_target):
-        if path_source.endswith(CSV_SUFFIX):
+        if (path_source.endswith(CSV_SUFFIX) and
+                not filecmp.cmp(path_source, path_target)):
+            # Append csv files but only if they are not identical files.
             with open(path_target, 'ab') as outfile:
                 with open(path_source, 'rb') as infile:
                     infile.readline()  # Throw away header on all but first file
@@ -87,7 +93,7 @@ def _copy_cp_file(path_source, fol_source, fol_target):
                     print(path_source + " has been appended.")
             return True
         else:
-            print('File: ', path_target, 'present in multiple outputs!')
+            print('File: ', path_target, 'present in multiple outputs.')
             return False
     else:
         subfol = os.path.dirname(path_target)
