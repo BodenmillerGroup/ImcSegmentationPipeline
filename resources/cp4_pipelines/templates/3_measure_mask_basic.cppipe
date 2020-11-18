@@ -254,15 +254,18 @@ ExportToSpreadsheet:[module_num:18|svn_version:'Unknown'|variable_revision_numbe
     File name:DATA.csv
     Use the object name for the file name?:Yes
 
-ExportVarCsv:[module_num:19|svn_version:'Unknown'|variable_revision_number:1|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+ExportVarCsv:[module_num:19|svn_version:'Unknown'|variable_revision_number:2|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Output file location:Default Output Folder|
     Add a prefix to file names?:Yes
     Filename prefix:var_
     Overwrite existing files without warning?:No
-    Extraction method count:1
+    Extraction method count:2
     Select Images where this channel identifier applies:FullStack, FullStackFiltered
     Metadata file location:Default Input Folder|Git/ImcSegmentationPipelineHubMap/results/cpout
     Metadata file name:full_channelmeta.csv
+    Select Images where this channel identifier applies:ProbSegmentation, ProbabStack
+    Metadata file location:Default Input Folder|
+    Metadata file name:probab_channelmeta_manual.csv
 
 CreateBatchFiles:[module_num:20|svn_version:'Unknown'|variable_revision_number:8|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Store batch files in default output folder?:Yes
