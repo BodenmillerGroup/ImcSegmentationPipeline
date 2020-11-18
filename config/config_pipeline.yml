@@ -5,9 +5,6 @@ input:
     - "resources/example_data"
   file_regexp: ".*\\.zip"
 
-varia:
-  fn_cell_classifier: 'resources/classifiers/cell_classifier.ilp'
-
 panel:
   path: 'resources/20191128_HubMAP_panel.csv'
   col_metal: 'Metal Tag'
@@ -28,7 +25,7 @@ cellprofiler:
   container: 'docker://votti/cellprofiler:develop'
 
 varia:
-  fn_cell_classifier: 'resources/classifiers/HubMAP_20191211.ilp'
+  fn_cell_classifier: 'resources/classifiers/vz_trained_v2.ilp'
   example_data_urls:
     -
       - '20191203_HuBMAP_Spleen_ED.zip'
