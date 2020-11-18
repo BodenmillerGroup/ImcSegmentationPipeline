@@ -94,6 +94,8 @@ file_path_acmeta = fol_path_cp_input / 'acquisition_metadata.csv'
 file_pat_channelmeta = fol_path_cp_input / '{stack}_channelmeta.csv'
 file_path_channelmeta_full = str(file_pat_channelmeta).format(stack='full')
 
+# Untrained ilastik classifier
+fn_path_untrained_cellclassifier = 'untrained.ilp'
 
 # Produce a list of all cellprofiler output files
 cp_measurements_output_files = [file_path_image,
@@ -265,7 +267,8 @@ rule cell_probabilities:
     input: fol_path_probabilities
 
 rule prep_cell_classifier:
-    input: fol_path_crop
+    input: fol_path_crop, fn_path_untrained_cellclassifier,
+           fol_path_ilastik_h5
 
 rule files_ilastik_scaled:
     input: fol_path_ilastik_h5
@@ -390,6 +393,17 @@ rule modify_measurement_basic_pipeline:
 
         with open(output[0], 'w') as f:
             f.write(new_pipe)
+
+## Varia helper
+rule get_untrained_ilastik:
+    input: fol_path_crop
+    output: fn_path_untrained_cellclassifier
+    container: ilastik_container
+    shell:
+        """
+        /ilastik-release/bin/python workflow/scripts/get_untrained_project.py\
+            {output[0]} {input[0]}
+        """
 
 ## Rules to target Cellprofiler batch runs
 define_cellprofiler_rules(config_dict_cp, fol_path_base, container_cp=cellprofiler_container)
