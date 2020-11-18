@@ -93,9 +93,10 @@ fol_path_cp_input = fol_path_base / 'cpinput'
 file_path_acmeta = fol_path_cp_input / 'acquisition_metadata.csv'
 file_pat_channelmeta = fol_path_cp_input / '{stack}_channelmeta.csv'
 file_path_channelmeta_full = str(file_pat_channelmeta).format(stack='full')
+file_path_channelmeta_cellprobab = fol_path_cp_input / 'probab_channelmeta_manual.csv'
 
 # Untrained ilastik classifier
-fn_path_untrained_cellclassifier = 'untrained.ilp'
+file_path_untrained_cellclassifier = 'untrained.ilp'
 
 # Produce a list of all cellprofiler output files
 cp_measurements_output_files = [file_path_image,
@@ -152,7 +153,7 @@ config_dict_cp = {
                         -> Should make it easier to draw pixels
                     - Taking a random crop of each image as training set
                     """,
-        'run_size': 10,
+        'run_size': 4,
         'plugins': cp_plugins,
         'pipeline': 'resources/cp4_pipelines/1_prepare_ilastik.cppipe',
         'input_files': [fol_path_ilastik, # Folder containing Ilastik stacks
@@ -190,7 +191,7 @@ config_dict_ilastik = {
                     This produces probability maps that are easy to segment.
                     """,
          'project': file_path_cell_classifier,
-         'run_size': 10,
+         'run_size': 4,
          'output_format': 'tiff',
          'output_filename': f'{{nickname}}{suffix_probablities}{suffix_tiff}',
          'export_source': 'Probabilities',
@@ -217,7 +218,7 @@ config_dict_cp ={**config_dict_cp,
                     - Nuclear masks
                     - Cytoplasmic masks
                     """,
-        'run_size': 10,
+        'run_size': 4,
         'plugins': cp_plugins,
         'pipeline': 'resources/cp4_pipelines/2_segment_ilastik.cppipe',
         'input_files': [
@@ -235,7 +236,7 @@ config_dict_cp ={**config_dict_cp,
                     
                     Measure segmentation masks
                     """,
-        'run_size': 5,
+        'run_size': 3,
         'plugins': cp_plugins,
         'pipeline': 'resources/cp4_pipelines/adapted/3_measure_mask_basic.cppipe',
         'input_files': [
@@ -267,8 +268,8 @@ rule cell_probabilities:
     input: fol_path_probabilities
 
 rule prep_cell_classifier:
-    input: fol_path_crop, fn_path_untrained_cellclassifier,
-           fol_path_ilastik_h5
+    input: fol_path_crop, file_path_untrained_cellclassifier,
+         fol_path_ilastik_h5
 
 rule files_ilastik_scaled:
     input: fol_path_ilastik_h5
@@ -397,7 +398,7 @@ rule modify_measurement_basic_pipeline:
 ## Varia helper
 rule get_untrained_ilastik:
     input: fol_path_crop
-    output: fn_path_untrained_cellclassifier
+    output: file_path_untrained_cellclassifier
     container: ilastik_container
     shell:
         """
