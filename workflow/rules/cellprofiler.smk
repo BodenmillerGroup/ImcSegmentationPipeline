@@ -257,11 +257,10 @@ def define_cellprofiler_rules(configs_cp, folder_base,
              pat_openproject
         params:
               inputfolder=fkt_input_folder,
-              container=container_cp
         shell:
              """
              echo "\
-                 singularity exec {params.container} cellprofiler \
+                 cellprofiler \
                      -p {input.pipeline} \
                      --plugins-directory={input.plugins} \
                      -i {params.inputfolder} \
