@@ -36,3 +36,9 @@ varia:
     -
       - '20191202_HuBMAP_LympNode_ED.zip'
       - 'https://polybox.ethz.ch/index.php/s/gPmN61s0RBWf3aP/download'
+
+
+compensation:
+    do_compensation: true
+    folder_spillover_slide_acs: 'resources/20191205_huBMAP_compensation2.zip'
+    folder_spillover_slide_acs_url: 'https://polybox.ethz.ch/index.php/s/iuQkE8fCMjLwJxa/download'
