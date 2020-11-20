@@ -115,7 +115,7 @@ Smooth:[module_num:7|svn_version:'Unknown'|variable_revision_number:2|show_windo
 IdentifyPrimaryObjects:[module_num:8|svn_version:'Unknown'|variable_revision_number:14|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select the input image:NucFil
     Name the primary objects to be identified:Nuclei
-    Typical diameter of objects, in pixel units (Min,Max):10,30
+    Typical diameter of objects, in pixel units (Min,Max):7,25
     Discard objects outside the diameter range?:No
     Discard objects touching the border of the image?:Yes
     Method to distinguish clumped objects:Shape
