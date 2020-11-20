@@ -258,7 +258,11 @@ config_dict_cp ={**config_dict_cp,
                     directory(fol_path_cellmasks),
                             }
     },
-    'measuremasks': {
+
+                 }
+
+if not do_compensation:
+    config_dict_cp['measuremasks'] = {
         'message':  """\
                     Measure masks 
                     
@@ -279,7 +283,42 @@ config_dict_cp ={**config_dict_cp,
             # Channel metadata
             file_path_channelmeta_full,
             file_path_channelmeta_cellprobab
-            ],
+        ],
+        'output_patterns': {'.':
+                            # Folder containing cellprofiler measurement
+                                cp_measurements_output_files,
+                            # Subfolder containing segmentation masks used
+                            # for the measurements
+                            'masks': directory(fol_path_cp_masks),
+                            # Subfolder containing the images used for the
+                            # measurements.
+                            'images': directory(fol_path_cp_images)},
+        'input_folder': fol_path_cp_input
+    }
+else:
+    config_dict_cp['measuremaskscomp'] = {
+        'message':  """\
+                    Measure masks 
+                    
+                    Measure segmentation masks and apply compensation
+                    """,
+        'run_size': 3,
+        'plugins': cp_plugins,
+        'pipeline': 'resources/cp4_pipelines/adapted/3_measure_mask_compensation.cppipe',
+        'input_files': [
+            # Folder containing segmentation masks
+            fol_path_cellmasks,
+            # Folder containing image stacks to measure
+            fol_path_full,
+            # Folder containing cell probabilities
+            fol_path_probabilities,
+            # Acquisition metadata
+            file_path_acmeta,
+            # Channel metadata
+            file_path_channelmeta_full,
+            file_path_channelmeta_cellprobab,
+            fol_path_sms_full
+        ],
         'output_patterns': {'.':
                             # Folder containing cellprofiler measurement
                             cp_measurements_output_files,
@@ -291,7 +330,6 @@ config_dict_cp ={**config_dict_cp,
                             'images': directory(fol_path_cp_images)},
         'input_folder': fol_path_cp_input
     }
-                 }
 
 rule cell_probabilities:
     input: fol_path_probabilities
@@ -479,11 +517,11 @@ if do_compensation:
 
 rule modify_measurement_basic_pipeline:
     input:
-        pipeline='resources/cp4_pipelines/templates/3_measure_mask_basic'
+        pipeline='resources/cp4_pipelines/templates/3_measure_mask_{pipevariant}'
                  '.cppipe',
         channels_fullstack=str(file_path_channelmeta_full)
     output:
-        'resources/cp4_pipelines/adapted/3_measure_mask_basic.cppipe'
+        'resources/cp4_pipelines/adapted/3_measure_mask_{pipevariant}.cppipe'
     run:
         fn_out = pathlib.Path(output[0])
         fn_out.parent.mkdir(exist_ok=True)
