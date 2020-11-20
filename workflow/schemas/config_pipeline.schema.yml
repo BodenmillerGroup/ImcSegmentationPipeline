@@ -103,6 +103,33 @@ properties:
       example_data_urls:
         type: array
         description: optional list urls to retrieve example data. Only needed in case example data is to be used
-        required: false
+
+  compensation:
+      type: object
+      properties:
+        do_compensation:
+          type: boolean
+          default: false
+          description: Use compensation workflow
+
+        catalyst_container:
+          type: string
+          default: "docker://votti/spheroid_publication:catalyst_v1"
+          description: container with R packages required for compensation
+
+        folder_spillover_slide_acs:
+          type: string
+          default: ""
+          description: folder or zipped folder containing compensation acquisitions
+
+        fn_spillover_matrix:
+          type: string
+          default: ""
+          description: file path to the the spillover matrix csv
+
+        col_panel_spillover:
+          type: string
+          default: "spillover"
+          description: name of column in panel.csv indicating metals used for spillover acquisitions
 
 
