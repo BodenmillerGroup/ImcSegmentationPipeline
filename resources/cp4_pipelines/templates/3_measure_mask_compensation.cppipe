@@ -298,7 +298,7 @@ ExportVarCsv:[module_num:22|svn_version:'Unknown'|variable_revision_number:2|sho
     Filename prefix:var_
     Overwrite existing files without warning?:No
     Extraction method count:2
-    Select Images where this channel identifier applies:FullStack, FullStackFiltered
+    Select Images where this channel identifier applies:FullStack, FullStackFiltered, FullStackComp
     Metadata file location:Default Input Folder|Git/ImcSegmentationPipelineHubMap/results/cpout
     Metadata file name:full_channelmeta.csv
     Select Images where this channel identifier applies:ProbSegmentation, ProbabStack
