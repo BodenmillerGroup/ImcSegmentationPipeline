@@ -19,27 +19,29 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v1
+    - uses: conda-incubator/setup-miniconda@v2
       with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install dependencies
+        python-version: 3.8
+        mamba-version: "*"
+        channels: conda-forge,bioconda,defaults
+        channel-priority: true
+        activate-environment: anaconda-client-env
+    - shell: bash -l {0}
       run: |
-            sudo apt-get update
-            sudo apt-get install singularity-container
-            wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
-            bash miniconda.sh -b -p $HOME/miniconda
-            export PATH="$HOME/miniconda/bin:$PATH"
-            hash -r
-            conda config --set always_yes yes --set changeps1 no
-            conda update -q conda
-            Useful for debugging any issues with conda
-            conda info -a
-            conda config --add channels defaults
-            conda config --add channels conda-forge
-            conda config --add channels bioconda
-            conda install -q -c conda-forge mamba
-            mamba create -q -n snakemake bioconda::snakemake=5.19
-
+        conda info
+        conda list
+        conda config --show-sources
+        conda config --show
+        printenv | sort
+    - name: Install Snakemake
+      shell: bash -l {0}
+      run: mamba install -q bioconda::snakemake=5.19
+    - uses: eWaterCycle/setup-singularity@v5
+      name: Install Singularity
+      with:
+        singularity-version: 3.6.4
+    - name: Checkout submodules
+      run: git submodule update --init --recursive
     - name: Run the full workflow
-      run: snakemake --use-conda --use-singularity --cores 2 --config ilastik_mem_mb=4000
+      shell: bash -l {0}
+      run: snakemake --use-conda --use-singularity --cores 1 --config ilastik_mem_mb=4000
