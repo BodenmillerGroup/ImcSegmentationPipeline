@@ -31,12 +31,12 @@ varia:
     -
       - '20191203_HuBMAP_Spleen_ED.zip'
       - 'https://polybox.ethz.ch/index.php/s/rcwZEXfk1WwMfjF/download'
-    -
-      - '20191202_HuBMAP_Thymus_ED.zip'
-      - 'https://polybox.ethz.ch/index.php/s/dt3CV99aJjx2NXi/download'
-    -
-      - '20191202_HuBMAP_LympNode_ED.zip'
-      - 'https://polybox.ethz.ch/index.php/s/gPmN61s0RBWf3aP/download'
+#    -
+#      - '20191202_HuBMAP_Thymus_ED.zip'
+#      - 'https://polybox.ethz.ch/index.php/s/dt3CV99aJjx2NXi/download'
+#    -
+#      - '20191202_HuBMAP_LympNode_ED.zip'
+#      - 'https://polybox.ethz.ch/index.php/s/gPmN61s0RBWf3aP/download'
 
 
 compensation:
