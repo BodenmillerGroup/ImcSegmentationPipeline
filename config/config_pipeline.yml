@@ -26,6 +26,7 @@ cellprofiler:
 
 varia:
   fn_cell_classifier: 'resources/classifiers/vz_trained_v2.ilp'
+  fn_zip_export: 'results/hubmap_processed_v2.zip'
   example_data_urls:
     -
       - '20191203_HuBMAP_Spleen_ED.zip'

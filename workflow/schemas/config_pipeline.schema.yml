@@ -104,6 +104,11 @@ properties:
         type: array
         description: optional list urls to retrieve example data. Only needed in case example data is to be used
 
+      fn_zip_export:
+        type: string
+        default: 'results/cpout.zip'
+        description: export path for zipped cpout
+
   compensation:
       type: object
       properties:

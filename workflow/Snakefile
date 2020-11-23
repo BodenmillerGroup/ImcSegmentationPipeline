@@ -90,6 +90,7 @@ file_path_object_rel = fol_path_cp / 'Object relationships.csv'
 file_path_cell_class_ut = fol_path_classifiers / 'cell_untrained.ilp'
 file_path_cpout_panel = fol_path_cp / 'panel.csv'
 
+file_path_cpexport_zip = config['varia']['fn_zip_export']
 # CP input folder
 fol_path_cp_input = fol_path_base / 'cpinput'
 file_path_acmeta = fol_path_cp_input / 'acquisition_metadata.csv'
@@ -560,6 +561,20 @@ rule generate_channelmeta_probab:
         probab_meta = ["CellCenter", "CellBorder", "Background"]
         with open(output[0], 'w') as f:
             f.write('\n'.join(probab_meta))
+
+rule zip_output_data:
+    input:
+         cp_measurements_output
+    output:
+          file_path_cpexport_zip
+    params:
+          path_input = fol_path_cp,
+          abs_path_output = pathlib.Path(file_path_cpexport_zip).resolve()
+
+    resources:
+            time="120"
+    shell:
+         'cd {params.path_input}; zip -r {params.abs_path_output} *'
 
 ## Rules to target Cellprofiler batch runs
 define_cellprofiler_rules(config_dict_cp, fol_path_base, container_cp=cellprofiler_container)
