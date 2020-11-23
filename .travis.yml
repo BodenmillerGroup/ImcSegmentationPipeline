@@ -2,7 +2,6 @@ dist: bionic
 
 cache:
   directories:
-    - /home/travis/build/BodenmillerGroup/ImcSegmentationPipeline/resources/example_data
     - /home/travis/build/BodenmillerGroup/ImcSegmentationPipeline/.snakemake/singularity
 language: python
 python:
