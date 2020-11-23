@@ -44,4 +44,4 @@ jobs:
       run: git submodule update --init --recursive
     - name: Run the full workflow
       shell: bash -l {0}
-      run: snakemake --use-conda --use-singularity --cores 1 --config ilastik_mem_mb=4000
+      run: snakemake --use-conda --use-singularity --cores 2 --config ilastik_mem_mb=4000
