@@ -76,7 +76,6 @@ fol_path_histocat = fol_path_base / 'histocat'
 fol_path_uncertainty = fol_path_base / 'uncertainty'
 fol_path_crop = fol_path_base / 'ilastik_training_data'
 fol_path_classifiers = fol_path_base / 'classifiers'
-fol_pat_stack = fol_path_analysis / 'stack_{stack}'
 
 # Define Output files
 fol_path_cp = fol_path_base / 'cpout'
@@ -85,9 +84,11 @@ fol_path_cp_images = fol_path_cp / 'images'
 file_path_image = fol_path_cp / 'Image.csv'
 file_path_cell = fol_path_cp / 'cell.csv'
 file_path_varcell = fol_path_cp / 'var_cell.csv'
+file_path_varimage = fol_path_cp / 'var_Image.csv'
 file_path_experiment = fol_path_cp / 'Experiment.csv'
 file_path_object_rel = fol_path_cp / 'Object relationships.csv'
 file_path_cell_class_ut = fol_path_classifiers / 'cell_untrained.ilp'
+file_path_cpout_panel = fol_path_cp / 'panel.csv'
 
 # CP input folder
 fol_path_cp_input = fol_path_base / 'cpinput'
@@ -131,11 +132,13 @@ cp_measurements_output_files = [file_path_image,
                           file_path_cell,
                           file_path_experiment,
                           file_path_object_rel,
-                          file_path_varcell
+                          file_path_varcell,
+                          file_path_varimage
                           ]
 cp_measurements_output = cp_measurements_output_files +  [
                            fol_path_cp_masks,
                            fol_path_cp_images,
+                           file_path_cpout_panel,
                            ]
 
 
@@ -268,7 +271,7 @@ if not do_compensation:
                     
                     Measure segmentation masks
                     """,
-        'run_size': 3,
+        'run_size': 1,
         'plugins': cp_plugins,
         'pipeline': 'resources/cp4_pipelines/adapted/3_measure_mask_basic.cppipe',
         'input_files': [
@@ -302,7 +305,7 @@ else:
                     
                     Measure segmentation masks and apply compensation
                     """,
-        'run_size': 3,
+        'run_size': 1,
         'plugins': cp_plugins,
         'pipeline': 'resources/cp4_pipelines/adapted/3_measure_mask_compensation.cppipe',
         'input_files': [
@@ -535,6 +538,12 @@ rule modify_measurement_basic_pipeline:
             f.write(new_pipe)
 
 ## Varia helper
+rule move_panel_to_cpout:
+    input: csv_panel
+    output: file_path_cpout_panel
+    run:
+        shutil.copy(input[0], output[0])
+
 rule get_untrained_ilastik:
     input: fol_path_crop
     output: file_path_untrained_cellclassifier
@@ -582,7 +591,7 @@ rule download_example_data:
         fol = pathlib.Path(output[0])
         pathlib.Path(fol).mkdir(parents=True, exist_ok=True)
         for fn, fn_cache in input.items():
-            fn = fol_imc_example / fn
+            fn = fol / fn
             if ~fn.exists():
                 shutil.move(fn_cache[0], fn)
 
