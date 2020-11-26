@@ -1,8 +1,8 @@
 CellProfiler Pipeline: http://www.cellprofiler.org
 Version:5
-DateRevision:405
+DateRevision:406
 GitHash:
-ModuleCount:14
+ModuleCount:15
 HasImagePlaneDetails:False
 
 Images:[module_num:1|svn_version:'Unknown'|variable_revision_number:2|show_window:False|notes:['Select again all the files in the `tiff` folder']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
@@ -115,9 +115,9 @@ Smooth:[module_num:7|svn_version:'Unknown'|variable_revision_number:2|show_windo
 IdentifyPrimaryObjects:[module_num:8|svn_version:'Unknown'|variable_revision_number:14|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select the input image:NucFil
     Name the primary objects to be identified:Nuclei
-    Typical diameter of objects, in pixel units (Min,Max):10,30
+    Typical diameter of objects, in pixel units (Min,Max):7,25
     Discard objects outside the diameter range?:No
-    Discard objects touching the border of the image?:Yes
+    Discard objects touching the border of the image?:No
     Method to distinguish clumped objects:Shape
     Method to draw dividing lines between clumped objects:Intensity
     Size of smoothing filter:1
@@ -234,3 +234,15 @@ SaveImages:[module_num:14|svn_version:'Unknown'|variable_revision_number:15|show
     Create subfolders in the output folder?:No
     Base image folder:Elsewhere...|
     How to save the series:T (Time)
+
+CreateBatchFiles:[module_num:15|svn_version:'Unknown'|variable_revision_number:8|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:False|wants_pause:False]
+    Store batch files in default output folder?:Yes
+    Output folder path:/mnt/f2160748-a937-44bd-aca8-3adb8a839612/Data/Analysis/cp4_segmentation_example/cpout
+    Are the cluster computers running Windows?:No
+    Hidden- in batch mode:No
+    Hidden- in distributed mode:No
+    Hidden- default input folder at time of save:/home/vitoz
+    Hidden- revision number:0
+    Hidden- from old matlab:No
+    Local root path:/home/vitoz
+    Cluster root path:/home/vitoz
