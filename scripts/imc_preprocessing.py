@@ -33,8 +33,10 @@ import re
 
 # This is a pipeline to segment IMC data using Ilastik pixel classification as well as CellProfiler.
 # 
-# To run install the conda `imctools` envrionment found in `Setup/conda_imctools.yml`.
-# -> Install conda
+# To run install the conda `imctools` envrionment found in `Setup/conda_imctools.yml`.   
+# 
+# -> Install conda  
+# 
 # -> On a conda console type: `conda env create -f setup/conda_imctools.yml`
 # 
 # Start a Jupyter instance in this environment to run this Jupyter Notebook.
@@ -45,7 +47,7 @@ import re
 # This is my recomended data format as it preserves and contains all original metadata and enforces a consistent naming scheme.
 # 
 # Note that the `description` image name can be found in the `..._Acquisition_meta.csv` generated together with the ome tiffs
-# as well as in the `cpout` folder later in the script.
+# as well as in the `cpinp` folder later in the script.
 # After analysis the `Image.csv` metadata file generated in Cellprofiller will also contain the `Description` as well as other important metadata for each
 # image, such as acquisition frequency, time, location etc.
 # 
@@ -230,7 +232,7 @@ with open(file_path_prob_channels_csv, 'w') as f:
 # 
 # This uses the random crops generated in the last step.
 # 
-# 1) Make a new `pixel classification project`. Save the project file in the `ilastik` subfolder.
+# 1) Make a new `pixel classification project`. -> An example project that works with the example data can be found in the 'analysis' subfolder.
 # 
 # 2) Add the `.h5` random crops: Raw data -> Add Seperate Images -> Select all `.h5` images in the `ilastik` subfolder.
 # 
@@ -331,7 +333,7 @@ with open(file_path_prob_channels_csv, 'w') as f:
 # This will also have a spillover corrections step - stay tuned!
 # 
 # 
-# #### E) Pipeline output
+# ### E) Pipeline output
 # 
 # The pipeline output is all in the `cpout` folder.
 # 
@@ -355,10 +357,4 @@ with open(file_path_prob_channels_csv, 'w') as f:
 
 
 get_ipython().run_cell_magic('time', '', "for fol in folder_path_ome.glob('*'):\n    ome2histocat.omefolder_to_histocatfolder(fol, folder_path_histocat,\n                                    mask_folder=folder_path_analysis, mask_suffix=suffix_mask, dtype='uint16')")
-
-
-# In[ ]:
-
-
-
 
