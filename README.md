@@ -1,5 +1,6 @@
 [![DOI](https://zenodo.org/badge/103582813.svg)](https://zenodo.org/badge/latestdoi/103582813)
 # A flexible  image segmentation pipeline for heterogeneous multiplexed tissue images based on pixel classification
+
 ## Introduction
 The pipeline is based on CellProfiler (http://cellprofiler.org/, tested v4.0.6) for segmentation and Ilastik
 (http://ilastik.org/, tested v1.3.5)
@@ -35,6 +36,7 @@ on the affected projects or on this page.
         - Requires the use of the ImcPluginsCP master branch
 
 ## Citation
+d
 If you use this workflow for your research, please cite us:
 ```
 @misc{ImcSegmentationPipeline,
