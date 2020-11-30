@@ -32,4 +32,5 @@ varia:
       - 'https://polybox.ethz.ch/index.php/s/mxuWXq98MbYHgq2/download'
 
 compensation:
-    do_compensation: false
+    do_compensation: true
+    fn_spillover_matrix: resources/20170707_example_spillmat.csv
