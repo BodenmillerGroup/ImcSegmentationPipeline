@@ -5,9 +5,6 @@ input:
     - "resources/example_data"
   file_regexp: ".*\\.zip"
 
-varia:
-  fn_cell_classifier: 'resources/classifiers/cell_classifier.ilp'
-
 panel:
   path: 'resources/example_panel.csv'
   col_metal: 'Metal Tag'
@@ -33,3 +30,6 @@ varia:
     -
       - '20170905_Fluidigmworkshopfinal_SEAJa.zip'
       - 'https://polybox.ethz.ch/index.php/s/mxuWXq98MbYHgq2/download'
+
+compensation:
+    do_compensation: false

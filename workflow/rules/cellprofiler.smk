@@ -54,6 +54,10 @@ def define_cellprofiler_rules(configs_cp, folder_base,
     pat_fol_batch_combined = pat_fol_batch / 'combined'
     pat_fn_batchfile = pat_fol_batch / 'Batch_data.h5'
     pat_fn_batchgroups = pat_fol_batch / 'result.json'
+    
+    # A dummy file that enables the user to open a project
+    # to explore it interactively
+    pat_openproject = folder_base / 'cp_{batchname}_open.sh'
 
     # Define file functions
     def fkt_fol_plugins(wildcards):
@@ -243,3 +247,23 @@ def define_cellprofiler_rules(configs_cp, folder_base,
               fkt_input=fkt_fols_run
         run:
             hpr.combine_directories(params.fkt_input, output[0])
+            
+    rule open_project:
+        input:
+             pipeline=fkt_fn_pipeline,
+             plugins=pat_fol_plugins,
+             file_list=pat_fn_filelist
+        output:
+             pat_openproject
+        params:
+              inputfolder=fkt_input_folder,
+        shell:
+             """
+             echo "\
+                 cellprofiler \
+                     -p {input.pipeline} \
+                     --plugins-directory={input.plugins} \
+                     -i {params.inputfolder} \
+                     --file-list={input.file_list}" > {output[0]}
+             chmod +x {output[0]}
+             """

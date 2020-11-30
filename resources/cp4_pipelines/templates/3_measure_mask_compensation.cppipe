@@ -1,8 +1,8 @@
 CellProfiler Pipeline: http://www.cellprofiler.org
 Version:5
-DateRevision:403
+DateRevision:406
 GitHash:
-ModuleCount:20
+ModuleCount:23
 HasImagePlaneDetails:False
 
 Images:[module_num:1|svn_version:'Unknown'|variable_revision_number:2|show_window:False|notes:['Choose the whole `tiffs` folder.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
@@ -42,10 +42,10 @@ NamesAndTypes:[module_num:3|svn_version:'Unknown'|variable_revision_number:8|sho
     Assign a name to:Images matching rules
     Select the image type:Grayscale image
     Name to assign these images:DNA
-    Match metadata:[{'cellmask': 'acname', 'FullStack': 'acname', 'ProbabStack': 'acname'}, {'cellmask': 'acid', 'FullStack': 'acid', 'ProbabStack': 'acid'}]
+    Match metadata:[{'cellmask': 'acname', 'FullStack': 'acname', 'ProbabStack': 'acname', 'FullStackSm': 'acname'}, {'cellmask': 'acid', 'FullStack': 'acid', 'ProbabStack': 'acid', 'FullStackSm': 'acid'}]
     Image set matching method:Metadata
     Set intensity range from:Image metadata
-    Assignments count:3
+    Assignments count:4
     Single images count:0
     Maximum intensity:1
     Process as 3D?:No
@@ -56,6 +56,12 @@ NamesAndTypes:[module_num:3|svn_version:'Unknown'|variable_revision_number:8|sho
     Name to assign these images:FullStack
     Name to assign these objects:Cell
     Select the image type:Color image
+    Set intensity range from:Image bit-depth
+    Maximum intensity:255.0
+    Select the rule criteria:and (file does endwith "_full_sm.tiff")
+    Name to assign these images:FullStackSm
+    Name to assign these objects:Cell
+    Select the image type:Grayscale image
     Set intensity range from:Image bit-depth
     Maximum intensity:255.0
     Select the rule criteria:and (file does endwith "_Probabilities.tiff")
@@ -108,7 +114,13 @@ SmoothMultichannel:[module_num:7|svn_version:'Unknown'|variable_revision_number:
     Hot pixel threshold:50.0
     Scale hot pixel threshold to image scale?:Yes
 
-MeasureObjectNeighbors:[module_num:8|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:['Measures the neightbourhood graph.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+CorrectSpilloverApply:[module_num:8|svn_version:'Unknown'|variable_revision_number:1|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select the input image:FullStackFiltered
+    Name the output image:FullStackComp
+    Select the spillover function image:FullStackSm
+    Spillover correction method:NonNegativeLeastSquares
+
+MeasureObjectNeighbors:[module_num:9|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:['Measures the neightbourhood graph.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select objects to measure:cell
     Select neighboring objects to measure:cell
     Method to determine neighbors:Within a specified distance
@@ -121,35 +133,42 @@ MeasureObjectNeighbors:[module_num:8|svn_version:'Unknown'|variable_revision_num
     Name the output image:PercentTouching
     Select colormap:Default
 
-MeasureObjectIntensityMultichannel:[module_num:9|svn_version:'Unknown'|variable_revision_number:4|show_window:False|notes:["Measures the object intensities. Each channel will have a number corresponding to the plane number. The metals corresponding to the indices, e.g. _c1, _c2, can be found by looking at the `_full.csv` files in the `tiffs` folder.'", '', "Adapt the number of channels corresponding to the number of planes in the stack. Can be again seen in the  `_full.csv` files in the `tiffs` folder.'"]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
-    Select images to measure:FullStack, FullStackFiltered
+MeasureObjectIntensityMultichannel:[module_num:10|svn_version:'Unknown'|variable_revision_number:4|show_window:False|notes:["Measures the object intensities. Each channel will have a number corresponding to the plane number. The metals corresponding to the indices, e.g. _c1, _c2, can be found by looking at the `_full.csv` files in the `tiffs` folder.'", '', "Adapt the number of channels corresponding to the number of planes in the stack. Can be again seen in the  `_full.csv` files in the `tiffs` folder.'"]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select images to measure:FullStack, FullStackComp, FullStackFiltered
     Select objects to measure:cell
     How many channels does the image have?:{nchan_full}
 
-MeasureObjectIntensityMultichannel:[module_num:10|svn_version:'Unknown'|variable_revision_number:4|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+MeasureObjectIntensityMultichannel:[module_num:11|svn_version:'Unknown'|variable_revision_number:4|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select images to measure:ProbSegmentation
     Select objects to measure:cell
     How many channels does the image have?:3
 
-MeasureImageIntensityMultichannel:[module_num:11|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:["Measures the object intensities. Each channel will have a number corresponding to the plane number. The metals corresponding to the indices, e.g. _c1, _c2, can be found by looking at the `_full.csv` files in the `tiffs` folder.'", '', "Adapt the number of channels as needed! Can be again seen in the  `_full.csv` files in the `tiffs` folder.'"]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
-    Select images to measure:FullStackFiltered, FullStack
+MeasureImageIntensityMultichannel:[module_num:12|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:["Measures the object intensities. Each channel will have a number corresponding to the plane number. The metals corresponding to the indices, e.g. _c1, _c2, can be found by looking at the `_full.csv` files in the `tiffs` folder.'", '', "Adapt the number of channels as needed! Can be again seen in the  `_full.csv` files in the `tiffs` folder.'"]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select images to measure:FullStackComp
     Measure the intensity only from areas enclosed by objects?:No
     Select input object sets:
     How many channels does the image have?:{nchan_full}
 
-MeasureImageIntensityMultichannel:[module_num:12|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+MeasureImageIntensityMultichannel:[module_num:13|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select images to measure:ProbSegmentation
     Measure the intensity only from areas enclosed by objects?:No
     Select input object sets:
     How many channels does the image have?:3
 
-ConvertObjectsToImage:[module_num:13|svn_version:'Unknown'|variable_revision_number:1|show_window:False|notes:['Save the mask together with the output, e.g. for visualizations.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+CorrectSpilloverMeasurements:[module_num:14|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select Object:cell
+    Select the measurment to correct for spillover:Intensity_MeanIntensity_FullStackFiltered
+    Name the output compmeasurement suffix:Comp
+    Select the spillover function image:FullStackSm
+    Spillover correction method:NonNegativeLeastSquares
+
+ConvertObjectsToImage:[module_num:15|svn_version:'Unknown'|variable_revision_number:1|show_window:False|notes:['Save the mask together with the output, e.g. for visualizations.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select the input objects:cell
     Name the output image:CellImage
     Select the color format:uint16
     Select the colormap:Default
 
-SaveImages:[module_num:14|svn_version:'Unknown'|variable_revision_number:15|show_window:False|notes:['Do the mask saving.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+SaveImages:[module_num:16|svn_version:'Unknown'|variable_revision_number:15|show_window:False|notes:['Do the mask saving.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select the type of image to save:Image
     Select the image to save:CellImage
     Select method for constructing file names:From image filename
@@ -168,7 +187,7 @@ SaveImages:[module_num:14|svn_version:'Unknown'|variable_revision_number:15|show
     Base image folder:Elsewhere...|
     How to save the series:T (Time)
 
-SaveImages:[module_num:15|svn_version:'Unknown'|variable_revision_number:15|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+SaveImages:[module_num:17|svn_version:'Unknown'|variable_revision_number:15|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select the type of image to save:Image
     Select the image to save:FullStackFiltered
     Select method for constructing file names:From image filename
@@ -187,7 +206,26 @@ SaveImages:[module_num:15|svn_version:'Unknown'|variable_revision_number:15|show
     Base image folder:Elsewhere...|
     How to save the series:T (Time)
 
-SaveImages:[module_num:16|svn_version:'Unknown'|variable_revision_number:15|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+SaveImages:[module_num:18|svn_version:'Unknown'|variable_revision_number:15|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select the type of image to save:Image
+    Select the image to save:FullStackComp
+    Select method for constructing file names:From image filename
+    Select image name for file prefix:FullStack
+    Enter single file name:OrigBlue
+    Number of digits:4
+    Append a suffix to the image file name?:Yes
+    Text to append to the image name:FilteredComp
+    Saved file format:tiff
+    Output file location:Default Output Folder sub-folder|images
+    Image bit depth:16-bit integer
+    Overwrite existing files without warning?:Yes
+    When to save:Every cycle
+    Record the file and path information to the saved image?:Yes
+    Create subfolders in the output folder?:No
+    Base image folder:Elsewhere...|
+    How to save the series:T (Time)
+
+SaveImages:[module_num:19|svn_version:'Unknown'|variable_revision_number:15|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select the type of image to save:Image
     Select the image to save:ProbSegmentation
     Select method for constructing file names:From image filename
@@ -206,7 +244,7 @@ SaveImages:[module_num:16|svn_version:'Unknown'|variable_revision_number:15|show
     Base image folder:Elsewhere...|
     How to save the series:T (Time)
 
-ExportToSpreadsheet:[module_num:17|svn_version:'Unknown'|variable_revision_number:13|show_window:False|notes:['Save the data to csv.', "Note that the intensity values are all scaled by a scaling factor corresponding to the bit depth (can be found in the Image.csv 'Scale' column.", 'For uint16 everything is divided by 2**16 = 65535']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+ExportToSpreadsheet:[module_num:20|svn_version:'Unknown'|variable_revision_number:13|show_window:False|notes:['Save the data to csv.', "Note that the intensity values are all scaled by a scaling factor corresponding to the bit depth (can be found in the Image.csv 'Scale' column.", 'For uint16 everything is divided by 2**16 = 65535']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select the column delimiter:Comma (",")
     Add image metadata columns to your object data file?:No
     Add image file and folder names to your object data file?:No
@@ -230,7 +268,7 @@ ExportToSpreadsheet:[module_num:17|svn_version:'Unknown'|variable_revision_numbe
     File name:DATA.csv
     Use the object name for the file name?:Yes
 
-ExportToSpreadsheet:[module_num:18|svn_version:'Unknown'|variable_revision_number:13|show_window:False|notes:['This is necessary to also save the `Object Relationships` table = neightbourhood graph structure.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+ExportToSpreadsheet:[module_num:21|svn_version:'Unknown'|variable_revision_number:13|show_window:False|notes:['This is necessary to also save the `Object Relationships` table = neightbourhood graph structure.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select the column delimiter:Comma (",")
     Add image metadata columns to your object data file?:No
     Add image file and folder names to your object data file?:No
@@ -254,20 +292,20 @@ ExportToSpreadsheet:[module_num:18|svn_version:'Unknown'|variable_revision_numbe
     File name:DATA.csv
     Use the object name for the file name?:Yes
 
-ExportVarCsv:[module_num:19|svn_version:'Unknown'|variable_revision_number:2|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+ExportVarCsv:[module_num:22|svn_version:'Unknown'|variable_revision_number:2|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Output file location:Default Output Folder|
     Add a prefix to file names?:Yes
     Filename prefix:var_
     Overwrite existing files without warning?:No
     Extraction method count:2
-    Select Images where this channel identifier applies:FullStack, FullStackFiltered
+    Select Images where this channel identifier applies:FullStack, FullStackFiltered, FullStackComp
     Metadata file location:Default Input Folder|Git/ImcSegmentationPipelineHubMap/results/cpout
     Metadata file name:full_channelmeta.csv
     Select Images where this channel identifier applies:ProbSegmentation, ProbabStack
     Metadata file location:Default Input Folder|
     Metadata file name:probab_channelmeta_manual.csv
 
-CreateBatchFiles:[module_num:20|svn_version:'Unknown'|variable_revision_number:8|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+CreateBatchFiles:[module_num:23|svn_version:'Unknown'|variable_revision_number:8|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Store batch files in default output folder?:Yes
     Output folder path:/mnt/f2160748-a937-44bd-aca8-3adb8a839612/Data/Analysis/cp4_segmentation_example/cpout
     Are the cluster computers running Windows?:No
