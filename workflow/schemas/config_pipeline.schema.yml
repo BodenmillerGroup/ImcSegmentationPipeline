@@ -127,6 +127,11 @@ properties:
           default: ""
           description: folder or zipped folder containing compensation acquisitions
 
+        folder_spillover_slide_acs_url:
+          type: string
+          default: ""
+          description: url to the ziped folder containing compensation acquisitions
+
         fn_spillover_matrix:
           type: string
           default: ""
