@@ -117,7 +117,7 @@ IdentifyPrimaryObjects:[module_num:8|svn_version:'Unknown'|variable_revision_num
     Name the primary objects to be identified:Nuclei
     Typical diameter of objects, in pixel units (Min,Max):7,25
     Discard objects outside the diameter range?:No
-    Discard objects touching the border of the image?:Yes
+    Discard objects touching the border of the image?:No
     Method to distinguish clumped objects:Shape
     Method to draw dividing lines between clumped objects:Intensity
     Size of smoothing filter:1
@@ -151,7 +151,7 @@ IdentifyPrimaryObjects:[module_num:8|svn_version:'Unknown'|variable_revision_num
 
 MeasureObjectSizeShape:[module_num:9|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select object sets to measure:Nuclei
-    Calculate the Zernike features?:Yes
+    Calculate the Zernike features?:No
     Calculate the advanced features?:No
 
 FilterObjects:[module_num:10|svn_version:'Unknown'|variable_revision_number:8|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
