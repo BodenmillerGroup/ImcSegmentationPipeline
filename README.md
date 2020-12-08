@@ -47,6 +47,17 @@ For installation details, see the [instructions in the Snakemake documentation](
 Configure the workflow according to your needs via editing the files in the `config/` folder.
 Adjust `config.yaml` to configure the workflow execution.
 
+The schema at `workflow/schemas/config_pipeline.schema.yml` explains all the options.
+
+To enable the 'compensation' workflow according to Chevrier et al 2018, need to configure either:
+- a spillover matrix: set path in configfile via `compensation/fn_spillover_matrix`
+
+- or: a spillover acquisitions acquired according to: https://docs.google.com/document/d/195eViUqHoYRKrkoy_NkIdJPmyx1-OuDaSjiWQBy4weA/edit?usp=sharing
+    set configfile:
+        - `compensation/folder_spillover_slide_acs`
+        - `compensation/col_panel_spillover` -> column name of a boolean column in the 'panel.csv' indicating
+            which metals were spotted for the spillover acquisition
+
 ### Step 4: Execute workflow
 
 Activate the conda environment:
@@ -88,13 +99,32 @@ snakemake download_example_data --use-singularity --cores 32
 ### Step: Run the pipeline until the Ilastik classifier
 
 ```
-snakemake prepare_cell_classifier --use-singularity --cores 32
+snakemake get_untrained_ilastik --use-singularity --cores 32
 ```
 
 This will generate random crops to train the Ilastik cell pixel classifier in `results/ilastik_training_data`
+and produce an untrained classifier at: `untrained.ilp`
 
-Use these cropped images to train an ilastik classifier for pixel classes: `nuclei`, `cytoplasm/membrane/nucleiborder`, `background`
-and save the trained classifier under the `fn_cell_classifier` in the configuration file.
+Open the classifier in Ilastik and save the trained classifier under the filename specified as:
+`fn_cell_classifier` in the configuration file.
+
+### Step: Open cellprofiler pipeline in gui
+
+To open the cellprofiler GUI at any step, run:
+```
+snakemake results/cp_{batchname}_open.sh --use-singularity --cores 32
+```
+replacing `{batchname}` with the cellprofiler step name you want to inspect.
+Eg. run
+```
+snakemake results/cp_segmasks_open.sh --use-singularity --cores 32
+```
+will open the segmentation step.
+
+This will generate a script `results/cp_segmasks_open.sh` that will open cellprofiler with all
+paths, plugins and pipeline set as they would be when running the Snakemake workflow.
+
+Note: this requires the `cellprofiler` command to be installed and working.
 
 ### Step: UZH cluster: How to run this workflow on a slurm cluster (UZH science cluster)
 
