@@ -20,7 +20,8 @@ def define_ilastik_rules(configs_ilastik, folder_base,
              'output_filename': str, # output filename format
              'export_source': str, # ilastik command line argument
              'export_dtype': str, # ilastik command line argument
-             'pipeline_result_drange': str, # ilastik command line argumetn
+             'pipeline_result_drange': str, # ilastik command line argument
+             'export_drange': '"(0, 65535)"', # ilastik command line argumetn
              'input_files: str list/fkt, # snakemake input file definition
              'output_files': str, # snakemake output file pattern
     }
@@ -49,7 +50,7 @@ def define_ilastik_rules(configs_ilastik, folder_base,
     # Define file functions
     def fkt_fn_project(wildcards):
         """Function to retrieve project filename"""
-        return configs_ilastik[wildcards.batchname]['project']
+        return str(configs_ilastik[wildcards.batchname]['project'])
 
     def fkt_resourcs(wildcards):
         return configs_ilastik[wildcards.batchname].get('resources', {})
@@ -141,18 +142,20 @@ def define_ilastik_rules(configs_ilastik, folder_base,
             mem_mb = fkt_resources_mem_mb
         params:
             bin_ilastik=bin_ilastik,
-            output_format=lambda wildcards: configs_ilastik[wildcards.batchname]['output_format'],
+            output_format=lambda wildcards: configs_ilastik[wildcards.batchname].get('output_format', "tiff"),
             output_filename=lambda wildcards: configs_ilastik[wildcards.batchname]['output_filename'],
-            export_source=lambda wildcards: configs_ilastik[wildcards.batchname]['export_source'],
-            export_dtype=lambda wildcards: configs_ilastik[wildcards.batchname]['export_dtype'],
-            pipeline_result_drange=lambda wildcards: configs_ilastik[wildcards.batchname]['pipeline_result_drange'],
-            fkt_fns = fkt_fns_run
+            export_source=lambda wildcards: configs_ilastik[wildcards.batchname].get('export_source', "Probabilities"),
+            export_dtype=lambda wildcards: configs_ilastik[wildcards.batchname].get('export_dtype', "uint16"),
+            export_drange=lambda wildcards: configs_ilastik[wildcards.batchname].get('export_drange', '"[0, 65535]"'),
+            pipeline_result_drange=lambda wildcards: configs_ilastik[wildcards.batchname].get('pipeline_result_drange', '"[0.0, 1.0]"'),
+            fkt_fns = lambda wildcards: [f'"{fn}"' for fn in fkt_fns_run(wildcards)]
         shell:
             'LAZYFLOW_THREADS={threads} LAZYFLOW_TOTAL_RAM_MB={resources.mem_mb} {params.bin_ilastik} --headless --project={input.project} '
             '--output_format={params.output_format} '
             '--output_filename_format={output.outfolder}/{params.output_filename} '
             '--export_source={params.export_source} '
             '--export_dtype={params.export_dtype} '
+            '--export_drange={params.export_drange} '
             '--pipeline_result_drange={params.pipeline_result_drange} '
             '--readonly 1 '
             '{params.fkt_fns}'
