@@ -27,13 +27,19 @@ you to be considerate and give us and others feedback if you find a bug or issue
 on the affected projects or on this page.
 
 ## Changelog
-- v1.0:
+- v2.0:
     - Change to imctools v2:
         - Changes the structure of the folder to the new format, changing the
-          naming of the .ome.tiff files
+          naming of the .ome.tiff files => If you use this pipeline you need to re-generate the OME tiff
           
     - Change to Cellprofiler v4:
-        - Requires the use of the ImcPluginsCP master branch
+        - Requires the use of the ImcPluginsCP master branch or a release > v.4.1
+        
+    - Varia:
+        - Updated documentation
+        - Adds var_Cells.csv containing metadata for the measurements
+        - Adds panel to cpout folder
+
 
 ## Citation
 d
