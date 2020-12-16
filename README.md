@@ -33,6 +33,15 @@ Make sure this software packages work.
 1. Create a new github repository using this workflow [as a template](https://help.github.com/en/articles/creating-a-repository-from-a-template).
 2. [Clone](https://help.github.com/en/articles/cloning-a-repository) the newly created repository
 to your local system, into the place where you want to perform the data analysis.
+3. Checkout the Snakemake branch:
+```
+git checkout snakemake
+```   
+4. Checkout the ImcPluginsCP submodule:
+```
+git submodule update --init --recursive
+```
+   
 
 
 ###  Step2: Install Snakemake
