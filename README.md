@@ -8,6 +8,9 @@ for pixel classification. It is streamlined by using the specially developed imc
 package (https://github.com/BodenmillerGroup/imctools, >v2.1) as well as custom CellProfiler modules 
 (https://github.com/BodenmillerGroup/ImcPluginsCP, release v4.2.1).
 
+This repository showcases the basis of the workflow with step-by-step instructions. To run this more automatized, we recommend
+our Snakemake implementation: https://github.com/BodenmillerGroup/ImcSegmentationSnakemake
+
 This pipeline was developed in the Bodenmiller laboratory at the University of Zurich (http://www.bodenmillerlab.org/)
 to segment hundreds of highly multiplexed imaging mass cytometry (IMC) images.
 However we think that this concept also works well for other multiplexed imaging modalities..
