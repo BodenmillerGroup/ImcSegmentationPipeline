@@ -12,9 +12,6 @@ To run this more automatized, we recommend our Snakemake implementation: https:/
 This pipeline was developed in the Bodenmiller laboratory at the University of Zurich (http://www.bodenmillerlab.org/) to segment hundreds of highly multiplexed imaging mass cytometry (IMC) images.
 However we think that this concept also works well for other multiplexed imaging modalities.
 
-We freely share this pipeline in the hope that it will be useful for others to perform high quality image segmentation and serve as a basis to develop more complicated open source IMC image processing workflows. 
-In return we would like you to be considerate and give us and others feedback if you find a bug/issue and [raise a GitHub Issue](https://github.com/BodenmillerGroup/ImcSegmentationPipeline/issues) on the affected projects or on this page.
-
 ## Usage
 
 All pre-processing and downstream analysis steps are summarized in the `ImcSegmentationPipeline.ipynb` notebook.
@@ -71,7 +68,11 @@ The slides briefly explain why we chose this approach to image segmentation and 
         - Updated documentation
         - Adds var_Cells.csv containing metadata for the measurements
         - Adds panel to cpout folder
+        
+## License
 
+We [freely share](LICENSE) this pipeline in the hope that it will be useful for others to perform high quality image segmentation and serve as a basis to develop more complicated open source IMC image processing workflows. 
+In return we would like you to be considerate and give us and others feedback if you find a bug/issue and [raise a GitHub Issue](https://github.com/BodenmillerGroup/ImcSegmentationPipeline/issues) on the affected projects or on this page.
 
 ## Citation
 
