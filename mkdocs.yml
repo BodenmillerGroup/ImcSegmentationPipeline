@@ -18,6 +18,7 @@ nav:
     - Pre-processing: prepro.md
     - Ilastik training: ilastik.md
     - CellProfiler analysis: cellprofiler.md
+    - Output files: output.md
     
 markdown_extensions:
     - footnotes

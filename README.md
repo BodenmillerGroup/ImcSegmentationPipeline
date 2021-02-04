@@ -17,7 +17,9 @@ However we think that this concept also works well for other multiplexed imaging
 All pre-processing and downstream analysis steps are summarized in the `ImcSegmentationPipeline.ipynb` notebook.
 A rendered version of this notebook can be found here: https://nbviewer.jupyter.org/github/BodenmillerGroup/ImcSegmentationPipeline/blob/main/ImcSegmentationPipeline.ipynb
 
-Before running the analysis, you will need to setup the environment:
+For the main part of the analysis, you will need to install [Ilastik](https://www.ilastik.org/download.html) and [CellProfiler](https://cellprofiler.org/releases).
+
+Before being able to pre-process the data, you will need to setup the environment:
 
 1. [Install conda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/)
 
