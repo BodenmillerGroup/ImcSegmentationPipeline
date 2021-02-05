@@ -1,8 +1,8 @@
 on: 
   push: 
-    branches: [master] 
+    branches: [Devel_nils] 
   pull_request:
-    branches: [master]
+    branches: [Devel_nils]
 
 name: docs
 
