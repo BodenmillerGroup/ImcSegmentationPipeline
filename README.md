@@ -44,7 +44,7 @@ jupyter notebook
 ```
 
 This will automatically open a jupyter instance at `http://localhost:8888` in your browser.
-From there, you can open the `ImcSegmentationPipeline.ipynb` notebook and start the analysis.
+From there, you can open the `preprocessing.ipynb` notebook and start the analysis.
 
 In brief, the main analysis steps include:
 
