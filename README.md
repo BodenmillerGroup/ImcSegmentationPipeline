@@ -8,6 +8,9 @@ for pixel classification. It is streamlined by using the specially developed imc
 package (https://github.com/BodenmillerGroup/imctools, >v2.1) as well as custom CellProfiler modules 
 (https://github.com/BodenmillerGroup/ImcPluginsCP, release v4.2.1).
 
+This repository showcases the basis of the workflow with step-by-step instructions. To run this more automatized, we recommend
+our Snakemake implementation: https://github.com/BodenmillerGroup/ImcSegmentationSnakemake
+
 This pipeline was developed in the Bodenmiller laboratory at the University of Zurich (http://www.bodenmillerlab.org/)
 to segment hundreds of highly multiplexed imaging mass cytometry (IMC) images.
 However we think that this concept also works well for other multiplexed imaging modalities..
@@ -27,13 +30,23 @@ you to be considerate and give us and others feedback if you find a bug or issue
 on the affected projects or on this page.
 
 ## Changelog
-- v1.0:
+- v2.1:
+    - Bugfixes:
+        - 1_prepare_ilastik: Fix range to 0-1 for mean image, preventing out of range errors
+
+- v2.0:
     - Change to imctools v2:
         - Changes the structure of the folder to the new format, changing the
-          naming of the .ome.tiff files
+          naming of the .ome.tiff files => If you use this pipeline you need to re-generate the OME tiff
           
     - Change to Cellprofiler v4:
-        - Requires the use of the ImcPluginsCP master branch
+        - Requires the use of the ImcPluginsCP master branch or a release > v.4.1
+        
+    - Varia:
+        - Updated documentation
+        - Adds var_Cells.csv containing metadata for the measurements
+        - Adds panel to cpout folder
+
 
 ## Citation
 d
