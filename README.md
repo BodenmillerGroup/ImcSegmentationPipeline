@@ -48,7 +48,10 @@ From there, you can open the `preprocessing.ipynb` notebook and start the analys
 
 In brief, the main analysis steps include:
 
-1. 
+1. Pre-processing of the raw images to create `.ome.tiffs` and `.tiff` stacks for ilastik training and measurement (python).   
+2. Ilastik pixel classification based on random crops of the images (CellProfiler, Ilastik).  
+3. Image segmentation based on the classification probabilities (CellProfiler).  
+4. Measurement and export of cell-specific features, such as marker expression (CellProfiler).  
 
 ## Documentation
 

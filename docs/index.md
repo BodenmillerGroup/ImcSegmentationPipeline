@@ -39,13 +39,21 @@ jupyter notebook
 
 ## Pre processing
 
+To work with the generated imaging data, they will first be converted into `.ome.tiff`, multi-channel `.tiff` and single-channel `.tiff` formats that are compatible with most imaging software.
+A key step of the pre-processing pipeline is also the selection of channels for (i) downstream cell measurements and (ii) ilastik pixel classification.
+
+Please follow the [pre-processing guide](prepro.md) for more information. 
+
 ## Ilastik training
 
 ## CellProfiler image segmentation
 
+![full_pipeline](img/Full_pipeline.png)
+*An overview of the full segmentation pipeline*
+
 ## Contributors
 
-Vito Zanotelli [:fontawesome-brands-github:](https://github.com/votti) [:fontawesome-brands-twitter:](https://twitter.com/ZanotelliVRT) []
+Vito Zanotelli [:fontawesome-brands-github:](https://github.com/votti) [:fontawesome-brands-twitter:](https://twitter.com/ZanotelliVRT)
 Nils Eling [:fontawesome-brands-github:](https://github.com/nilseling) [:fontawesome-brands-twitter:](https://twitter.com/NilsEling) [:fontawesome-solid-home:](https://nilseling.github.io/)
 
 Whoever wants to contribute
