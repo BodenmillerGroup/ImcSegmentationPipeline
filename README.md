@@ -52,6 +52,8 @@ In brief, the main analysis steps include:
 
 ## Documentation
 
+For a more detailed overview on the individual analysis steps, please visit [https://bodenmillergroup.github.io/ImcSegmentationPipeline/](https://bodenmillergroup.github.io/ImcSegmentationPipeline/).
+
 This pipeline was presented at the 2019 Imaging Mass Cytometry User Group Meeting.
 [The slides can be downloaded here](https://drive.google.com/file/d/1ajPzlJ2CUj6sFYSOq0HR2dOJehHIlCJt/view).
 The slides briefly explain why we chose this approach to image segmentation and provide help to run the pipeline.

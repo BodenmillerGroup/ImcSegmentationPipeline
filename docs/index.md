@@ -11,6 +11,7 @@ For a more detailed introduction, please refer to the [Introduction](intro.md).
 ## Getting started
 
 For the main part of the analysis, you will need to install [Ilastik](https://www.ilastik.org/download.html) and [CellProfiler](https://cellprofiler.org/releases).
+The current setup is tested with Ilastik v1.3.5 and CellProfiler v4.0.6.
 
 Furthermore, before running the analysis, you will need to setup a `conda` environment:
 
