@@ -8,6 +8,8 @@ The segmentation pipeline is accompanied by the helper python package [imctools]
 The pipeline is entirely build on open source tool, can be easily adapted to more specific problems and forms a solid basis for quantitative multiplexed tissue image analysis.
 For a more detailed introduction, please refer to the [Introduction](intro.md).
 
+This site gives detailed explanations on the 5 step (A-E, [see below](#overview)) pipeline to generate single-cell measurements from raw imageing data. 
+
 ## Getting started
 
 For the main part of the analysis, you will need to install [Ilastik](https://www.ilastik.org/download.html) and [CellProfiler](https://cellprofiler.org/releases).
@@ -37,19 +39,19 @@ conda activate ImcSegmentationPipeline
 jupyter notebook
 ```
 
-## Pre processing
+## A - Pre processing
 
 To work with the generated imaging data, they will first be converted into `.ome.tiff`, multi-channel `.tiff` and single-channel `.tiff` formats that are compatible with most imaging software.
 A key step of the pre-processing pipeline is also the selection of channels for (i) downstream cell measurements and (ii) ilastik pixel classification.
 
 Please follow the [pre-processing guide](prepro.md) for more information. 
 
-## Ilastik training
+## B/C - Ilastik training
 
-## CellProfiler image segmentation
+## D/E - CellProfiler image segmentation
 
 ![full_pipeline](img/Full_pipeline.png)
-*An overview of the full segmentation pipeline*
+*<a name="overview">An overview of the full segmentation pipeline</a>*
 
 ## Contributors
 
@@ -61,5 +63,3 @@ Whoever wants to contribute
 ## Citation
 
 To come...
-
-[^fn1]: Giesen C. _et al._ (2014) Highly multiplexed imaging of tumor tissues with subcellular resolution by mass cytometry. Nat. Methods, 11, 417–422.
