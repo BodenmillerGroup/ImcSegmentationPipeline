@@ -10,6 +10,13 @@ For a more detailed introduction, please refer to the [Introduction](intro.md).
 
 This site gives detailed explanations on the 5 step (A-E, [see below](#overview)) pipeline to generate single-cell measurements from raw imageing data. 
 
+## Critical notes
+
+There are some points that need to be considered when using this pipeline:
+
+1. The input files need to be .zip folders that contain the .mcd files and .txt files (see the [pre processing section](prepro.md))
+2. It is recommended to acquire 5 or more channels to avoid potential downstream problems where images are considered to be of the RGBA type (red, green, blue, alpha).
+
 ## Getting started
 
 For the main part of the analysis, you will need to install [Ilastik](https://www.ilastik.org/download.html) and [CellProfiler](https://cellprofiler.org/releases).
@@ -38,6 +45,10 @@ conda env create -f conda_imctools.yml
 conda activate ImcSegmentationPipeline
 jupyter notebook
 ```
+
+## Image data types
+
+Throughout this pipeline, images in `.tiff` format are saved as unsigned 16-bit images with an intensity range of `0 - 65535`. For an overview on common image data types, please refer to the [scikit-image documentation](https://scikit-image.org/docs/dev/user_guide/data_types.html). 
 
 ## A - Pre processing
 
