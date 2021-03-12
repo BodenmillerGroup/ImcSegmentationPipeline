@@ -12,10 +12,19 @@ The following parts of this module need to be adapted:
 
 1) File list: choose all files in the `tiff` subfolder
 
-2) Default Output Folder: Choose the `ilastik` subfolder
+2) Click on default output settings and specify the Default input 
+
+
+Default Output Folder: Choose the `ilastik` subfolder
 
 No further parts need to be adapted.
 In our 16 core computer this step takes ca 5 min for the example dataset.
+
+**TODO: more detailed explanation what to do and what the steps are**
+
+1. hot pixel removal
+2. Summarize stack: What, why and does it matter for the pixel-classification?
+
 
 ## Train a pixel classifier
 
@@ -27,7 +36,9 @@ This uses the random crops generated in the last step.
 
 3) Proceed to `Feature Selection`
 
-4) Select suitable features (or just everything >= 1 pixels)
+For a detailed overview on ilastik pixel classification refer to the [manual](https://www.ilastik.org/documentation/pixelclassification/pixelclassification).
+
+4) Select suitable features (or just everything sigma >= 1 pixels) **What do you mean?**
 
 5) Proceed to the classification:
 

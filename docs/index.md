@@ -17,6 +17,11 @@ There are some points that need to be considered when using this pipeline:
 1. The input files need to be .zip folders that contain the .mcd files and .txt files (see the [pre processing section](prepro.md))
 2. It is recommended to acquire 5 or more channels to avoid potential downstream problems where images are considered to be of the RGBA type (red, green, blue, alpha).
 
+## Documentation
+
+The guide displayed here gives detailed information on how to  handle IMC images.
+For additiona information on `CellProfiler`, please refer to their [manuals](https://cellprofiler.org/manuals).
+
 ## Getting started
 
 For the main part of the analysis, you will need to install [Ilastik](https://www.ilastik.org/download.html) and [CellProfiler](https://cellprofiler.org/releases).

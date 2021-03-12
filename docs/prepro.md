@@ -43,6 +43,10 @@ Here, please specify all channels with `1` that you want to have included in the
 The `1` in the `ilastik` column indicates channels that will be used for Ilastik pixel classification therefore being used for image segmentation.
 During the pre-processing steps, you will need to specify the name of the panel column that contains the metal isotopes, the name of the column that contains the `1` or `0` entries for the channels to be analysed and the name of the column that indicates the channels used for Ilastik training as seen above.
 
+**Naming conventions**
+
+The pipeline relies on `_ilastik` as ilastik suffix. 
+
 ## Conversion fom .mcd to .ome.tiff files
 
 In the first step of the segmentation pipeline, raw `.mcd` files are converted into an `.ome.tiff` format [^fn1].
