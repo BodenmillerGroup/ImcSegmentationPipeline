@@ -36,7 +36,15 @@ cd ImcSegmentationPipeline
 conda env create -f conda_imctools.yml
 ```
 
-4. Activate the environment and start a jupyter instance
+4. Obtain the IMC-specific [CellProfiler plugins](https://github.com/BodenmillerGroup/ImcPluginsCP) by directly downloading them via:
+
+```bash
+git submodule update --init --recursive
+```
+
+5. Configure `CellProfiler` to use the plugins by opening the `CellProfiler` GUI, selecting `Preferences` and setting the `CellProfiler plugins directory` to `PATHTO/ImcSegmentationPipeline/resources/cp_plugins/ImcPluginsCP/plugins`
+
+6. Activate the environment created in .3 and start a jupyter instance
 
 ```bash
 conda activate ImcSegmentationPipeline
@@ -44,7 +52,7 @@ jupyter notebook
 ```
 
 This will automatically open a jupyter instance at `http://localhost:8888` in your browser.
-From there, you can open the `preprocessing.ipynb` notebook and start the analysis.
+From there, you can open the `preprocessing.ipynb` notebook and start the data pre-processing.
 
 In brief, the main analysis steps include:
 

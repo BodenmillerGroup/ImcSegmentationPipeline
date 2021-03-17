@@ -44,7 +44,15 @@ cd ImcSegmentationPipeline
 conda env create -f conda_imctools.yml
 ```
 
-4. Activate the environment and start a jupyter instance
+4. Obtain the IMC-specific [CellProfiler plugins](https://github.com/BodenmillerGroup/ImcPluginsCP) by directly downloading them via:
+
+```bash
+git submodule update --init --recursive
+```
+
+5. Configure `CellProfiler` to use the plugins by opening the `CellProfiler` GUI, selecting `Preferences` and setting the `CellProfiler plugins directory` to `PATHTO/ImcSegmentationPipeline/resources/cp_plugins/ImcPluginsCP/plugins`
+
+6. Activate the environment created in .3 and start a jupyter instance
 
 ```bash
 conda activate ImcSegmentationPipeline
@@ -71,7 +79,7 @@ Please follow the [pre-processing guide](prepro.md) for more information.
 
 ## Contributors
 
-Vito Zanotelli [:fontawesome-brands-github:](https://github.com/votti) [:fontawesome-brands-twitter:](https://twitter.com/ZanotelliVRT)
+Vito Zanotelli [:fontawesome-brands-github:](https://github.com/votti) [:fontawesome-brands-twitter:](https://twitter.com/ZanotelliVRT)    
 Nils Eling [:fontawesome-brands-github:](https://github.com/nilseling) [:fontawesome-brands-twitter:](https://twitter.com/NilsEling) [:fontawesome-solid-home:](https://nilseling.github.io/)
 
 Whoever wants to contribute
