@@ -14,9 +14,6 @@ However we think that this concept also works well for other multiplexed imaging
 
 ## Usage
 
-All pre-processing and downstream analysis steps are summarized in the `ImcSegmentationPipeline.ipynb` notebook.
-A rendered version of this notebook can be found here: https://nbviewer.jupyter.org/github/BodenmillerGroup/ImcSegmentationPipeline/blob/main/ImcSegmentationPipeline.ipynb
-
 For the main part of the analysis, you will need to install [Ilastik](https://www.ilastik.org/download.html) and [CellProfiler](https://cellprofiler.org/releases).
 
 Before being able to pre-process the data, you will need to setup the environment:
@@ -88,6 +85,10 @@ The slides briefly explain why we chose this approach to image segmentation and 
 
 We [freely share](LICENSE) this pipeline in the hope that it will be useful for others to perform high quality image segmentation and serve as a basis to develop more complicated open source IMC image processing workflows. 
 In return we would like you to be considerate and give us and others feedback if you find a bug/issue and [raise a GitHub Issue](https://github.com/BodenmillerGroup/ImcSegmentationPipeline/issues) on the affected projects or on this page.
+
+## Contributing
+
+To contribute to this work, please fork the repository, make changes to it and open a pull request.
 
 ## Citation
 
