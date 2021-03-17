@@ -37,7 +37,7 @@ Example entries to the panel file can look like this:
 |  Dy161     | Ecad            | 1    | 1       |
 |  Dy162     | CD45            | 1    | 0       |
 |  Er166     | CD3             | 1    | 1       |
-|  Ru100     | Counterstain    | 1    | 1       |
+|  Ru100     | Counterstain    | 1    | 0       |
 
 Usually there are more columns but the important ones in this case are `Metal Tag`, `full` and `ilastik`.
 The `1` in the `full` column specifies channels that should be written out to an image stack that will be later on used to extract features. 
@@ -47,7 +47,7 @@ During the pre-processing steps, you will need to specify the name of the panel 
 
 **Naming conventions**
 
-The pipeline relies on `_ilastik` as ilastik suffix. 
+When going through the [preprocessing script](https://github.com/BodenmillerGroup/ImcSegmentationPipeline/blob/main/preprocessing.ipynb), you will notice the  The pipeline relies on `_ilastik` as ilastik suffix. 
 
 ## Conversion fom .mcd to .ome.tiff files
 
@@ -69,7 +69,7 @@ The output folder for each sample has the following form:
 .
 +-- XYZ_s0_ac1_ac.ome.tiff
 +-- XYZ_s0_ac1_ac.ome.tiff
-+-- XYZ_s0_ac1_ac.ome.toff
++-- XYZ_s0_ac1_ac.ome.tiff
 +-- XYZ_s0_p1_pano.png
 +-- XYZ_s0_slide.png
 +-- XYZ_schema.xml
@@ -77,6 +77,7 @@ The output folder for each sample has the following form:
 ```
 
 **TODO: Explain what these files and what the nameing is**
+Link to wiki of `imctools`.
 
 ## Conversion from .ome.tiff to single-channel tiffs
 
@@ -101,6 +102,6 @@ modify this step to generate additional stacks, e.g. for additional tissue struc
 
 Summarize output
 
-[^fn1]: Goldberg I.G. _et al._ (2005) The open microscopy environment (OME) data model and XML file: open tools for informatics and quantitative analysis in biological imaging. Genome Biology 6(5), R47.
+[^fn1]: Catena R. _et al._ (2018) Ruthenium counterstaining for imaging mass cytometry. The Journal of Pathology 244(4), pages 479-484.
 [^fn2]: Goldberg I.G. _et al._ (2005) The open microscopy environment (OME) data model and XML file: open tools for informatics and quantitative analysis in biological imaging. Genome Biology 6(5), R47.
-[^fn3]: Shapiro D. _et al._ (2017) histoCAT: analysis of cell phenotypes and interactions in multiplex image cytometry data. Nature Methods 14, pages873–876.
+[^fn3]: Shapiro D. _et al._ (2017) histoCAT: analysis of cell phenotypes and interactions in multiplex image cytometry data. Nature Methods 14, pages 873–876.
