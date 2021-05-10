@@ -30,6 +30,10 @@ you to be considerate and give us and others feedback if you find a bug or issue
 on the affected projects or on this page.
 
 ## Changelog
+- v2.1:
+    - Bugfixes:
+        - 1_prepare_ilastik: Fix range to 0-1 for mean image, preventing out of range errors
+
 - v2.0:
     - Change to imctools v2:
         - Changes the structure of the folder to the new format, changing the
