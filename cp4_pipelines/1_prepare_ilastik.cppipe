@@ -1,6 +1,6 @@
 CellProfiler Pipeline: http://www.cellprofiler.org
 Version:5
-DateRevision:406
+DateRevision:407
 GitHash:
 ModuleCount:12
 HasImagePlaneDetails:False
@@ -65,7 +65,7 @@ SmoothMultichannel:[module_num:5|svn_version:'Unknown'|variable_revision_number:
     Hot pixel threshold:50.0
     Scale hot pixel threshold to image scale?:Yes
 
-SummarizeStack:[module_num:6|svn_version:'Unknown'|variable_revision_number:1|show_window:False|notes:["This calculates an  'average' of all channels and multiplies it with 100.", 'Thus an average count of 0.1 (over all channels) will correspond to 10 in an uint16 image.', '', 'This allows to easily discriminate forground and background.', '']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+SummarizeStack:[module_num:6|svn_version:'Unknown'|variable_revision_number:1|show_window:False|notes:['This calculates an  average of all channels and multiplies it with 100.', 'Thus an average count of 0.1 (over all channels) will correspond to 10 in an uint16 image.', '', 'This allows to easily discriminate forground and background.', '']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select the input image:IlastikFil
     Conversion method:Python Function
     Name the output image:ScaledMean
