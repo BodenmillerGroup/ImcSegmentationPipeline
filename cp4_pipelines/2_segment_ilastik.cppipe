@@ -1,11 +1,11 @@
 CellProfiler Pipeline: http://www.cellprofiler.org
 Version:5
-DateRevision:406
+DateRevision:407
 GitHash:
 ModuleCount:15
 HasImagePlaneDetails:False
 
-Images:[module_num:1|svn_version:'Unknown'|variable_revision_number:2|show_window:False|notes:['Select again all the files in the `tiff` folder']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+Images:[module_num:1|svn_version:'Unknown'|variable_revision_number:2|show_window:False|notes:['Select again all the files in the tiff folder']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     :
     Filter images?:Images only
     Select the rule criteria:and (extension does isimage) (directory doesnot containregexp "[\\\\/]\\.")
@@ -131,7 +131,7 @@ IdentifyPrimaryObjects:[module_num:8|svn_version:'Unknown'|variable_revision_num
     Display accepted local maxima?:No
     Select maxima color:Blue
     Use advanced settings?:No
-    Threshold setting version:11
+    Threshold setting version:12
     Threshold strategy:Global
     Thresholding method:Minimum Cross-Entropy
     Threshold smoothing scale:0
@@ -140,6 +140,7 @@ IdentifyPrimaryObjects:[module_num:8|svn_version:'Unknown'|variable_revision_num
     Manual threshold:0.0
     Select the measurement to threshold with:None
     Two-class or three-class thresholding?:Two classes
+    Log transform before thresholding?:No
     Assign pixels in the middle intensity class to the foreground or the background?:Foreground
     Size of adaptive window:50
     Lower outlier fraction:0.05
@@ -183,7 +184,7 @@ IdentifySecondaryObjects:[module_num:11|svn_version:'Unknown'|variable_revision_
     Discard the associated primary objects?:No
     Name the new primary objects:FilteredNuclei
     Fill holes in identified objects?:Yes
-    Threshold setting version:11
+    Threshold setting version:12
     Threshold strategy:Global
     Thresholding method:Minimum Cross-Entropy
     Threshold smoothing scale:1.3488
@@ -192,6 +193,7 @@ IdentifySecondaryObjects:[module_num:11|svn_version:'Unknown'|variable_revision_
     Manual threshold:0.0
     Select the measurement to threshold with:None
     Two-class or three-class thresholding?:Two classes
+    Log transform before thresholding?:No
     Assign pixels in the middle intensity class to the foreground or the background?:Foreground
     Size of adaptive window:10
     Lower outlier fraction:0.05
