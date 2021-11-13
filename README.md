@@ -1,15 +1,17 @@
 [![DOI](https://zenodo.org/badge/103582813.svg)](https://zenodo.org/badge/latestdoi/103582813)
 # A flexible  image segmentation pipeline for heterogeneous multiplexed tissue images based on pixel classification
 
+**Deprecation note:** This repository is not actively maintained. For a maintained, dockerized version of the IMC segmentation pipeline, 
+please refer to [steinbock](https://github.com/BodenmillerGroup/steinbock).
+
+For downstream analysis of steinbock output using R, [imcRtools](https://bioconductor.org/packages/release/bioc/html/imcRtools.html) is recommended. 
+
 ## Introduction
 The pipeline is based on CellProfiler (http://cellprofiler.org/, tested v4.0.6) for segmentation and Ilastik
 (http://ilastik.org/, tested v1.3.5)
 for pixel classification. It is streamlined by using the specially developed imctools python
 package (https://github.com/BodenmillerGroup/imctools, >v2.1) as well as custom CellProfiler modules 
 (https://github.com/BodenmillerGroup/ImcPluginsCP, release v4.2.1).
-
-This repository showcases the basis of the workflow with step-by-step instructions. To run this more automatized, we recommend
-our Snakemake implementation: https://github.com/BodenmillerGroup/ImcSegmentationSnakemake
 
 This pipeline was developed in the Bodenmiller laboratory at the University of Zurich (http://www.bodenmillerlab.org/)
 to segment hundreds of highly multiplexed imaging mass cytometry (IMC) images.
