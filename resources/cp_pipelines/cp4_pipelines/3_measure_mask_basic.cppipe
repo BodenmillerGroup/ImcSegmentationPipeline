@@ -1,11 +1,11 @@
 CellProfiler Pipeline: http://www.cellprofiler.org
 Version:5
-DateRevision:406
+DateRevision:407
 GitHash:
 ModuleCount:20
 HasImagePlaneDetails:False
 
-Images:[module_num:1|svn_version:'Unknown'|variable_revision_number:2|show_window:False|notes:['Choose the whole `tiffs` folder.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+Images:[module_num:1|svn_version:'Unknown'|variable_revision_number:2|show_window:False|notes:['Choose the whole tiffs folder.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     :
     Filter images?:Images only
     Select the rule criteria:and (extension does isimage) (directory doesnot containregexp "[\\\\/]\\.")
@@ -121,7 +121,7 @@ MeasureObjectNeighbors:[module_num:8|svn_version:'Unknown'|variable_revision_num
     Name the output image:PercentTouching
     Select colormap:Default
 
-MeasureObjectIntensityMultichannel:[module_num:9|svn_version:'Unknown'|variable_revision_number:4|show_window:False|notes:["Measures the object intensities. Each channel will have a number corresponding to the plane number. The metals corresponding to the indices, e.g. _c1, _c2, can be found by looking at the `_full.csv` files in the `tiffs` folder.'", '', "Adapt the number of channels corresponding to the number of planes in the stack. Can be again seen in the  `_full.csv` files in the `tiffs` folder.'"]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+MeasureObjectIntensityMultichannel:[module_num:9|svn_version:'Unknown'|variable_revision_number:4|show_window:False|notes:['Measures the object intensities. Each channel will have a number corresponding to the plane number. The metals corresponding to the indices, e.g. _c1, _c2, can be found by looking at the _full.csv files in the tiffs folder.', '', 'Adapt the number of channels corresponding to the number of planes in the stack. Can be again seen in the  _full.csv files in the tiffs folder.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select images to measure:FullStack, FullStackFiltered
     Select objects to measure:cell
     How many channels does the image have?:24
@@ -131,7 +131,7 @@ MeasureObjectIntensityMultichannel:[module_num:10|svn_version:'Unknown'|variable
     Select objects to measure:cell
     How many channels does the image have?:3
 
-MeasureImageIntensityMultichannel:[module_num:11|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:["Measures the object intensities. Each channel will have a number corresponding to the plane number. The metals corresponding to the indices, e.g. _c1, _c2, can be found by looking at the `_full.csv` files in the `tiffs` folder.'", '', "Adapt the number of channels as needed! Can be again seen in the  `_full.csv` files in the `tiffs` folder.'"]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+MeasureImageIntensityMultichannel:[module_num:11|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:['Measures the object intensities. Each channel will have a number corresponding to the plane number. The metals corresponding to the indices, e.g. _c1, _c2, can be found by looking at the _full.csv files in the tiffs folder.', '', 'Adapt the number of channels as needed! Can be again seen in the  _full.csv files in the tiffs folder.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select images to measure:FullStackFiltered, FullStack
     Measure the intensity only from areas enclosed by objects?:No
     Select input object sets:
@@ -206,7 +206,7 @@ SaveImages:[module_num:16|svn_version:'Unknown'|variable_revision_number:15|show
     Base image folder:Elsewhere...|
     How to save the series:T (Time)
 
-ExportToSpreadsheet:[module_num:17|svn_version:'Unknown'|variable_revision_number:13|show_window:False|notes:['Save the data to csv.', "Note that the intensity values are all scaled by a scaling factor corresponding to the bit depth (can be found in the Image.csv 'Scale' column.", 'For uint16 everything is divided by 2**16 = 65535']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+ExportToSpreadsheet:[module_num:17|svn_version:'Unknown'|variable_revision_number:13|show_window:False|notes:['Save the data to csv.', 'Note that the intensity values are all scaled by a scaling factor corresponding to the bit depth (can be found in the Image.csv Scale column.', 'For uint16 everything is divided by 2**16 = 65535']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select the column delimiter:Comma (",")
     Add image metadata columns to your object data file?:No
     Add image file and folder names to your object data file?:No
@@ -230,7 +230,7 @@ ExportToSpreadsheet:[module_num:17|svn_version:'Unknown'|variable_revision_numbe
     File name:DATA.csv
     Use the object name for the file name?:Yes
 
-ExportToSpreadsheet:[module_num:18|svn_version:'Unknown'|variable_revision_number:13|show_window:False|notes:['This is necessary to also save the `Object Relationships` table = neightbourhood graph structure.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+ExportToSpreadsheet:[module_num:18|svn_version:'Unknown'|variable_revision_number:13|show_window:False|notes:['This is necessary to also save the Object Relationships table = neightbourhood graph structure.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select the column delimiter:Comma (",")
     Add image metadata columns to your object data file?:No
     Add image file and folder names to your object data file?:No

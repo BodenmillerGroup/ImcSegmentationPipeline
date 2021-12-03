@@ -1,8 +1,8 @@
 CellProfiler Pipeline: http://www.cellprofiler.org
 Version:5
-DateRevision:406
+DateRevision:407
 GitHash:
-ModuleCount:12
+ModuleCount:13
 HasImagePlaneDetails:False
 
 Images:[module_num:1|svn_version:'Unknown'|variable_revision_number:2|show_window:False|notes:['This module will prepare ilastik stacks for the ilastik cell classification pipeline.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
@@ -65,19 +65,38 @@ SmoothMultichannel:[module_num:5|svn_version:'Unknown'|variable_revision_number:
     Hot pixel threshold:50.0
     Scale hot pixel threshold to image scale?:Yes
 
-SummarizeStack:[module_num:6|svn_version:'Unknown'|variable_revision_number:1|show_window:False|notes:["This calculates an  'average' of all channels and multiplies it with 100.", 'Thus an average count of 0.1 (over all channels) will correspond to 10 in an uint16 image.', '', 'This allows to easily discriminate forground and background.', '']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+SummarizeStack:[module_num:6|svn_version:'Unknown'|variable_revision_number:1|show_window:False|notes:['This calculates an  average of all channels and multiplies it with 100.', 'Thus an average count of 0.1 (over all channels) will correspond to 10 in an uint16 image.', '', 'This allows to easily discriminate forground and background.', '']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select the input image:IlastikFil
     Conversion method:Python Function
-    Name the output image:ScaledMean
+    Name the output image:ScaledMeanPrep
     Input a Python function:lambda x, axis: np.mean(x, axis=axis)*100
 
-StackImages:[module_num:7|svn_version:'Unknown'|variable_revision_number:2|show_window:False|notes:['Add the summary channel as first channel.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+ImageMath:[module_num:7|svn_version:'Unknown'|variable_revision_number:5|show_window:False|notes:['This guarantees that values will be between 0-1']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Operation:None
+    Raise the power of the result by:1.0
+    Multiply the result by:1.0
+    Add to result:0.0
+    Set values less than 0 equal to 0?:Yes
+    Set values greater than 1 equal to 1?:Yes
+    Replace invalid values with 0?:Yes
+    Ignore the image masks?:No
+    Name the output image:ScaledMean
+    Image or measurement?:Image
+    Select the first image:ScaledMeanPrep
+    Multiply the first image by:1.0
+    Measurement:
+    Image or measurement?:Image
+    Select the second image:None
+    Multiply the second image by:1.0
+    Measurement:
+
+StackImages:[module_num:8|svn_version:'Unknown'|variable_revision_number:2|show_window:False|notes:['Add the summary channel as first channel.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Name the output image:IlastikExp
     Hidden:2
     Image name:ScaledMean
     Image name:IlastikFil
 
-Resize:[module_num:8|svn_version:'Unknown'|variable_revision_number:4|show_window:False|notes:['Scaling up the images 2x makes pixel classificaiton easier.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+Resize:[module_num:9|svn_version:'Unknown'|variable_revision_number:4|show_window:False|notes:['Scaling up the images 2x makes pixel classificaiton easier.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select the input image:IlastikExp
     Name the output image:Ilastik2x
     Resizing method:Resize by a fraction or multiple of the original size
@@ -89,7 +108,7 @@ Resize:[module_num:8|svn_version:'Unknown'|variable_revision_number:4|show_windo
     Select the image with the desired dimensions:None
     Additional image count:0
 
-CropImage:[module_num:9|svn_version:'Unknown'|variable_revision_number:4|show_window:False|notes:['This function crops random sections from the images, that are used for training.', '', 'The filename is used as a random seed.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+CropImage:[module_num:10|svn_version:'Unknown'|variable_revision_number:4|show_window:False|notes:['This function crops random sections from the images, that are used for training.', '', 'The filename is used as a random seed.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select the input image:Ilastik2x
     Name the output image:Ilastikcropped
     W width:500
@@ -100,7 +119,7 @@ CropImage:[module_num:9|svn_version:'Unknown'|variable_revision_number:4|show_wi
     Optional Random Seed:\g<filename>
     Additional image count:0
 
-SaveImages:[module_num:10|svn_version:'Unknown'|variable_revision_number:15|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+SaveImages:[module_num:11|svn_version:'Unknown'|variable_revision_number:15|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select the type of image to save:Image
     Select the image to save:Ilastik2x
     Select method for constructing file names:From image filename
@@ -119,7 +138,7 @@ SaveImages:[module_num:10|svn_version:'Unknown'|variable_revision_number:15|show
     Base image folder:Elsewhere...|
     How to save the series:T (Time)
 
-SaveImages:[module_num:11|svn_version:'Unknown'|variable_revision_number:15|show_window:False|notes:['Saves the crop together with the coordinates.', 'This is important to track back were the random crops were exactly taken.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+SaveImages:[module_num:12|svn_version:'Unknown'|variable_revision_number:15|show_window:False|notes:['Saves the crop together with the coordinates.', 'This is important to track back were the random crops were exactly taken.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select the type of image to save:Image
     Select the image to save:Ilastikcropped
     Select method for constructing file names:From image filename
@@ -138,7 +157,7 @@ SaveImages:[module_num:11|svn_version:'Unknown'|variable_revision_number:15|show
     Base image folder:Elsewhere...|
     How to save the series:T (Time)
 
-CreateBatchFiles:[module_num:12|svn_version:'Unknown'|variable_revision_number:8|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:False|wants_pause:False]
+CreateBatchFiles:[module_num:13|svn_version:'Unknown'|variable_revision_number:8|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:False|wants_pause:False]
     Store batch files in default output folder?:Yes
     Output folder path:/mnt/f2160748-a937-44bd-aca8-3adb8a839612/Data/Analysis/cp4_segmentation_example/cpout
     Are the cluster computers running Windows?:No
