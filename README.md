@@ -4,10 +4,10 @@
 ## Introduction
 
 The pipeline is based on CellProfiler (http://cellprofiler.org/, tested v4.0.6) for segmentation and Ilastik (http://ilastik.org/, tested v1.3.5) for pixel classification. 
-It is streamlined by using the specially developed imctools python package (https://github.com/BodenmillerGroup/imctools, >v2.1) as well as custom CellProfiler modules (https://github.com/BodenmillerGroup/ImcPluginsCP, release v4.2.1).
+It is streamlined by using the specially developed `imctools` python package (https://github.com/BodenmillerGroup/imctools, >v2.1) as well as custom CellProfiler modules (https://github.com/BodenmillerGroup/ImcPluginsCP, release v4.2.1).
 
 This repository showcases the basis of the workflow with step-by-step instructions. 
-To run this more automatized, we recommend our Snakemake implementation: https://github.com/BodenmillerGroup/ImcSegmentationSnakemake
+For a dockerized version of the pipeline, check out [steinbock](https://github.com/BodenmillerGroup/steinbock).
 
 This pipeline was developed in the Bodenmiller laboratory at the University of Zurich (http://www.bodenmillerlab.org/) to segment hundreds of highly multiplexed imaging mass cytometry (IMC) images.
 However we think that this concept also works well for other multiplexed imaging modalities.
@@ -105,7 +105,7 @@ If you use this workflow for your research, please cite us:
 ```
 @misc{ImcSegmentationPipeline,
     author       = {Vito RT Zanotelli, Bernd Bodenmiller},
-    title        = {{ImcSegmentationPipeline: A pixelclassification based multiplexed image segmentation pipeline}},
+    title        = {{ImcSegmentationPipeline: A pixel-classification based multiplexed image segmentation pipeline}},
     month        = Sept,
     year         = 2017,
     doi          = {10.5281/zenodo.3841961},

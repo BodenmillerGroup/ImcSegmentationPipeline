@@ -52,7 +52,7 @@ git submodule update --init --recursive
 
 5. Configure `CellProfiler` to use the plugins by opening the `CellProfiler` GUI, selecting `Preferences` and setting the `CellProfiler plugins directory` to `PATHTO/ImcSegmentationPipeline/resources/cp_plugins/ImcPluginsCP/plugins`
 
-6. Activate the environment created in .3 and start a jupyter instance
+6. Activate the environment created in 3. and start a jupyter instance
 
 ```bash
 conda activate ImcSegmentationPipeline
@@ -61,18 +61,33 @@ jupyter notebook
 
 ## Image data types
 
-Throughout this pipeline, images in `.tiff` format are saved as unsigned 16-bit images with an intensity range of `0 - 65535`. For an overview on common image data types, please refer to the [scikit-image documentation](https://scikit-image.org/docs/dev/user_guide/data_types.html). 
+Throughout this pipeline, images in TIFF format are saved as unsigned 16-bit images with an intensity range of `0 - 65535`. For an overview on common image data types, please refer to the [scikit-image documentation](https://scikit-image.org/docs/dev/user_guide/data_types.html). 
 
 ## A - Pre processing
 
-To work with the generated imaging data, they will first be converted into `.ome.tiff`, multi-channel `.tiff` and single-channel `.tiff` formats that are compatible with most imaging software.
-A key step of the pre-processing pipeline is also the selection of channels for (i) downstream cell measurements and (ii) ilastik pixel classification.
+To work with the generated imaging data, they will first be converted into OME-TIFF, multi-channel and single-channel TIFF formats that are compatible with most imaging software.
+A key step of the pre-processing pipeline is also the selection of channels for (i) downstream cell measurements and (ii) ilastik pixel classification. 
+A `CellProfiler` pipeline is used to crop smaller images for reducing the computational burden during pixel labelling.
 
 Please follow the [pre-processing guide](prepro.md) for more information. 
 
 ## B/C - Ilastik training
 
+Image crops are labelled based on nuclear, cytoplasmic and background pixels. 
+The classification probability is observed and regions with high uncertainty are re-labelled.
+Based on the specified labels, probabilities for each pixel belonging to the nuclear, cytoplasmic and background class is generated. 
+These pixel-level propabilies are used to segment images in the next step.
+
+Please follow the [Ilastik instructions](ilastik.md) for more information.
+
 ## D/E - CellProfiler image segmentation
+
+A `CellProfiler` pipeline is used to segment cells based on the pixel probabilities generated in the previous step. 
+Segmentation masks are written out as single-channel TIFF images that match the input images in size, with non-zero grayscale values indicating the IDs of segmented objects (e.g. cells).
+
+A second `CellProfiler` pipeline is then used to extract object-specific features (e.g. mean intensity per channel and object) and to write out these features as CSV file.
+
+Please follow the [segmentation instructions](segmentation.md) for more information.
 
 ![full_pipeline](img/Full_pipeline.png)
 *<a name="overview">An overview of the full segmentation pipeline</a>*
@@ -82,8 +97,17 @@ Please follow the [pre-processing guide](prepro.md) for more information.
 Vito Zanotelli [:fontawesome-brands-github:](https://github.com/votti) [:fontawesome-brands-twitter:](https://twitter.com/ZanotelliVRT)    
 Nils Eling [:fontawesome-brands-github:](https://github.com/nilseling) [:fontawesome-brands-twitter:](https://twitter.com/NilsEling) [:fontawesome-solid-home:](https://nilseling.github.io/)
 
-Whoever wants to contribute
-
 ## Citation
 
-To come...
+```
+@misc{ImcSegmentationPipeline,
+    author       = {Vito RT Zanotelli, Bernd Bodenmiller},
+    title        = {{ImcSegmentationPipeline: A pixel-classification based multiplexed image segmentation pipeline}},
+    month        = Sept,
+    year         = 2017,
+    doi          = {10.5281/zenodo.3841961},
+    version      = {0.9},
+    publisher    = {Zenodo},
+    url          = {https://doi.org/10.5281/zenodo.3841961}
+    }
+```
