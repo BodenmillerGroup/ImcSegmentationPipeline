@@ -68,26 +68,7 @@ The slides briefly explain why we chose this approach to image segmentation and 
 
 ## Changelog
 
-- v2.3:
-    - Bugfixes:
-        - 1_prepare_ilastik: Removed special characters from pipeline comments as this caused encoding issues.
-
-- v2.1:
-    - Bugfixes:
-        - 1_prepare_ilastik: Fix range to 0-1 for mean image, preventing out of range errors
-
-- v2.0:
-    - Change to imctools v2:
-        - Changes the structure of the folder to the new format, changing the
-          naming of the .ome.tiff files => If you use this pipeline you need to re-generate the OME tiff
-          
-    - Change to Cellprofiler v4:
-        - Requires the use of the ImcPluginsCP master branch or a release > v.4.1
-        
-    - Varia:
-        - Updated documentation
-        - Adds var_Cells.csv containing metadata for the measurements
-        - Adds panel to cpout folder
+For changes in specific releases, please refer to the [CHANGELOG](CHANGELOG.md).
         
 ## License
 
