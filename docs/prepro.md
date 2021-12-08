@@ -25,7 +25,7 @@ The Hyperion Imaging System produces vendor controlled `.mcd` and `.txt` files i
 where `XYZ` defines the filename and `ROI_001`, `ROI_002`, `ROI_003` are names for the selected regions of interest (ROI). 
 These can be sepcified in the Fluidigm software when selecting ROIs.
 The `.mcd` file contains the raw imaging data of all acquired ROIs while each `.txt` file contains data of a single ROI.
-To enforce a consistent naming scheme and to bundle all metadata, **we recommend to zip the folder** and specify the location of all `.zip` files for preprocessing.
+To enforce a consistent naming scheme and to bundle all metadata, **we recommend to zip the folder** and specify the location of all `.zip` files for preprocessing. Each `.zip` file should only contain data from a single .mcd file and the name of the `.zip` file should match the name  of the `.mcd` file.
 
 **The panel file**
 
