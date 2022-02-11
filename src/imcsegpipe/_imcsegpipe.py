@@ -8,8 +8,20 @@ from typing import Dict, List, Optional, Sequence, Union
 
 def match_txt_files(
     mcd_files: Sequence[Union[str, PathLike]], txt_files: Sequence[Union[str, PathLike]]
-) -> Dict[Path, List[Path]]:
-    pass  # TODO
+) -> Dict[Union[str, PathLike], List[Path]]:
+    txt_files = list(txt_files)
+    matched_txt_files = {}
+    for mcd_file in sorted(mcd_files, key=lambda x: Path(x).stem, reverse=True):
+        matched_txt_files[mcd_file] = []
+        i = 0
+        while i < range(len(txt_files)):
+            txt_file = txt_files[i]
+            if Path(txt_file).stem.startswith(Path(mcd_file).stem):
+                matched_txt_files[mcd_file].append(Path(txt_file))
+                txt_files.remove(txt_file)
+                i -= 1
+            i += 1
+    return matched_txt_files
 
 
 def extract_mcd_file(
