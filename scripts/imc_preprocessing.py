@@ -52,7 +52,7 @@ from urllib import request
 
 # %%
 # the input_data_folders_path_inputs with the ziped acquisition files for the analysis
-raw_dirs = ["../example_data"]
+raw_dirs = ["../raw"]
 
 # output for OME tiffs
 work_dir = "../analysis"
@@ -66,6 +66,7 @@ panel_ilastik_col = "ilastik"
 # %%
 raw_dirs = [Path(raw_dir) for raw_dir in raw_dirs]
 work_dir = Path(work_dir)
+work_dir.mkdir(exist_ok=True)
 
 # parameters for resizing the images for ilastik
 acquisitions_dir = work_dir / "ometiff"
@@ -75,22 +76,8 @@ cellprofiler_input_dir = work_dir / "cpinp"
 cellprofiler_output_dir = work_dir / "cpout"
 histocat_dir = work_dir / "histocat"
 
-# %% [markdown]
-# Generate all the input_data_folders_path_inputs if necessary
-
 # %%
-for dir_ in [
-    acquisitions_dir,
-    analysis_dir,
-    ilastik_dir,
-    cellprofiler_input_dir,
-    cellprofiler_output_dir,
-    histocat_dir,
-]:
-    dir_.mkdir(parents=True, exist_ok=True)
-
-# %%
-# # This will download the example data - remove if you work with your own data!
+# This will download the example data - remove if you work with your own data!
 example_dir = raw_dirs[0]
 example_dir.mkdir(exist_ok=True, parents=True)
 for example_file_name, example_file_url in [
@@ -117,26 +104,29 @@ for example_file_name, example_file_url in [
 temp_dirs: List[TemporaryDirectory] = []
 try:
     for raw_dir in raw_dirs:
-        zip_files = list(raw_dir.glob("*.zip"))
+        zip_files = list(raw_dir.rglob("*.zip"))
         if len(zip_files) > 0:
             temp_dir = TemporaryDirectory()
             temp_dirs.append(temp_dir)
             for zip_file in sorted(zip_files):
                 imcsegpipe.extract_zip_file(zip_file, temp_dir.name)
+    acquisition_metadatas = []
+    acquisitions_dir.mkdir(exist_ok=True)
+    cellprofiler_input_dir.mkdir(exist_ok=True)
     for raw_dir in raw_dirs + [Path(temp_dir.name) for temp_dir in temp_dirs]:
-        mcd_files = list(raw_dir.glob("*.mcd"))
-        txt_files = list(raw_dir.glob("*.txt"))
-        matched_txt_files = imcsegpipe.match_txt_files(mcd_files, txt_files)
-        acquisition_metadatas = []
-        for mcd_file in mcd_files:
-            acquisition_metadata = imcsegpipe.extract_mcd_file(
-                mcd_file,
-                acquisitions_dir / mcd_file.stem,
-                txt_files=matched_txt_files[mcd_file],
-            )
-            acquisition_metadatas.append(acquisition_metadata)
-        acquisition_metadata = pd.concat(acquisition_metadatas, copy=False)
-        acquisition_metadata.to_csv(cellprofiler_input_dir / "acquisition_metadata.csv")
+        mcd_files = list(raw_dir.rglob("*.mcd"))
+        if len(mcd_files) > 0:
+            txt_files = list(raw_dir.rglob("*.txt"))
+            matched_txt_files = imcsegpipe.match_txt_files(mcd_files, txt_files)
+            for mcd_file in mcd_files:
+                acquisition_metadata = imcsegpipe.extract_mcd_file(
+                    mcd_file,
+                    acquisitions_dir / mcd_file.stem,
+                    txt_files=matched_txt_files[mcd_file],
+                )
+                acquisition_metadatas.append(acquisition_metadata)
+    acquisition_metadata = pd.concat(acquisition_metadatas, copy=False)
+    acquisition_metadata.to_csv(cellprofiler_input_dir / "acquisition_metadata.csv")
 finally:
     for temp_dir in temp_dirs:
         temp_dir.cleanup()
@@ -146,6 +136,7 @@ finally:
 # Export a copy of the panel to the output folder
 
 # %%
+cellprofiler_output_dir.mkdir(exist_ok=True)
 shutil.copy2(panel_file, cellprofiler_output_dir / "panel.csv")
 
 # %% [markdown]
@@ -186,6 +177,7 @@ for acquisition_dir in acquisitions_dir.glob("*"):
 # input folder
 
 # %%
+cellprofiler_input_dir.mkdir(exist_ok=True)
 first_channel_order_file = next(analysis_dir.glob("*_full.csv"))
 shutil.copy2(first_channel_order_file, cellprofiler_input_dir / "full_channelmeta.csv")
 
@@ -193,6 +185,7 @@ shutil.copy2(first_channel_order_file, cellprofiler_input_dir / "full_channelmet
 # Generate channel metadata for the probability stack
 
 # %%
+cellprofiler_input_dir.mkdir(exist_ok=True)
 probab_meta = ["CellCenter", "CellBorder", "Background"]
 with open(cellprofiler_input_dir / "probab_channelmeta_manual.csv", "w") as f:
     f.write("\n".join(probab_meta))

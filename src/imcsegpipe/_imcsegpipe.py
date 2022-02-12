@@ -1,14 +1,16 @@
+import imageio
 import logging
 import numpy as np
 import pandas as pd
+import re
 import shutil
+import tifffile
 import xtiff
 
 from os import PathLike
 from pathlib import Path
 from readimc import MCDFile, TXTFile
-from readimc.data import Acquisition, Panorama
-from tifffile import imread, imwrite
+from readimc.data import Acquisition, Panorama, Slide
 from typing import Dict, List, Optional, Sequence, Union
 from zipfile import ZipFile
 
@@ -30,7 +32,7 @@ def match_txt_files(
     for mcd_file in sorted(mcd_files, key=lambda x: Path(x).stem, reverse=True):
         matched_txt_files[mcd_file] = []
         i = 0
-        while i < range(len(unmatched_txt_files)):
+        while i < len(unmatched_txt_files):
             txt_file = unmatched_txt_files[i]
             if Path(txt_file).stem.startswith(Path(mcd_file).stem):
                 matched_txt_files[mcd_file].append(Path(txt_file))
@@ -38,9 +40,10 @@ def match_txt_files(
                 i -= 1
             i += 1
     if len(unmatched_txt_files) > 0:
+        unmatched_txt_file_names = [Path(f).name for f in unmatched_txt_files]
         logging.warning(
             "The following .txt files could not be matched to an .mcd file"
-            f" and will be ignored: {unmatched_txt_files}"
+            f" and will be ignored: {unmatched_txt_file_names}"
         )
     return matched_txt_files
 
@@ -58,40 +61,13 @@ def extract_mcd_file(
         _extract_schema(f_mcd, schema_xml_file)
         for slide in f_mcd.slides:
             slide_stem = f"{Path(mcd_file).stem}_s{slide.id}"
-            slide_panoramas = [
-                panorama
-                for panorama in slide.panoramas
-                if panorama.metadata.get("Type") == "Imported"
-            ]
-            if len(slide_panoramas) > 0:
-                if len(slide_panoramas) > 1:
-                    logging.warning(
-                        f"Multiple slide panoramas found in file {f_mcd.path}: "
-                        f"{slide_panoramas}, extracting the first one"
-                    )
-                slide_panorama_img_file = (
-                    Path(acquisition_dir) / f"{slide_stem}_slide.png"
+            slide_img_file = Path(acquisition_dir) / f"{slide_stem}_slide.png"
+            _extract_slide(f_mcd, slide, slide_img_file)
+            for panorama in slide.panoramas:
+                panorama_img_file = (
+                    Path(acquisition_dir) / f"{slide_stem}_p{panorama.id}_pano.png"
                 )
-                _extract_panorama(
-                    f_mcd,
-                    slide_panoramas[0],
-                    slide_panorama_img_file,
-                )
-            acquisition_panoramas = [
-                panorama
-                for panorama in slide.panoramas
-                if panorama.metadata.get("Type") == "Instrument"
-            ]
-            for acquisition_panorama in acquisition_panoramas:
-                acquisition_panorama_img_file = (
-                    Path(acquisition_dir)
-                    / f"{slide_stem}_p{acquisition_panorama.id}_pano.png"
-                )
-                _extract_panorama(
-                    f_mcd,
-                    acquisition_panorama,
-                    acquisition_panorama_img_file,
-                )
+                _extract_panorama(f_mcd, panorama, panorama_img_file)
             for acquisition in slide.acquisitions:
                 acquisition_img_file = (
                     Path(acquisition_dir)
@@ -114,7 +90,7 @@ def extract_mcd_file(
                         txt_file = acquisition_txt_files[0]
                         logging.info(
                             f"Attempting to restore acquisition {acquisition.id} "
-                            f"from file {txt_file}"
+                            f"from file {Path(txt_file).name}"
                         )
                         with TXTFile(txt_file) as f_txt:
                             acquisition_origin = "txt"
@@ -126,12 +102,16 @@ def extract_mcd_file(
                                 acquisition_channels_file,
                             )
                     elif len(acquisition_txt_files) > 1:
+                        acquisition_txt_file_names = [
+                            Path(f).name for f in acquisition_txt_files
+                        ]
                         logging.warning(
                             f"Multiple .txt files found for acquisition "
-                            f"{acquisition.id} in {mcd_file}: {acquisition_txt_files}"
+                            f"{acquisition.id} in {Path(mcd_file).name}: "
+                            f"{acquisition_txt_file_names}"
                         )
-                acquisition_origins[acquisition] = acquisition_origin
-                acquisition_is_valids[acquisition] = acquisition_is_valid
+                acquisition_origins[acquisition.id] = acquisition_origin
+                acquisition_is_valids[acquisition.id] = acquisition_is_valid
         return _create_acquisition_metadata(
             f_mcd, acquisition_origins, acquisition_is_valids
         )
@@ -149,7 +129,7 @@ def create_analysis_stacks(
         acquisition_channels_file = acquisition_img_file.with_name(
             acquisition_img_file.name[:-9] + ".csv"
         )
-        acquisition_img = imread(acquisition_img_file)
+        acquisition_img = tifffile.imread(acquisition_img_file)
         assert acquisition_img.ndim == 3
         acquisition_channels: pd.DataFrame = pd.read_csv(acquisition_channels_file)
         assert len(acquisition_channels.index) == acquisition_img.shape[0]
@@ -162,11 +142,15 @@ def create_analysis_stacks(
             acquisition_img_file.name[:-9] + ".tiff"
         )
         if suffix is not None:
-            analysis_img_file.with_suffix(suffix + ".tiff")
+            analysis_img_file = analysis_img_file.with_name(
+                analysis_img_file.name[:-5] + suffix + ".tiff"
+            )
         analysis_channels_file = analysis_img_file.with_suffix(".csv")
         if hpf is not None:
             analysis_img = filter_hot_pixels(analysis_img, hpf)
-        imwrite(analysis_img_file, data=analysis_img.astype(np.uint16), imagej=True)
+        tifffile.imwrite(
+            analysis_img_file, data=analysis_img.astype(np.uint16), imagej=True
+        )
         with analysis_channels_file.open("w") as f:
             f.write("\n".join(analysis_channels))
 
@@ -181,7 +165,7 @@ def export_to_histocat(
         acquisition_channels_file = acquisition_img_file.with_name(
             acquisition_img_file.name[:-9] + ".csv"
         )
-        acquisition_img = imread(acquisition_img_file)
+        acquisition_img = tifffile.imread(acquisition_img_file)
         assert acquisition_img.ndim == 3
         acquisition_channels: pd.DataFrame = pd.read_csv(acquisition_channels_file)
         assert len(acquisition_channels.index) == acquisition_img.shape[0]
@@ -189,9 +173,11 @@ def export_to_histocat(
         histocat_img_dir.mkdir(exist_ok=True)
         for channel_index, row in acquisition_channels.iterrows():
             acquisition_channel_img: np.ndarray = acquisition_img[channel_index]
-            imwrite(
-                histocat_img_dir / f"{row['channel_label']}_{row['channel_name']}.tiff",
-                data=acquisition_channel_img.astype(np.uint16),
+            channel_label = re.sub("[^a-zA-Z0-9()]", "-", row["channel_label"])
+            channel_name = row["channel_name"]
+            tifffile.imwrite(
+                histocat_img_dir / f"{channel_label}_{channel_name}.tiff",
+                data=acquisition_channel_img,
                 imagej=True,
             )
         if mask_dir is not None:
@@ -201,8 +187,9 @@ def export_to_histocat(
             if len(mask_files) > 0:
                 if len(mask_files) > 1:
                     logging.warning(
-                        f"Multiple mask files found for image {acquisition_img_file}: "
-                        f"{mask_files}; using the first one"
+                        "Multiple mask files found for image "
+                        f"{acquisition_img_file.name}: {mask_files}; "
+                        "using the first one"
                     )
                 shutil.copy2(mask_files[0], histocat_dir)
 
@@ -213,8 +200,24 @@ def _extract_schema(mcd_file_handle: MCDFile, schema_xml_file: Path) -> bool:
             f.write(mcd_file_handle.metadata)
         return True
     except Exception as e:
-        logging.error(f"Error reading schema XML from file {mcd_file_handle.path}: {e}")
+        logging.error(
+            f"Error reading schema XML from file {mcd_file_handle.path.name}: {e}"
+        )
         return False
+
+
+def _extract_slide(
+    mcd_file_handle: MCDFile, slide: Slide, slide_img_file: Path
+) -> bool:
+    try:
+        slide_img = mcd_file_handle.read_slide(slide)
+        if slide_img is not None:
+            imageio.imwrite(slide_img_file, slide_img)
+        return True
+    except Exception as e:
+        logging.error(
+            f"Error reading slide {slide.id} from file {mcd_file_handle.path.name}: {e}"
+        )
 
 
 def _extract_panorama(
@@ -222,12 +225,12 @@ def _extract_panorama(
 ) -> bool:
     try:
         panorama_img = mcd_file_handle.read_panorama(panorama)
-        imwrite(panorama_img_file, data=panorama_img)
+        imageio.imwrite(panorama_img_file, panorama_img)
         return True
     except Exception as e:
         logging.error(
             f"Error reading panorama {panorama.id} "
-            f"from file {mcd_file_handle.path}: {e}"
+            f"from file {mcd_file_handle.path.name}: {e}"
         )
         return False
 
@@ -251,7 +254,7 @@ def _extract_acquisition(
     except Exception as e:
         logging.error(
             f"Error reading acquisition {acquisition.id} "
-            f"from file {mcd_file_handle.path}: {e}"
+            f"from file {mcd_file_handle.path.name}: {e}"
         )
         return False
 
@@ -276,7 +279,8 @@ def _extract_acquisition_from_txt_file(
     except Exception as e:
         logging.error(
             f"Error restoring acquisition {acquisition.id} "
-            f"for file {mcd_file_handle.path} from file {txt_file_handle.path}: {e}"
+            f"for file {mcd_file_handle.path.name} from file {txt_file_handle.path}: "
+            f"{e}"
         )
         return False
 
@@ -289,7 +293,7 @@ def _write_acquisition_image(
     acquisition_channels_file: Path,
 ) -> None:
     xtiff.to_tiff(
-        acquisition_img.astype(np.uint16),
+        acquisition_img,
         acquisition_img_file,
         ome_xml_fun=get_acquisition_ome_xml,
         channel_names=acquisition.channel_labels,
@@ -306,16 +310,16 @@ def _write_acquisition_image(
 
 def _create_acquisition_metadata(
     mcd_file_handle: MCDFile,
-    acquisition_origins: Dict[Acquisition, str],
-    acquisition_is_valids: Dict[Acquisition, bool],
+    acquisition_origins: Dict[int, str],
+    acquisition_is_valids: Dict[int, bool],
 ) -> pd.DataFrame:
     return pd.DataFrame(
         data=[
             AcquisitionMetadata.from_mcd_file_acquisition(
                 mcd_file_handle,
                 acquisition,
-                origin=acquisition_origins[acquisition],
-                is_valid=acquisition_is_valids[acquisition],
+                origin=acquisition_origins[acquisition.id],
+                is_valid=acquisition_is_valids[acquisition.id],
             )
             for slide in mcd_file_handle.slides
             for acquisition in slide.acquisitions
