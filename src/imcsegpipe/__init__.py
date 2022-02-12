@@ -1,4 +1,5 @@
 from ._imcsegpipe import (
+    extract_zip_file,
     match_txt_files,
     extract_mcd_file,
     create_analysis_stacks,
@@ -7,6 +8,7 @@ from ._imcsegpipe import (
 
 
 __all__ = [
+    "extract_zip_file",
     "match_txt_files",
     "extract_mcd_file",
     "create_analysis_stacks",

@@ -12,6 +12,7 @@ import shutil
 
 from pathlib import Path
 from tempfile import TemporaryDirectory
+from typing import List
 from urllib import request
 
 # %% [markdown]
@@ -54,37 +55,37 @@ from urllib import request
 raw_dirs = ["../example_data"]
 
 # output for OME tiffs
-analysis_dir = "../analysis"
+work_dir = "../analysis"
 
 # panel
 panel_file = "../config/example_panel.csv"
-panel_metal_col = "Metal Tag"
+panel_channel_col = "Metal Tag"
+panel_keep_col = "full"
 panel_ilastik_col = "ilastik"
-panel_full_col = "full"
 
 # %%
 raw_dirs = [Path(raw_dir) for raw_dir in raw_dirs]
-analysis_dir = Path(analysis_dir)
+work_dir = Path(work_dir)
 
 # parameters for resizing the images for ilastik
-analysis_ome_dir = analysis_dir / "ometiff"
-analysis_histocat_dir = analysis_dir / "histocat"
-analysis_tiff_dir = analysis_dir / "tiffs"
-analysis_ilastik_dir = analysis_dir / "ilastik"
-analysis_cpin_dir = analysis_dir / "cpinp"
-analysis_cpout_dir = analysis_dir / "cpout"
+acquisitions_dir = work_dir / "ometiff"
+analysis_dir = work_dir / "tiffs"
+ilastik_dir = work_dir / "ilastik"
+cellprofiler_input_dir = work_dir / "cpinp"
+cellprofiler_output_dir = work_dir / "cpout"
+histocat_dir = work_dir / "histocat"
 
 # %% [markdown]
 # Generate all the input_data_folders_path_inputs if necessary
 
 # %%
 for dir_ in [
-    analysis_ome_dir,
-    analysis_tiff_dir,
-    analysis_ilastik_dir,
-    analysis_cpin_dir,
-    analysis_cpout_dir,
-    analysis_histocat_dir,
+    acquisitions_dir,
+    analysis_dir,
+    ilastik_dir,
+    cellprofiler_input_dir,
+    cellprofiler_output_dir,
+    histocat_dir,
 ]:
     dir_.mkdir(parents=True, exist_ok=True)
 
@@ -113,7 +114,7 @@ for example_file_name, example_file_url in [
 # input_data_folders_path_inputs
 
 # %%
-temp_dirs = []
+temp_dirs: List[TemporaryDirectory] = []
 try:
     for raw_dir in raw_dirs:
         zip_files = list(raw_dir.glob("*.zip"))
@@ -121,7 +122,7 @@ try:
             temp_dir = TemporaryDirectory()
             temp_dirs.append(temp_dir)
             for zip_file in sorted(zip_files):
-                imcsegpipe.extract_zip(zip_file, temp_dir.name)
+                imcsegpipe.extract_zip_file(zip_file, temp_dir.name)
     for raw_dir in raw_dirs + [Path(temp_dir.name) for temp_dir in temp_dirs]:
         mcd_files = list(raw_dir.glob("*.mcd"))
         txt_files = list(raw_dir.glob("*.txt"))
@@ -130,13 +131,12 @@ try:
         for mcd_file in mcd_files:
             acquisition_metadata = imcsegpipe.extract_mcd_file(
                 mcd_file,
-                analysis_ome_dir / mcd_file.stem,
+                acquisitions_dir / mcd_file.stem,
                 txt_files=matched_txt_files[mcd_file],
-                hpf=50.0,
             )
             acquisition_metadatas.append(acquisition_metadata)
         acquisition_metadata = pd.concat(acquisition_metadatas, copy=False)
-        acquisition_metadata.to_csv(analysis_cpin_dir / "acquisition_metadata.csv")
+        acquisition_metadata.to_csv(cellprofiler_input_dir / "acquisition_metadata.csv")
 finally:
     for temp_dir in temp_dirs:
         temp_dir.cleanup()
@@ -146,7 +146,7 @@ finally:
 # Export a copy of the panel to the output folder
 
 # %%
-shutil.copy(panel_file, analysis_cpout_dir / "panel.csv")
+shutil.copy2(panel_file, cellprofiler_output_dir / "panel.csv")
 
 # %% [markdown]
 # Convert ome.tiffs to a HistoCAT compatible format, e.g. to do some visualization and
@@ -155,44 +155,46 @@ shutil.copy(panel_file, analysis_cpout_dir / "panel.csv")
 # Only required if HistoCAT is used as an image browser
 
 # %%
-for img_dir in analysis_ome_dir.glob("*"):
-    if img_dir.is_dir():
-        imcsegpipe.export_to_histocat(img_dir, analysis_histocat_dir)
+for acquisition_dir in acquisitions_dir.glob("*"):
+    if acquisition_dir.is_dir():
+        imcsegpipe.export_to_histocat(acquisition_dir, histocat_dir)
 
 # %% [markdown]
 # Generate the analysis stacks
 
 # %%
-panel = pd.read_csv(panel_file)
-imcsegpipe.create_analysis_stacks(
-    analysis_ome_dir,
-    analysis_tiff_dir,
-    panel[panel_metal_col].tolist(),
-    panel[panel_full_col].values == 1,
-    "_full",
-)
-imcsegpipe.create_analysis_stacks(
-    analysis_ome_dir,
-    analysis_tiff_dir,
-    panel[panel_metal_col].tolist(),
-    panel[panel_ilastik_col].values == 1,
-    "_ilastik",
-)
+panel: pd.DataFrame = pd.read_csv(panel_file)
+for acquisition_dir in acquisitions_dir.glob("*"):
+    if acquisition_dir.is_dir():
+        imcsegpipe.create_analysis_stacks(
+            acquisition_dir,
+            analysis_dir,
+            panel.loc[panel[panel_keep_col] == 1, panel_channel_col].tolist(),
+            suffix="_full",
+            hpf=50.0,
+        )
+        imcsegpipe.create_analysis_stacks(
+            acquisition_dir,
+            analysis_dir,
+            panel.loc[panel[panel_ilastik_col] == 1, panel_channel_col].tolist(),
+            suffix="_ilastik",
+            hpf=50.0,
+        )
 
 # %% [markdown]
 # Copy one csv containing the channel order of the full stack in to the cellprofiler
 # input folder
 
 # %%
-first_channel_order_file = next(analysis_tiff_dir.glob("*_full.csv"))
-shutil.copy(first_channel_order_file, analysis_cpin_dir / "full_channelmeta.csv")
+first_channel_order_file = next(analysis_dir.glob("*_full.csv"))
+shutil.copy2(first_channel_order_file, cellprofiler_input_dir / "full_channelmeta.csv")
 
 # %% [markdown]
 # Generate channel metadata for the probability stack
 
 # %%
 probab_meta = ["CellCenter", "CellBorder", "Background"]
-with open(analysis_cpin_dir / "probab_channelmeta_manual.csv", "w") as f:
+with open(cellprofiler_input_dir / "probab_channelmeta_manual.csv", "w") as f:
     f.write("\n".join(probab_meta))
 
 # %% [markdown]
@@ -388,9 +390,8 @@ with open(analysis_cpin_dir / "probab_channelmeta_manual.csv", "w") as f:
 # ## Generate the histocat folder with masks
 
 # %%
-for img_dir in analysis_ome_dir.glob("*"):
-    if img_dir.is_dir():
-        mask_files = list(analysis_tiff_dir.glob(f"{img_dir}*_mask.tiff"))
+for acquisition_dir in acquisitions_dir.glob("*"):
+    if acquisition_dir.is_dir():
         imcsegpipe.export_to_histocat(
-            img_dir, analysis_histocat_dir, mask_files=mask_files
+            acquisition_dir, histocat_dir, mask_dir=analysis_dir
         )
