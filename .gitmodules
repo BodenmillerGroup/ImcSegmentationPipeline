@@ -1,0 +1,3 @@
+[submodule "cp_plugins/ImcPluginsCP"]
+	path = resources/cp_plugins/ImcPluginsCP
+	url = https://github.com/BodenmillerGroup/ImcPluginsCP.git
