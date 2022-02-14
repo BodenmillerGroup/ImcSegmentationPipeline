@@ -1,3 +1,4 @@
+*.ilp
 *.DS_Store
 /.vscode/
 /analysis/
