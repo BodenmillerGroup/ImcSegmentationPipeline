@@ -13,7 +13,6 @@ import shutil
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from typing import List
-from urllib import request
 
 # %% [markdown]
 #
@@ -58,7 +57,7 @@ raw_dirs = ["../raw"]
 work_dir = "../analysis"
 
 # panel
-panel_file = "../config/example_panel.csv"
+panel_file = "../raw/panel.csv"
 panel_channel_col = "Metal Tag"
 panel_keep_col = "full"
 panel_ilastik_col = "ilastik"
@@ -75,26 +74,6 @@ ilastik_dir = work_dir / "ilastik"
 cellprofiler_input_dir = work_dir / "cpinp"
 cellprofiler_output_dir = work_dir / "cpout"
 histocat_dir = work_dir / "histocat"
-
-# %%
-# This will download the example data - remove if you work with your own data!
-example_dir = raw_dirs[0]
-example_dir.mkdir(exist_ok=True, parents=True)
-for example_file_name, example_file_url in [
-    (
-        "20170905_Fluidigmworkshopfinal_SEAJa.zip",
-        "https://www.dropbox.com/s/awyq9p7n7dexgyt/"
-        "20170905_Fluidigmworkshopfinal_SEAJa.zip?dl=1",
-    ),
-    (
-        "20170906_FluidigmONfinal_SE.zip",
-        "https://www.dropbox.com/s/0pdt1ke4b07v7zd/"
-        "20170906_FluidigmONfinal_SE.zip?dl=1",
-    ),
-]:
-    example_file = example_dir / example_file_name
-    if not example_file.exists():
-        request.urlretrieve(example_file_url, example_file)
 
 # %% [markdown]
 # Convert mcd containing input_data_folders_path_inputs into imc zip

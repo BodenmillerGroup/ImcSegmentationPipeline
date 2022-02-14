@@ -60,6 +60,10 @@ In brief, the main analysis steps include:
 3. Image segmentation based on the classification probabilities (CellProfiler).  
 4. Measurement and export of cell-specific features, such as marker expression (CellProfiler).  
 
+## Example data
+
+To test these pipelines on example data, please run the `scripts/download_examples.ipynb` script.
+
 ## Documentation
 
 For a more detailed overview on the individual analysis steps, please visit [https://bodenmillergroup.github.io/ImcSegmentationPipeline/](https://bodenmillergroup.github.io/ImcSegmentationPipeline/).
