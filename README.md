@@ -3,7 +3,7 @@
 
 ## Introduction
 
-The pipeline is based on CellProfiler ([cellprofiler.org](http://cellprofiler.org/), tested v4.1.3) for segmentation and Ilastik ([ilastik.org](http://ilastik.org/), tested v1.3.3post3) for pixel classification. 
+The pipeline is based on CellProfiler ([cellprofiler.org](http://cellprofiler.org/), tested v4.2.1) for segmentation and Ilastik ([ilastik.org](http://ilastik.org/), tested v1.3.3post3) for pixel classification. 
 It is streamlined by using the `imcsegpipe` python package available via this repository as well as custom CellProfiler modules ([ImcPluginsCP](https://github.com/BodenmillerGroup/ImcPluginsCP), release v4.2.1).
 
 This repository showcases the basis of the workflow with step-by-step instructions. 

@@ -86,6 +86,17 @@ cellprofiler_output_dir = work_dir / "cpout"
 histocat_dir = work_dir / "histocat"
 
 # %% [markdown]
+# The specified folder will now be created.
+
+# %%
+acquisitions_dir.mkdir(exist_ok=True)
+analysis_dir.mkdir(exist_ok=True)
+ilastik_dir.mkdir(exist_ok=True)
+cellprofiler_input_dir.mkdir(exist_ok=True)
+cellprofiler_output_dir.mkdir(exist_ok=True)
+histocat_dir.mkdir(exist_ok=True)
+
+# %% [markdown]
 # ## Convert `.mcd` files to `.ome.tiff` files
 #
 # In the first step, the `.zip` archives containing `.mcd` files are vonverted to folders, which contain `.ome.tiff` files, channel metadata files, panoramas and slide overviews. The `.ome.tiff` files can be read in by commercial and open-source software such as `ImageJ` using the BioFormats importer. The `.csv` files contain the order of the channels as well as the antibody names. The `_pano.png` contain the acquied panoramas; the `_slide.png` contains the slide overview. The `_schema.xml` contains metadata regarding the acquisition session.  
@@ -105,8 +116,6 @@ try:
             for zip_file in sorted(zip_files):
                 imcsegpipe.extract_zip_file(zip_file, temp_dir.name)
     acquisition_metadatas = []
-    acquisitions_dir.mkdir(exist_ok=True)
-    cellprofiler_input_dir.mkdir(exist_ok=True)
     for raw_dir in raw_dirs + [Path(temp_dir.name) for temp_dir in temp_dirs]:
         mcd_files = list(raw_dir.rglob("*.mcd"))
         if len(mcd_files) > 0:
@@ -130,7 +139,6 @@ finally:
 # Here, the CellProfiler output directory is created and copy of the panel file is transferred. 
 
 # %%
-cellprofiler_output_dir.mkdir(exist_ok=True)
 shutil.copy2(panel_file, cellprofiler_output_dir / "panel.csv")
 
 # %% [markdown]
@@ -191,7 +199,6 @@ for acquisition_dir in acquisitions_dir.glob("*"):
 # Finally, we will copy a file that contains the correct order of channels for the exported full stacks to the CellProfiler input folder.
 
 # %%
-cellprofiler_input_dir.mkdir(exist_ok=True)
 first_channel_order_file = next(analysis_dir.glob("*_full.csv"))
 shutil.copy2(first_channel_order_file, cellprofiler_input_dir / "full_channelmeta.csv")
 
@@ -199,7 +206,6 @@ shutil.copy2(first_channel_order_file, cellprofiler_input_dir / "full_channelmet
 # We will also generate channel metadata for the probability stack (see [Ilastik training](https://bodenmillergroup.github.io/ImcSegmentationPipeline/ilastik.html)).
 
 # %%
-cellprofiler_input_dir.mkdir(exist_ok=True)
 probab_meta = ["CellCenter", "CellBorder", "Background"]
 with open(cellprofiler_input_dir / "probab_channelmeta_manual.csv", "w") as f:
     f.write("\n".join(probab_meta))
