@@ -1,16 +1,16 @@
 CellProfiler Pipeline: http://www.cellprofiler.org
 Version:5
-DateRevision:407
+DateRevision:421
 GitHash:
-ModuleCount:13
+ModuleCount:12
 HasImagePlaneDetails:False
 
-Images:[module_num:1|svn_version:'Unknown'|variable_revision_number:2|show_window:False|notes:['This module will prepare ilastik stacks for the ilastik cell classification pipeline.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+Images:[module_num:1|svn_version:'Unknown'|variable_revision_number:2|show_window:False|notes:['This module prepares upscaled and croped image stacks for ilastik pixel classification.', 'Select the tiffs folder and drop it here.', '', 'Default Output Folder: path/to/analysis/ilastik']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     :
     Filter images?:Images only
     Select the rule criteria:and (extension does isimage) (directory doesnot containregexp "[\\\\/]\\.")
 
-Metadata:[module_num:2|svn_version:'Unknown'|variable_revision_number:6|show_window:False|notes:['No metadata.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+Metadata:[module_num:2|svn_version:'Unknown'|variable_revision_number:6|show_window:False|notes:['The filename is extracted from individual images.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Extract metadata?:Yes
     Metadata data type:Text
     Metadata types:{}
@@ -27,7 +27,7 @@ Metadata:[module_num:2|svn_version:'Unknown'|variable_revision_number:6|show_win
     Metadata file name:
     Does cached metadata exist?:No
 
-NamesAndTypes:[module_num:3|svn_version:'Unknown'|variable_revision_number:8|show_window:False|notes:['Here only _ilastik.tiff files are selected.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+NamesAndTypes:[module_num:3|svn_version:'Unknown'|variable_revision_number:8|show_window:False|notes:['Only _ilastik.tiff files are selected. These multi-channel images contain the channels which were selected for ilastik pixel classification via the ilastik column in the panel file. The channel order can be found in the related _ilastik.csv files.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Assign a name to:Images matching rules
     Select the image type:Grayscale image
     Name to assign these images:DNA
@@ -53,25 +53,13 @@ Groups:[module_num:4|svn_version:'Unknown'|variable_revision_number:2|show_windo
     grouping metadata count:1
     Metadata category:None
 
-SmoothMultichannel:[module_num:5|svn_version:'Unknown'|variable_revision_number:6|show_window:False|notes:['This filter will remove strong, single outlier pixels from the images, which sometimes occur in IMC images.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+SummarizeStack:[module_num:5|svn_version:'Unknown'|variable_revision_number:1|show_window:False|notes:['This module calculates an average across all channels and multiplies it with 100.', 'Thus an average count of 0.1 (over all channels) will correspond to 10 in an uint16 image.', '', 'This allows to easily discriminate forground and background for pixel labelling.', '']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select the input image:Ilastik
-    Name the output image:IlastikFil
-    Select smoothing method:Remove single hot pixels
-    Calculate artifact diameter automatically?:Yes
-    Typical artifact diameter:16.0
-    Edge intensity difference:0.1
-    Clip intensities to 0 and 1?:Yes
-    Neighborhood filter size:3
-    Hot pixel threshold:50.0
-    Scale hot pixel threshold to image scale?:Yes
-
-SummarizeStack:[module_num:6|svn_version:'Unknown'|variable_revision_number:1|show_window:False|notes:['This calculates an  average of all channels and multiplies it with 100.', 'Thus an average count of 0.1 (over all channels) will correspond to 10 in an uint16 image.', '', 'This allows to easily discriminate forground and background.', '']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
-    Select the input image:IlastikFil
     Conversion method:Python Function
     Name the output image:ScaledMeanPrep
     Input a Python function:lambda x, axis: np.mean(x, axis=axis)*100
 
-ImageMath:[module_num:7|svn_version:'Unknown'|variable_revision_number:5|show_window:False|notes:['This guarantees that values will be between 0-1']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+ImageMath:[module_num:6|svn_version:'Unknown'|variable_revision_number:5|show_window:False|notes:['This module clips intensities to the range of 0 and 1 and therefore avoids out of range errors.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Operation:None
     Raise the power of the result by:1.0
     Multiply the result by:1.0
@@ -90,13 +78,13 @@ ImageMath:[module_num:7|svn_version:'Unknown'|variable_revision_number:5|show_wi
     Multiply the second image by:1.0
     Measurement:
 
-StackImages:[module_num:8|svn_version:'Unknown'|variable_revision_number:2|show_window:False|notes:['Add the summary channel as first channel.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+StackImages:[module_num:7|svn_version:'Unknown'|variable_revision_number:2|show_window:False|notes:['This module adds the mean intensity channel as first channel to the multi-channel ilastik stack.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Name the output image:IlastikExp
     Hidden:2
     Image name:ScaledMean
-    Image name:IlastikFil
+    Image name:Ilastik
 
-Resize:[module_num:9|svn_version:'Unknown'|variable_revision_number:4|show_window:False|notes:['Scaling up the images 2x makes pixel classificaiton easier.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+Resize:[module_num:8|svn_version:'Unknown'|variable_revision_number:4|show_window:False|notes:['Images are upscaled by a factor of 2. This approach facilitates pixel labelling using ilastik. Down scaling is perfomed in the following pipelines.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select the input image:IlastikExp
     Name the output image:Ilastik2x
     Resizing method:Resize by a fraction or multiple of the original size
@@ -108,7 +96,7 @@ Resize:[module_num:9|svn_version:'Unknown'|variable_revision_number:4|show_windo
     Select the image with the desired dimensions:None
     Additional image count:0
 
-CropImage:[module_num:10|svn_version:'Unknown'|variable_revision_number:4|show_window:False|notes:['This function crops random sections from the images, that are used for training.', '', 'The filename is used as a random seed.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+CropImage:[module_num:9|svn_version:'Unknown'|variable_revision_number:4|show_window:False|notes:['This module crops random widthxheight sections of the ilastik stack. These smaller images are used for ilastik pixel labelling', 'The filename is used as a random seed to ensure reproducibility.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select the input image:Ilastik2x
     Name the output image:Ilastikcropped
     W width:500
@@ -119,7 +107,7 @@ CropImage:[module_num:10|svn_version:'Unknown'|variable_revision_number:4|show_w
     Optional Random Seed:\g<filename>
     Additional image count:0
 
-SaveImages:[module_num:11|svn_version:'Unknown'|variable_revision_number:15|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+SaveImages:[module_num:10|svn_version:'Unknown'|variable_revision_number:16|show_window:False|notes:['The upscaled ilastik stacks are saved in the tiffs folder in .h5 format. Once the ilastik pixel classifier is trained, these images are used for pixel classification. ']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select the type of image to save:Image
     Select the image to save:Ilastik2x
     Select method for constructing file names:From image filename
@@ -137,8 +125,9 @@ SaveImages:[module_num:11|svn_version:'Unknown'|variable_revision_number:15|show
     Create subfolders in the output folder?:No
     Base image folder:Elsewhere...|
     How to save the series:T (Time)
+    Save with lossless compression?:No
 
-SaveImages:[module_num:12|svn_version:'Unknown'|variable_revision_number:15|show_window:False|notes:['Saves the crop together with the coordinates.', 'This is important to track back were the random crops were exactly taken.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+SaveImages:[module_num:11|svn_version:'Unknown'|variable_revision_number:16|show_window:False|notes:['This module saves the ilastik image crops in the ilastik folder (Default Output Folder - please adjust). ', 'The filename is written out as <filename>_<x_coordinate>_<y_coordinate>_<width>_<height>.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select the type of image to save:Image
     Select the image to save:Ilastikcropped
     Select method for constructing file names:From image filename
@@ -156,8 +145,9 @@ SaveImages:[module_num:12|svn_version:'Unknown'|variable_revision_number:15|show
     Create subfolders in the output folder?:No
     Base image folder:Elsewhere...|
     How to save the series:T (Time)
+    Save with lossless compression?:No
 
-CreateBatchFiles:[module_num:13|svn_version:'Unknown'|variable_revision_number:8|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:False|wants_pause:False]
+CreateBatchFiles:[module_num:12|svn_version:'Unknown'|variable_revision_number:8|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:False|wants_pause:False]
     Store batch files in default output folder?:Yes
     Output folder path:/mnt/f2160748-a937-44bd-aca8-3adb8a839612/Data/Analysis/cp4_segmentation_example/cpout
     Are the cluster computers running Windows?:No
