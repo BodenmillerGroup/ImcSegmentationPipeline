@@ -5,7 +5,7 @@ GitHash:
 ModuleCount:12
 HasImagePlaneDetails:False
 
-Images:[module_num:1|svn_version:'Unknown'|variable_revision_number:2|show_window:False|notes:['This module prepares upscaled and croped image stacks for ilastik pixel classification.', 'Select the tiffs folder and drop it here.', '', 'Default Output Folder: path/to/analysis/ilastik']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+Images:[module_num:1|svn_version:'Unknown'|variable_revision_number:2|show_window:False|notes:['This module prepares upscaled and croped image stacks for ilastik pixel classification.', 'Select the ilastik folder and drop it here.', '', 'Default Output Folder: path/to/analysis/crops']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     :
     Filter images?:Images only
     Select the rule criteria:and (extension does isimage) (directory doesnot containregexp "[\\\\/]\\.")
