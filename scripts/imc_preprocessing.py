@@ -65,11 +65,17 @@ panel_ilastik_col = "ilastik"
 # Within the working directory, the following sub-folder will be created:
 #
 # * `acquisitions_dir`: storing individual acquisitions as `.ome.tiff` files, panoramas as `.png` and acquisition metadata (default `analysis/ometiff`)
-# * `analysis_dir`: storing multi-channel images in `.tiff` format for analysis and ilastik training. The channel order for each image is written out in `.csv` format (default `analysis/tiffs`)
-# * `ilastik_dir`: stores image crops for ilastik training after running the first CellProfiler pipeline (default `analysis/ilastik`)
+# * `ilastik_dir`: storing multi-channel images in `.tiff` format for ilastik training. The channel order for each image is written out in `.csv` format (default `analysis/ilastik`). Following the CellProfiler pipelines, all files related to the ilastik segmentation approach will be stored here. 
+# * `crops_dir`: stores image crops for ilastik training after running the first CellProfiler pipeline (default `analysis/crops`)
 # * `cellprofiler_input_dir`: all files needed for CellProfiler input (default `analysis/cpinp`)
 # * `cellprofiler_output_dir`: all files written out by CellProfiler (default `analysis/cpout`)
 # * `histocat_dir`: folders containing single-channel images for histoCAT upload (default `analysis/histocat`)
+#
+# Within the `cellprofiler_output_dir` three subfolder are created storing the final images:
+#
+# * `final_images`: stores the hot pixel filtered multi-channel images containing selected channels (default `analysis/cpout/images`)
+# * `final_masks`: stores the final cell segmentation masks (default `analysis/cpout/masks`)
+# * `final_probabilities`: stores the downscaled pixel probabilities after ilastik classification (default `analysis/cpout/probabilities`)
 
 # %%
 # working directory storing all outputs
@@ -77,24 +83,33 @@ work_dir = "../analysis"
 work_dir = Path(work_dir)
 work_dir.mkdir(exist_ok=True)
 
-# parameters for resizing the images for ilastik
+# general output directories
 acquisitions_dir = work_dir / "ometiff"
-analysis_dir = work_dir / "tiffs"
 ilastik_dir = work_dir / "ilastik"
+crops_dir = work_dir / "crops"
 cellprofiler_input_dir = work_dir / "cpinp"
 cellprofiler_output_dir = work_dir / "cpout"
 histocat_dir = work_dir / "histocat"
+
+# Final output directories
+final_images = cellprofiler_output_dir / "images"
+final_masks = cellprofiler_output_dir / "masks"
+final_probabilities = cellprofiler_output_dir / "probabilities"
 
 # %% [markdown]
 # The specified folder will now be created.
 
 # %%
 acquisitions_dir.mkdir(exist_ok=True)
-analysis_dir.mkdir(exist_ok=True)
+crops_dir.mkdir(exist_ok=True)
 ilastik_dir.mkdir(exist_ok=True)
 cellprofiler_input_dir.mkdir(exist_ok=True)
 cellprofiler_output_dir.mkdir(exist_ok=True)
 histocat_dir.mkdir(exist_ok=True)
+
+final_images.mkdir(exist_ok=True)
+final_masks.mkdir(exist_ok=True)
+final_probabilities.mkdir(exist_ok=True)
 
 # %% [markdown]
 # ## Convert `.mcd` files to `.ome.tiff` files
@@ -179,7 +194,7 @@ for acquisition_dir in acquisitions_dir.glob("*"):
         # Write full stack
         imcsegpipe.create_analysis_stacks(
             acquisition_dir=acquisition_dir,
-            analysis_dir=analysis_dir,
+            analysis_dir=final_images,
             analysis_channels=panel.loc[panel[panel_keep_col] == 1, panel_channel_col].tolist(),
             suffix="_full",
             hpf=50.0,
@@ -187,7 +202,7 @@ for acquisition_dir in acquisitions_dir.glob("*"):
         # Write ilastik stack
         imcsegpipe.create_analysis_stacks(
             acquisition_dir=acquisition_dir,
-            analysis_dir=analysis_dir,
+            analysis_dir=ilastik_dir,
             analysis_channels=panel.loc[panel[panel_ilastik_col] == 1, panel_channel_col].tolist(),
             suffix="_ilastik",
             hpf=50.0,
@@ -199,7 +214,7 @@ for acquisition_dir in acquisitions_dir.glob("*"):
 # Finally, we will copy a file that contains the correct order of channels for the exported full stacks to the CellProfiler input folder.
 
 # %%
-first_channel_order_file = next(analysis_dir.glob("*_full.csv"))
+first_channel_order_file = next(final_images.glob("*_full.csv"))
 shutil.copy2(first_channel_order_file, cellprofiler_input_dir / "full_channelmeta.csv")
 
 # %% [markdown]
@@ -222,7 +237,7 @@ with open(cellprofiler_input_dir / "probab_channelmeta_manual.csv", "w") as f:
 #for acquisition_dir in acquisitions_dir.glob("*"):
 #    if acquisition_dir.is_dir():
 #        imcsegpipe.export_to_histocat(
-#            acquisition_dir, histocat_dir, mask_dir=analysis_dir
+#            acquisition_dir, histocat_dir, mask_dir=final_masks
 #        )
 
 # %%
