@@ -76,7 +76,7 @@ Groups:[module_num:4|svn_version:'Unknown'|variable_revision_number:2|show_windo
     grouping metadata count:1
     Metadata category:Site
 
-ConvertImageToObjects:[module_num:5|svn_version:'Unknown'|variable_revision_number:1|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+ConvertImageToObjects:[module_num:5|svn_version:'Unknown'|variable_revision_number:1|show_window:False|notes:['The read in segmentation masks are converted to objects while keeping their original labels in place.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select the input image:cellmask
     Name the output object:cell
     Convert to boolean image:No
@@ -84,7 +84,7 @@ ConvertImageToObjects:[module_num:5|svn_version:'Unknown'|variable_revision_numb
     Background label:0
     Connectivity:0
 
-MeasureObjectNeighbors:[module_num:6|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:['Measures the neightbourhood graph.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+MeasureObjectNeighbors:[module_num:6|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:['For each cell its direct neighbors are detected by expanding the cell mask by a defined distance. At the end of the pipeline, the neighbor information is written out in form of an edge list in the Object relationships.csv file.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select objects to measure:cell
     Select neighboring objects to measure:cell
     Method to determine neighbors:Within a specified distance
@@ -97,34 +97,34 @@ MeasureObjectNeighbors:[module_num:6|svn_version:'Unknown'|variable_revision_num
     Name the output image:PercentTouching
     Select colormap:Default
 
-MeasureObjectIntensityMultichannel:[module_num:7|svn_version:'Unknown'|variable_revision_number:4|show_window:False|notes:['Measures the object intensities. Each channel will have a number corresponding to the plane number. The metals corresponding to the indices, e.g. _c1, _c2, can be found by looking at the _full.csv files in the tiffs folder.', '', 'Adapt the number of channels corresponding to the number of planes in the stack. Can be again seen in the  _full.csv files in the tiffs folder.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+MeasureObjectIntensityMultichannel:[module_num:7|svn_version:'Unknown'|variable_revision_number:4|show_window:False|notes:['This module measures the object/cell intensities based on the multi-channel images. Further downstream you can select which intensity measures you want to export (default: all). The measurements for each channel will have a number (e.g. _c1, _c2, _c3) corresponding to the plane number. The metals corresponding to the plane/channel number can be found in the _full.csv files in the analysis/images folder.', '', 'You will need to adapt the number of channels according to your dataset here.', '']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select images to measure:FullStack
     Select objects to measure:cell
     How many channels does the image have?:40
 
-MeasureObjectIntensityMultichannel:[module_num:8|svn_version:'Unknown'|variable_revision_number:4|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+MeasureObjectIntensityMultichannel:[module_num:8|svn_version:'Unknown'|variable_revision_number:4|show_window:False|notes:['This module measures the per-cell pixel probabilities using the read-in pixel probability images. ']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select images to measure:ProbabStack
     Select objects to measure:cell
     How many channels does the image have?:3
 
-MeasureObjectSizeShape:[module_num:9|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+MeasureObjectSizeShape:[module_num:9|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:['Here, morphological features of the objects are extracted.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select object sets to measure:cell
     Calculate the Zernike features?:No
     Calculate the advanced features?:No
 
-MeasureImageIntensityMultichannel:[module_num:10|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:['Measures the object intensities. Each channel will have a number corresponding to the plane number. The metals corresponding to the indices, e.g. _c1, _c2, can be found by looking at the _full.csv files in the tiffs folder.', '', 'Adapt the number of channels as needed! Can be again seen in the  _full.csv files in the tiffs folder.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+MeasureImageIntensityMultichannel:[module_num:10|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:['This module measures the overall channel intensities based on the multi-channel images. Further downstream you can select which intensity measures you want to export (default: all). The measurements for each channel will have a number (e.g. _c1, _c2, _c3) corresponding to the plane number. The metals corresponding to the plane/channel number can be found in the _full.csv files in the analysis/images folder.', '', 'You will need to adapt the number of channels according to your dataset here.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select images to measure:FullStack
     Measure the intensity only from areas enclosed by objects?:No
     Select input object sets:
     How many channels does the image have?:40
 
-MeasureImageIntensityMultichannel:[module_num:11|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+MeasureImageIntensityMultichannel:[module_num:11|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:['This module measures the overall pixel probabilities across whole images.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select images to measure:ProbabStack
     Measure the intensity only from areas enclosed by objects?:No
     Select input object sets:
     How many channels does the image have?:3
 
-ExportToSpreadsheet:[module_num:12|svn_version:'Unknown'|variable_revision_number:13|show_window:False|notes:['Save the data to csv.', 'Note that the intensity values are all scaled by a scaling factor corresponding to the bit depth (can be found in the Image.csv Scale column.', 'For uint16 everything is divided by 2**16 = 65535']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+ExportToSpreadsheet:[module_num:12|svn_version:'Unknown'|variable_revision_number:13|show_window:False|notes:['Here, the cell, image and experiment data is saved as csv files.', 'The cell.csv file contains single-cell features including intensity and morphological features. You can select a subset of features by setting _Select the measurements to export_ to _Yes_.', 'Note: the intensity values are all scaled by a scaling factor corresponding to the bit depth. This scaling factor can be found in the Image.csv file in the Scaling_FullStack column.', 'For 16-bit unsigned integer images (uint16) values are divided by 2**16 - 1 = 65535.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select the column delimiter:Comma (",")
     Add image metadata columns to your object data file?:No
     Add image file and folder names to your object data file?:No
@@ -148,7 +148,7 @@ ExportToSpreadsheet:[module_num:12|svn_version:'Unknown'|variable_revision_numbe
     File name:DATA.csv
     Use the object name for the file name?:Yes
 
-ExportToSpreadsheet:[module_num:13|svn_version:'Unknown'|variable_revision_number:13|show_window:False|notes:['This is necessary to also save the Object Relationships table = neightbourhood graph structure.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+ExportToSpreadsheet:[module_num:13|svn_version:'Unknown'|variable_revision_number:13|show_window:False|notes:['This module saves the cell neighbor information in form of an edge ist as Object relationships.csv file. ']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select the column delimiter:Comma (",")
     Add image metadata columns to your object data file?:No
     Add image file and folder names to your object data file?:No
@@ -172,7 +172,7 @@ ExportToSpreadsheet:[module_num:13|svn_version:'Unknown'|variable_revision_numbe
     File name:DATA.csv
     Use the object name for the file name?:Yes
 
-ExportVarCsv:[module_num:14|svn_version:'Unknown'|variable_revision_number:2|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+ExportVarCsv:[module_num:14|svn_version:'Unknown'|variable_revision_number:2|show_window:False|notes:['The final module reads in the full_channelmeta.csv file containing the channel names (for IMC these are metal isotopes) and the probab_channelmeta_manual.csv file containing the channel information for the pixel probability images. This information is extended by the features (cell and image) measured in the pipeline to generate extensive feature metadata files. These files contain the link between individual channels, their names and measurement type.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Output file location:Default Output Folder|
     Add a prefix to file names?:Yes
     Filename prefix:var_
