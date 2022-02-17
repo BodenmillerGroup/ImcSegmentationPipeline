@@ -2,15 +2,15 @@ CellProfiler Pipeline: http://www.cellprofiler.org
 Version:5
 DateRevision:421
 GitHash:
-ModuleCount:14
+ModuleCount:15
 HasImagePlaneDetails:False
 
-Images:[module_num:1|svn_version:'Unknown'|variable_revision_number:2|show_window:False|notes:['Choose the the cpout folder']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+Images:[module_num:1|svn_version:'Unknown'|variable_revision_number:2|show_window:False|notes:['This pipeline reads in the multi-channel images, the segmentation masks and pixel probabilities as generated in the previous pipelines to measure cell features.', 'Please select the analysis/cpout folder here.', '', 'Default Input Folder: path/to/analysis/cpinp', 'Default Output Folder: path/to/analysis/cpout']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     :
     Filter images?:Images only
     Select the rule criteria:and (extension does isimage) (directory doesnot containregexp "[\\\\/]\\.")
 
-Metadata:[module_num:2|svn_version:'Unknown'|variable_revision_number:6|show_window:False|notes:['The Metadata module optionally allows you to extract information describing your images (i.e, metadata) which will be stored along with your measurements. This information can be contained in the file name and/or location, or in an external file.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+Metadata:[module_num:2|svn_version:'Unknown'|variable_revision_number:6|show_window:False|notes:['Here, metadata from the images (<acname>, <slideid> and <acid>) are matched with image metadata generated during pre-processing (contained in the analysis/cpinp/acquisition_metadata.csv file). At the end of the pipeline, matched information is written out as Image.csv file.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Extract metadata?:Yes
     Metadata data type:Text
     Metadata types:{}
@@ -38,11 +38,11 @@ Metadata:[module_num:2|svn_version:'Unknown'|variable_revision_number:6|show_win
     Metadata file name:acquisition_metadata.csv
     Does cached metadata exist?:No
 
-NamesAndTypes:[module_num:3|svn_version:'Unknown'|variable_revision_number:8|show_window:False|notes:['The NamesAndTypes module allows you to assign a meaningful name to each image by which other modules will refer to it.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+NamesAndTypes:[module_num:3|svn_version:'Unknown'|variable_revision_number:8|show_window:False|notes:['The multi-channel images (stored in analysis/cpout/images), segmentation masks (stored in analysis/cpout/images) and the pixel probabilities (stored in analysis/cpout/probabilities) are read in and matched via their acquisition name (acname) and acquisition ID (acid).']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Assign a name to:Images matching rules
     Select the image type:Grayscale image
     Name to assign these images:DNA
-    Match metadata:[{'FullStack': 'acname', 'ProbabStack': 'acname', 'cell': 'acname'}, {'FullStack': 'acid', 'ProbabStack': 'acid', 'cell': 'acid'}]
+    Match metadata:[{'FullStack': 'acname', 'ProbabStack': 'acname', 'cellmask': 'acname'}, {'FullStack': 'acid', 'ProbabStack': 'acid', 'cellmask': 'acid'}]
     Image set matching method:Metadata
     Set intensity range from:Image metadata
     Assignments count:3
@@ -67,8 +67,8 @@ NamesAndTypes:[module_num:3|svn_version:'Unknown'|variable_revision_number:8|sho
     Select the rule criteria:and (file does endwith "_mask.tiff")
     Name to assign these images:cellmask
     Name to assign these objects:cell
-    Select the image type:Objects
-    Set intensity range from:Image metadata
+    Select the image type:Grayscale image
+    Set intensity range from:Image bit-depth
     Maximum intensity:255.0
 
 Groups:[module_num:4|svn_version:'Unknown'|variable_revision_number:2|show_window:False|notes:['The Groups module optionally allows you to split your list of images into image subsets (groups) which will be processed independently of each other. Examples of groupings include screening batches, microtiter plates, time-lapse movies, etc.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
@@ -76,7 +76,15 @@ Groups:[module_num:4|svn_version:'Unknown'|variable_revision_number:2|show_windo
     grouping metadata count:1
     Metadata category:Site
 
-MeasureObjectNeighbors:[module_num:5|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:['Measures the neightbourhood graph.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+ConvertImageToObjects:[module_num:5|svn_version:'Unknown'|variable_revision_number:1|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select the input image:cellmask
+    Name the output object:cell
+    Convert to boolean image:No
+    Preserve original labels:Yes
+    Background label:0
+    Connectivity:0
+
+MeasureObjectNeighbors:[module_num:6|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:['Measures the neightbourhood graph.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select objects to measure:cell
     Select neighboring objects to measure:cell
     Method to determine neighbors:Within a specified distance
@@ -89,34 +97,34 @@ MeasureObjectNeighbors:[module_num:5|svn_version:'Unknown'|variable_revision_num
     Name the output image:PercentTouching
     Select colormap:Default
 
-MeasureObjectIntensityMultichannel:[module_num:6|svn_version:'Unknown'|variable_revision_number:4|show_window:False|notes:['Measures the object intensities. Each channel will have a number corresponding to the plane number. The metals corresponding to the indices, e.g. _c1, _c2, can be found by looking at the _full.csv files in the tiffs folder.', '', 'Adapt the number of channels corresponding to the number of planes in the stack. Can be again seen in the  _full.csv files in the tiffs folder.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+MeasureObjectIntensityMultichannel:[module_num:7|svn_version:'Unknown'|variable_revision_number:4|show_window:False|notes:['Measures the object intensities. Each channel will have a number corresponding to the plane number. The metals corresponding to the indices, e.g. _c1, _c2, can be found by looking at the _full.csv files in the tiffs folder.', '', 'Adapt the number of channels corresponding to the number of planes in the stack. Can be again seen in the  _full.csv files in the tiffs folder.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select images to measure:FullStack
     Select objects to measure:cell
     How many channels does the image have?:40
 
-MeasureObjectIntensityMultichannel:[module_num:7|svn_version:'Unknown'|variable_revision_number:4|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+MeasureObjectIntensityMultichannel:[module_num:8|svn_version:'Unknown'|variable_revision_number:4|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select images to measure:ProbabStack
     Select objects to measure:cell
     How many channels does the image have?:3
 
-MeasureObjectSizeShape:[module_num:8|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+MeasureObjectSizeShape:[module_num:9|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select object sets to measure:cell
     Calculate the Zernike features?:No
     Calculate the advanced features?:No
 
-MeasureImageIntensityMultichannel:[module_num:9|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:['Measures the object intensities. Each channel will have a number corresponding to the plane number. The metals corresponding to the indices, e.g. _c1, _c2, can be found by looking at the _full.csv files in the tiffs folder.', '', 'Adapt the number of channels as needed! Can be again seen in the  _full.csv files in the tiffs folder.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+MeasureImageIntensityMultichannel:[module_num:10|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:['Measures the object intensities. Each channel will have a number corresponding to the plane number. The metals corresponding to the indices, e.g. _c1, _c2, can be found by looking at the _full.csv files in the tiffs folder.', '', 'Adapt the number of channels as needed! Can be again seen in the  _full.csv files in the tiffs folder.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select images to measure:FullStack
     Measure the intensity only from areas enclosed by objects?:No
     Select input object sets:
     How many channels does the image have?:40
 
-MeasureImageIntensityMultichannel:[module_num:10|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+MeasureImageIntensityMultichannel:[module_num:11|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select images to measure:ProbabStack
     Measure the intensity only from areas enclosed by objects?:No
     Select input object sets:
     How many channels does the image have?:3
 
-ExportToSpreadsheet:[module_num:11|svn_version:'Unknown'|variable_revision_number:13|show_window:False|notes:['Save the data to csv.', 'Note that the intensity values are all scaled by a scaling factor corresponding to the bit depth (can be found in the Image.csv Scale column.', 'For uint16 everything is divided by 2**16 = 65535']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+ExportToSpreadsheet:[module_num:12|svn_version:'Unknown'|variable_revision_number:13|show_window:False|notes:['Save the data to csv.', 'Note that the intensity values are all scaled by a scaling factor corresponding to the bit depth (can be found in the Image.csv Scale column.', 'For uint16 everything is divided by 2**16 = 65535']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select the column delimiter:Comma (",")
     Add image metadata columns to your object data file?:No
     Add image file and folder names to your object data file?:No
@@ -140,7 +148,7 @@ ExportToSpreadsheet:[module_num:11|svn_version:'Unknown'|variable_revision_numbe
     File name:DATA.csv
     Use the object name for the file name?:Yes
 
-ExportToSpreadsheet:[module_num:12|svn_version:'Unknown'|variable_revision_number:13|show_window:False|notes:['This is necessary to also save the Object Relationships table = neightbourhood graph structure.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+ExportToSpreadsheet:[module_num:13|svn_version:'Unknown'|variable_revision_number:13|show_window:False|notes:['This is necessary to also save the Object Relationships table = neightbourhood graph structure.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select the column delimiter:Comma (",")
     Add image metadata columns to your object data file?:No
     Add image file and folder names to your object data file?:No
@@ -164,7 +172,7 @@ ExportToSpreadsheet:[module_num:12|svn_version:'Unknown'|variable_revision_numbe
     File name:DATA.csv
     Use the object name for the file name?:Yes
 
-ExportVarCsv:[module_num:13|svn_version:'Unknown'|variable_revision_number:2|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+ExportVarCsv:[module_num:14|svn_version:'Unknown'|variable_revision_number:2|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Output file location:Default Output Folder|
     Add a prefix to file names?:Yes
     Filename prefix:var_
@@ -177,7 +185,7 @@ ExportVarCsv:[module_num:13|svn_version:'Unknown'|variable_revision_number:2|sho
     Metadata file location:Default Input Folder|
     Metadata file name:probab_channelmeta_manual.csv
 
-CreateBatchFiles:[module_num:14|svn_version:'Unknown'|variable_revision_number:8|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:False|wants_pause:False]
+CreateBatchFiles:[module_num:15|svn_version:'Unknown'|variable_revision_number:8|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:False|wants_pause:False]
     Store batch files in default output folder?:Yes
     Output folder path:/mnt/f2160748-a937-44bd-aca8-3adb8a839612/Data/Analysis/cp4_segmentation_example/cpout
     Are the cluster computers running Windows?:No

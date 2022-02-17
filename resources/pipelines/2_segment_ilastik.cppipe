@@ -262,7 +262,7 @@ SaveImages:[module_num:16|svn_version:'Unknown'|variable_revision_number:16|show
     Saved file format:tiff
     Output file location:Default Output Folder sub-folder|probabilities
     Image bit depth:16-bit integer
-    Overwrite existing files without warning?:No
+    Overwrite existing files without warning?:Yes
     When to save:Every cycle
     Record the file and path information to the saved image?:No
     Create subfolders in the output folder?:No
