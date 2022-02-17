@@ -6,7 +6,7 @@ It is based on supervised pixel classification using [Ilastik](https://www.ilast
 This feature reduction step is followed by standard image segmentation using [CellProfiler](https://cellprofiler.org/).
 The segmentation pipeline is accompanied by the `imcsegpipe` python package building up on [readimc](https://github.com/BodenmillerGroup/readimc) as well as customized [CellProfiler modules](https://github.com/BodenmillerGroup/ImcPluginsCP), which facilitate the analysis of highly multiplexed images. 
 The pipeline is entirely build on open source tools, can be easily adapted to more specific problems and forms a solid basis for quantitative multiplexed tissue image analysis.
-For a more detailed introduction, please refer to the [Introduction](intro.md).
+For a more detailed introduction to IMC as technolgy and common data analysis steps, please refer to the [IMC workflow website](https://bodenmillergroup.github.io/IMCWorkflow/).
 
 The [steinbock](https://github.com/BodenmillerGroup/steinbock) framework offers a dockerized version of the pipeline and extends the segmentation approach by [deepcell](https://github.com/vanvalenlab/intro-to-deepcell) segmentation. 
 
