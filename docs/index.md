@@ -100,7 +100,7 @@ Please follow the [segmentation instructions](segmentation.md) for more informat
 ## Contributors
 
 **Creator:** Vito Zanotelli [:fontawesome-brands-github:](https://github.com/votti) [:fontawesome-brands-twitter:](https://twitter.com/ZanotelliVRT)    
-**Contributors:** Jonas Windhager [:fontawesome-brands-github:](https://github.com/jwindhager) [:fontawesome-brands-twitter:](https://twitter.com/JonasWindhager) Nils Eling [:fontawesome-brands-github:](https://github.com/nilseling) [:fontawesome-brands-twitter:](https://twitter.com/NilsEling) [:fontawesome-solid-home:](https://nilseling.github.io/)
+**Contributors:** Jonas Windhager [:fontawesome-brands-github:](https://github.com/jwindhager) [:fontawesome-brands-twitter:](https://twitter.com/JonasWindhager) Nils Eling [:fontawesome-brands-github:](https://github.com/nilseling) [:fontawesome-brands-twitter:](https://twitter.com/NilsEling)  
 **Maintainer:** Nils Eling
 
 ## Citation
@@ -109,10 +109,9 @@ Please follow the [segmentation instructions](segmentation.md) for more informat
 @misc{ImcSegmentationPipeline,
     author       = {Vito RT Zanotelli, Bernd Bodenmiller},
     title        = {{ImcSegmentationPipeline: A pixel-classification based multiplexed image segmentation pipeline}},
-    month        = Sept,
-    year         = 2017,
+    year         = 2022,
     doi          = {10.5281/zenodo.3841961},
-    version      = {0.9},
+    version      = {3.0},
     publisher    = {Zenodo},
     url          = {https://doi.org/10.5281/zenodo.3841961}
     }
