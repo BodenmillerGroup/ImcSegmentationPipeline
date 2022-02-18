@@ -13,7 +13,7 @@ To get started, you will need to open CellProfiler and import the `1_prepare_ila
 2. In `Output Settings` set the `analysis/crops` folder as `Default Output Folder`  
 
 The pipeline will read in all multi-channel images from the `analysis/ilastik` folder containing the suffix `_ilastik`. 
-The follwoing steps are part of the pipeline:
+The following steps are part of the pipeline:
 
 1. The average intensity across all channels is computed and multiplied by 10. This will later serve as visual help to find background areas during Ilastik pixel labelling.  
 2. The average is clipped to 0 and 1 (after uint16 rescaling) to avoid out-of-range errors.  
