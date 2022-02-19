@@ -22,3 +22,8 @@ The following steps are part of the pipeline:
 12. The downscaled pixel probability images are written out as 16-bit, 3 channel `.tiff` images to the `analysis/cpout/probabilities` folder.
 
 ## Output
+
+After image segmentation the following files have been generated:
+
+* `analysis/cpout/masks`: contains single-channel segmentation masks in 16-bit `.tiff` format. Segmentation masks are single-channel images that match the input images in size, with non-zero grayscale values indicating the IDs of segmented object 
+* `analysis/cpout/probabilities`: contains 3 channel images in 16-bit `.tiff` format representing the downscaled pixel probabilities after Ilastik pixel classification.
