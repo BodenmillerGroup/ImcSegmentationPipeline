@@ -22,14 +22,14 @@ from typing import List
 # %% [markdown]
 # This script presents the first step of the IMC segmentation pipeline.
 #  
-# To get started, please refer to the [Get started guide](docs/index.md) and to download example data you can run the script `scripts/download_examples.ipynb`.
+# To get started, please refer to the [Get started guide](https://bodenmillergroup.github.io/ImcSegmentationPipeline/) and to download example data you can run the script `scripts/download_examples.ipynb`.
 #  
 # **Requirements for the input data:**
 #  
-# We recommend to supply the raw data in form of _one zip archive per acquisition session_.
+# We recommend to supply the raw data in form of **one zip archive per acquisition session**.
 # This zip archive should contain the `.mcd` file and all `.txt` files corresponding to individual acquisitions.
 #  
-# To understand the output format, please refer to the [Output](docs/output.md) documentation.
+# To understand the output format, please refer to the [Output](https://bodenmillergroup.github.io/ImcSegmentationPipeline/output.html) documentation.
 #  
 # Please raise an issue [here](https://github.com/BodenmillerGroup/ImcSegmentationPipeline/issues) for feedback, bug fixes and feature requests.
 
@@ -114,7 +114,7 @@ final_probabilities.mkdir(exist_ok=True)
 # %% [markdown]
 # ## Convert `.mcd` files to `.ome.tiff` files
 #
-# In the first step, the `.zip` archives containing `.mcd` files are vonverted to folders, which contain `.ome.tiff` files, channel metadata files, panoramas and slide overviews. The `.ome.tiff` files can be read in by commercial and open-source software such as `ImageJ` using the BioFormats importer. The `.csv` files contain the order of the channels as well as the antibody names. The `_pano.png` contain the acquied panoramas; the `_slide.png` contains the slide overview. The `_schema.xml` contains metadata regarding the acquisition session.  
+# In the first step, the `.zip` archives containing `.mcd` files are converted to folders, which contain `.ome.tiff` files, channel metadata files, panoramas and slide overviews. The `.ome.tiff` files can be read in by commercial and open-source software such as `ImageJ` using the BioFormats importer. The `.csv` files contain the order of the channels as well as the antibody names. The `_pano.png` contain the acquied panoramas; the `_slide.png` contains the slide overview. The `_schema.xml` contains metadata regarding the acquisition session.  
 # At this stage, only `.zip` files specified by `file_regex` will be processed.
 #
 # In the following chunk, individual acquisition metadata are written out as `acquisition_metadata.csv` file in the `cellprofiler_output_dir` folder. 
@@ -151,7 +151,7 @@ finally:
     del temp_dirs
 
 # %% [markdown]
-# Here, the CellProfiler output directory is created and copy of the panel file is transferred. 
+# Here, a copy of the panel file is transferred to the `cellprofiler_output_dir`. 
 
 # %%
 shutil.copy2(panel_file, cellprofiler_output_dir / "panel.csv")
@@ -181,7 +181,7 @@ for acquisition_dir in acquisitions_dir.glob("*"):
 # * `acquisition_dir`: specifies the folder containing the `.ome.tiff` files.  
 # * `analysis_dir`: specifies the folder where the `.tiff` stacks should be stored.  
 # * `analysis_channels`: specifies the channel names used for the specific image stack.  
-# * `suffix`: the suffix to be added at the end of the file name
+# * `suffix`: the suffix to be added at the end of the file name.
 # * `hpf`: single number indicating the threshold for hot pixel filtering (see below). Setting `hpf=None` disables hot pixel filtering. 
 #
 # **Hot pixel filtering:** Each pixel intensity is compared against the maximum intensity of the 3x3 neighboring pixels. If the difference is larger than `hpf`, the pixel intensity is clipped to the maximum intensity in the 3x3 neighborhood. 
@@ -211,7 +211,7 @@ for acquisition_dir in acquisitions_dir.glob("*"):
 # %% [markdown]
 # ## Export additional metadata
 #
-# Finally, we will copy a file that contains the correct order of channels for the exported full stacks to the CellProfiler input folder.
+# Finally, we will copy a file that contains the correct order of channels for the exported full stacks to the `cellprofiler_input_dir`.
 
 # %%
 first_channel_order_file = next(final_images.glob("*_full.csv"))
@@ -231,7 +231,7 @@ with open(cellprofiler_input_dir / "probab_channelmeta_manual.csv", "w") as f:
 # %% [markdown]
 # ## Generate the histocat folder with masks (optional)
 #
-# This function can be used to convert the `.ome.tiff` files together with the mask files, which are generated in the [segmentation step](https://bodenmillergroup.github.io/ImcSegmentationPipeline/cellprofiler.html) to a format that is recognized by the `histoCAT` software. To use the function you will need to remove `#` from the following code chunk.
+# This function can be used to convert the `.ome.tiff` files together with the mask files, which are generated in the [segmentation step](https://bodenmillergroup.github.io/ImcSegmentationPipeline/segmentation.html) to a format that is recognized by the `histoCAT` software. To use the function you will need to remove `#` from the following code chunk.
 
 # %%
 #for acquisition_dir in acquisitions_dir.glob("*"):
