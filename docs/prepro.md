@@ -126,7 +126,7 @@ The `analysis/ilastik` will contain files such as:
 ...
 ```
 
-And the `analysis/cpout/images` contains follwoing files:
+And the `analysis/cpout/images` contains following files:
 
 ```
 .
@@ -147,8 +147,9 @@ In the final step of the preprocessing pipeline, a `.csv` file containing the fu
 After image pre-processing the following files have been generated:
 
 * `analysis/ometiff`: contains individual folders (one per sample) of which each contains multiple `.ome.tiff` files (one per acquisition).  
-* `analysis/histocat`: contains individual folders (one per sample) of which each contains multiple single-channel `.tiff` files for upload to histoCAT.  
-* `analysis/ilastik`: contains the ilastik stacks for pixel classification.  
+* `analysis/histocat`: contains individual folders (one per acquisition) of which each contains multiple single-channel `.tiff` files for upload to histoCAT.  
+* `analysis/ilastik`: contains the ilastik stacks for pixel classification as well as `.csv` files indicating the channel order.  
+* `analysis/cpout/images`: contains the full stacks for analysis as well as `.csv` files indicating the channel order.  
 * `analysis/cpout/panel.csv`: the panel file was copied into the final output folder.  
 * `analysis/cpinp`: containing the `acquisition_metadata.csv`, `full_channelmeta.csv`, and `probab_channelmeta_manual.csv` files containing acquisition and channel metadata 
 

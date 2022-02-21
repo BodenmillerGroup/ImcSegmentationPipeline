@@ -5,12 +5,17 @@ This repository presents a flexible and scalable image processing pipeline tailo
 It is based on supervised pixel classification using [Ilastik](https://www.ilastik.org/) to distill segmentation relevant information from multiplexed images in a semi-supervised, automated fashion. 
 This feature reduction step is followed by standard image segmentation using [CellProfiler](https://cellprofiler.org/).
 The segmentation pipeline is accompanied by the `imcsegpipe` python package building up on [readimc](https://github.com/BodenmillerGroup/readimc) as well as customized [CellProfiler modules](https://github.com/BodenmillerGroup/ImcPluginsCP), which facilitate the analysis of highly multiplexed images. 
-The pipeline is entirely build on open source tools, can be easily adapted to more specific problems and forms a solid basis for quantitative multiplexed tissue image analysis.
+The pipeline is entirely build on open source tools, can be easily adapted to more specific problems and forms a basis for quantitative multiplexed tissue image analysis.
 For a more detailed introduction to IMC as technolgy and common data analysis steps, please refer to the [IMC workflow website](https://bodenmillergroup.github.io/IMCWorkflow/).
 
 The [steinbock](https://github.com/BodenmillerGroup/steinbock) framework offers a dockerized version of the pipeline and extends the segmentation approach by [deepcell](https://github.com/vanvalenlab/intro-to-deepcell) segmentation. 
 
 This site gives detailed explanations on the 5 step (A-E, [see below](#overview)) pipeline to generate single-cell measurements from raw imageing data. 
+
+## Scope
+
+While we highlight the use of the pipeline with imaging mass cytometry (IMC) data, the concepts presented here can be easily applied to other highly multiplexed data.
+Starting with `.ome.tiff` or `.tiff` files, Ilastik pixel classification, segmentation and feature extraction can be performed in a technology-agnostic way.
 
 ## Critical notes
 
