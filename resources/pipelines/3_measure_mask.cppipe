@@ -10,7 +10,7 @@ Images:[module_num:1|svn_version:'Unknown'|variable_revision_number:2|show_windo
     Filter images?:Images only
     Select the rule criteria:and (extension does isimage) (directory doesnot containregexp "[\\\\/]\\.")
 
-Metadata:[module_num:2|svn_version:'Unknown'|variable_revision_number:6|show_window:False|notes:['Here, metadata from the images (<acname>, <slideid> and <acid>) are matched with image metadata generated during pre-processing (contained in the analysis/cpinp/acquisition_metadata.csv file). At the end of the pipeline, matched information is written out as Image.csv file.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+Metadata:[module_num:2|svn_version:'Unknown'|variable_revision_number:6|show_window:False|notes:['Here, metadata from the images (<acname> and <acid>) are matched with image metadata generated during pre-processing (contained in the analysis/cpinp/acquisition_metadata.csv file). At the end of the pipeline, matched information is written out as Image.csv file.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Extract metadata?:Yes
     Metadata data type:Text
     Metadata types:{}
@@ -124,7 +124,7 @@ MeasureImageIntensityMultichannel:[module_num:11|svn_version:'Unknown'|variable_
     Select input object sets:
     How many channels does the image have?:3
 
-ExportToSpreadsheet:[module_num:12|svn_version:'Unknown'|variable_revision_number:13|show_window:False|notes:['Here, the cell, image and experiment data is saved as csv files.', 'The cell.csv file contains single-cell features including intensity and morphological features. You can select a subset of features by setting _Select the measurements to export_ to _Yes_.', 'Note: the intensity values are all scaled by a scaling factor corresponding to the bit depth. This scaling factor can be found in the Image.csv file in the Scaling_FullStack column.', 'For 16-bit unsigned integer images (uint16) values are divided by 2**16 - 1 = 65535.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+ExportToSpreadsheet:[module_num:12|svn_version:'Unknown'|variable_revision_number:13|show_window:False|notes:['Here, the cell, image and experiment data is saved as .csv files.', 'The cell.csv file contains single-cell features including intensity and morphological features. You can select a subset of features by setting _Select the measurements to export_ to _Yes_.', 'Note: the intensity values are all scaled by a scaling factor corresponding to the bit depth. This scaling factor can be found in the Image.csv file in the Scaling_FullStack column.', 'For 16-bit unsigned integer images (uint16) values are divided by 2**16 - 1 = 65535.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select the column delimiter:Comma (",")
     Add image metadata columns to your object data file?:No
     Add image file and folder names to your object data file?:No

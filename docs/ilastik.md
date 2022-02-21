@@ -19,7 +19,7 @@ To get started, you will need to open CellProfiler and import the `1_prepare_ila
 The pipeline will read in all multi-channel images from the `analysis/ilastik` folder containing the suffix `_ilastik`. 
 The following steps are part of the pipeline:
 
-1. The average intensity across all channels is computed and multiplied by 10. This will later serve as visual help to find background areas during Ilastik pixel labelling.  
+1. The average intensity across all channels is computed and multiplied by 100. This will later serve as visual help to find background areas during Ilastik pixel labelling.  
 2. The average is clipped to 0 and 1 (after uint16 rescaling) to avoid out-of-range errors.  
 3. The average channel is added to the Ilastik stack as first channel.  
 4. The pixels of the Ilastik stack are upscaled by a factor of 2. This will increase the number of pixels in the image 4 fold and facilitates pixel labelling.  
