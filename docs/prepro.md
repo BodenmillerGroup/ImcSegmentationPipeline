@@ -51,7 +51,7 @@ When going through the [preprocessing script](https://github.com/BodenmillerGrou
 
 ## Example data
 
-We provide raw IMC example data at [zenodo.org/record/5949116](https://zenodo.org/record/5949116). This dataset contains 4 `.zip` archives each of which holds one `.mcd` and multiple `.txt` files. The data was acquired as part of the **I**ntegrated i**MMU**noprofiling of large adaptive **CAN**cer patient cohorts (IMMUcan) project [immucan.eu](immucan.eu) using the [Hyperion imaging syste](www.fluidigm.com/products-services/instruments/hyperion). Data of 4 patients with different cancer types are provided. To download the raw data together with the panel file, sample metadata and a pre-trained Ilastik classifier, please follow the [download script](https://github.com/BodenmillerGroup/ImcSegmentationPipeline/blob/main/scripts/download_examples.ipynb)
+We provide raw IMC example data at [zenodo.org/record/5949116](https://zenodo.org/record/5949116). This dataset contains 4 `.zip` archives each of which holds one `.mcd` and multiple `.txt` files. The data was acquired as part of the **I**ntegrated i**MMU**noprofiling of large adaptive **CAN**cer patient cohorts (IMMUcan) project [immucan.eu](https://immucan.eu) using the [Hyperion imaging syste](www.fluidigm.com/products-services/instruments/hyperion). Data of 4 patients with different cancer types are provided. To download the raw data together with the panel file, sample metadata and a pre-trained Ilastik classifier, please follow the [download script](https://github.com/BodenmillerGroup/ImcSegmentationPipeline/blob/main/scripts/download_examples.ipynb)
 
 ## Conversion fom .mcd to .ome.tiff files
 

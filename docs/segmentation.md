@@ -1,5 +1,7 @@
 # Cell segmentation
 
+![prepro](img/segmentation.pdf)
+
 To segment individual objects (here these are cells) in images, the following CellProfiler pipeline reads in pixel probabilities (generated in [Ilastik pixel classification](ilastik.md)) for segmentation.
 Set up the pipeline by importing the `resources/pipelines/2_segment_ilastik.cppipe` pipeline into CellProfiler and perform following steps:
 

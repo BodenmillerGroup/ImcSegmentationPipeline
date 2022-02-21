@@ -73,7 +73,7 @@ From there, you can open the `scripts/imc_preprocessing.ipynb` notebook and star
 
 Throughout this pipeline, images in TIFF format are saved as unsigned 16-bit images with an intensity range of `0 - 65535`. For an overview on common image data types, please refer to the [scikit-image documentation](https://scikit-image.org/docs/dev/user_guide/data_types.html). 
 
-## A - Pre processing
+## Pre-processing
 
 To work with the generated imaging data, they will first be converted into OME-TIFF, multi-channel and single-channel TIFF formats that are compatible with most imaging software.
 A key step of the pre-processing pipeline is also the selection of channels for (i) downstream cell measurements and (ii) ilastik pixel classification. 
@@ -81,7 +81,7 @@ A `CellProfiler` pipeline is used to crop smaller images for reducing the comput
 
 Please follow the [pre-processing guide](prepro.md) for more information. 
 
-## B/C - Ilastik training
+## Ilastik training
 
 Image crops are labelled based on nuclear, cytoplasmic and background pixels. 
 The classification probability is observed and regions with high uncertainty are re-labelled.
@@ -90,7 +90,7 @@ These pixel-level propabilies are used to segment images in the next step.
 
 Please follow the [Ilastik instructions](ilastik.md) for more information.
 
-## D/E - CellProfiler image segmentation
+## CellProfiler image segmentation
 
 A `CellProfiler` pipeline is used to segment cells based on the pixel probabilities generated in the previous step. 
 Segmentation masks are written out as single-channel TIFF images that match the input images in size, with non-zero grayscale values indicating the IDs of segmented objects (e.g. cells).
@@ -99,8 +99,12 @@ A second `CellProfiler` pipeline is then used to extract object-specific feature
 
 Please follow the [segmentation instructions](segmentation.md) for more information.
 
-![full_pipeline](img/Full_pipeline.png)
+![full_pipeline](img/overview.png)
 *<a name="overview">An overview of the full segmentation pipeline</a>*
+
+## Downstream analysis
+
+For downstream analysis in `R`, please refer to the [IMC Data Analysis](https://bodenmillergroup.github.io/IMCDataAnalysis/) workflow and the [read_cpout](https://bodenmillergroup.github.io/imcRtools/reference/read_cpout.html) function of the [imcRtools](https://github.com/BodenmillerGroup/imcRtools) package.
 
 ## Contributors
 
