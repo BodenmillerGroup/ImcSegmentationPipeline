@@ -52,6 +52,10 @@ They are listed below:
             ├── {XYZ}_schema.xml
     
 
+Here `XYZ` indicates the sample name.
+
+## The main output folder
+
 The `cpout` folder contains all relevant output files:
 
 * `cpout/images`: contains the hot pixel filtered full stacks for analysis as well as `.csv` files indicating the channel order. 
@@ -65,16 +69,22 @@ The `cpout` folder contains all relevant output files:
 * `cpout/var_cell.csv`: contains feature metadata for all single-cell features.
 * `cpout/var_Image.csv`: contains feature metadata for all image features.
 
+## The CellProfiler input folder
+
 The `cpinp` folder contains metadata files for CellProfiler input:
 
 * `cpinp/acquisition_metadata.csv`: containing acquisition metadata.
 * `cpinp/full_channelmeta.csv`: containing full stack channel metadata.
-* `cpinp/probab_channelmeta_manual.csv`: containing probaility stack channel metadata.
+* `cpinp/probab_channelmeta_manual.csv`: containing probability stack channel metadata.
+
+## Ilastik folder
 
 The following folders contain files for Ilastik pixel classification:
 
 * `analysis/ilastik`: contains the Ilastik stacks (`{XYZ}_s0_a1_ac_ilastik.tiff`), matched `.csv` files indicating the correct channel order (`{XYZ}_s0_a1_ac_ilastik.csv`), the upscaled ilastik stacks in `.h5` format (`XYZ}_s0_a1_ac_ilastik_s2.h5`) and upscaled pixel probabilities (`{XYZ}_s0_a1_ac_ilastik_s2_Probabilities.tiff`).
 * `analysis/crops`: this folder contains the image crops of the Ilastik stack in `.h5` format for Ilastik training.
+
+## Image data folders
 
 The follwoing folders contain data in different formats for use with other software or [histoCAT](https://bodenmillergroup.github.io/histoCAT/).
 

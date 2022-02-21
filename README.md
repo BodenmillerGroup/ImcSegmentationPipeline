@@ -43,7 +43,7 @@ git submodule update --init --recursive
 
 5. Configure CellProfiler to use the plugins by opening the CellProfiler GUI, selecting `Preferences` and setting the `CellProfiler plugins directory` to `path/to/ImcSegmentationPipeline/resources/ImcPluginsCP/plugins`. Alternatively you can clone the `ImcPluginsCP` repository individually and set the path correctly in CellProfiler.
 
-6. Activate the environment created in .3 and start a jupyter instance
+6. Activate the environment created in 3. and start a jupyter instance
 
 ```bash
 conda activate imcsegpipe

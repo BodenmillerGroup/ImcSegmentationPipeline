@@ -1,4 +1,4 @@
-# A complete segmentation approach for imaging mass cytometry data
+# A flexible multiplexed image segmentation pipeline based on pixel classification
 
 Measuring objects and their features in images is a basic step in many quantitative tissue image analysis workflows. 
 This repository presents a flexible and scalable image processing pipeline tailored to highly multiplexed images facilitating the segmentation of single cells across hundreds of images. 
@@ -10,24 +10,24 @@ For a more detailed introduction to IMC as technolgy and common data analysis st
 
 The [steinbock](https://github.com/BodenmillerGroup/steinbock) framework offers a dockerized version of the pipeline and extends the segmentation approach by [deepcell](https://github.com/vanvalenlab/intro-to-deepcell) segmentation. 
 
-This site gives detailed explanations on the 5 step (A-E, [see below](#overview)) pipeline to generate single-cell measurements from raw imageing data. 
+This site gives detailed explanations of the individual steps of the pipeline ([see below](#overview)) to generate single-cell measurements from raw imag   ing data. 
 
 ## Scope
 
-While we highlight the use of the pipeline with imaging mass cytometry (IMC) data, the concepts presented here can be easily applied to other highly multiplexed data.
+While we highlight the use of the pipeline with imaging mass cytometry (IMC) data, the concepts presented here can be easily applied to other highly multiplexed imaging data.
 Starting with `.ome.tiff` or `.tiff` files, Ilastik pixel classification, segmentation and feature extraction can be performed in a technology-agnostic way.
 
 ## Critical notes
 
 There are some points that need to be considered when using this pipeline:
 
-1. The input files need to be `.zip` folders that contain the `.mcd` files and `.txt` files (see the [pre processing section](prepro.md))
+1. The input files need to be `.zip` folders that contain the `.mcd` files and `.txt` files (see the [pre-processing section](prepro.md))
 2. It is recommended to acquire 5 or more channels to avoid potential downstream problems where images are considered to be of the RGBA type (red, green, blue, alpha).
 
 ## Documentation
 
 The guide displayed here gives detailed information on how to  handle IMC images.
-For additiona information on `CellProfiler`, please refer to their [manuals](https://cellprofiler.org/manuals).
+For additional information on `CellProfiler`, please refer to their [manuals](https://cellprofiler.org/manuals).
 
 ## Getting started
 
@@ -57,9 +57,9 @@ conda env create -f environment.yml
 git submodule update --init --recursive
 ```
 
-5. Configure `CellProfiler` to use the plugins by opening the `CellProfiler` GUI, selecting `Preferences` and setting the `CellProfiler plugins directory` to `path/to/ImcSegmentationPipeline/cp_plugins/ImcPluginsCP/plugins`
+5. Configure CellProfiler to use the plugins by opening the CellProfiler GUI, selecting `Preferences` and setting the `CellProfiler plugins directory` to `path/to/ImcSegmentationPipeline/resources/ImcPluginsCP/plugins`. Alternatively you can clone the `ImcPluginsCP` repository individually and set the path correctly in CellProfiler.
 
-6. Activate the environment created in .3 and start a jupyter instance
+6. Activate the environment created in 3. and start a jupyter instance
 
 ```bash
 conda activate imcsegpipe

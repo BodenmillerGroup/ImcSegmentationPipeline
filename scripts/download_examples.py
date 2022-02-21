@@ -4,7 +4,7 @@
 #
 
 # %% [markdown]
-# This script downloads IMC example raw data, a fully trained `Ilastik` pixel classifier and the panel file used for the experiment. The IMC raw data will be stored in the `raw` folder together with the panel file. The ilastik project will be stored in the root of the repository.
+# This script downloads IMC example raw data, a fully trained `Ilastik` pixel classifier, the panel file used for the experiment and sample metadata (the cancer type of the patient). The IMC raw data will be stored in the `raw` folder together with the panel file. The ilastik project and the sample metadata will be stored in the root of the repository.
 
 # %%
 from pathlib import Path
@@ -44,6 +44,11 @@ for example_file_name, example_file_url in [
 ilastik_project = Path("..") / "IMCWorkflow.ilp"
 if not ilastik_project.exists():
     request.urlretrieve("https://zenodo.org/record/6043544/files/IMCWorkflow.ilp", ilastik_project)
+    
+# Sample metadata
+sample_metadata = Path("..") / "sample_metadata.xlsx"
+if not sample_metadata.exists():
+    request.urlretrieve("https://zenodo.org/record/5949116/files/sample_metadata.xlsx", sample_metadata)
 
 # %%
 # !conda list

@@ -1,7 +1,7 @@
 # Measurement of object features
 
 <figure markdown>
-  ![measurement](img/measurement.pdf){ width="500" }
+  ![measurement](img/measurement.png){ width="500" }
 </figure>
 
 After image segmentation to identify individual objects/cells, the next CellProfiler pipeline will measure single-object and single-image features.
@@ -25,7 +25,7 @@ The following steps are part of the pipeline:
 10. The object/cell, image and experiment data is saved as `.csv` files. The `cell.csv` file contains single-cell features including intensity and morphological features. Here are a few notes to the  export: 
     - You can select a subset of features by setting `Select the measurements to export` to `Yes`. We usually work with the `MeanIntensity` cell measurements.
     - the intensity values are all scaled by a scaling factor corresponding to the bit depth. This scaling factor can be found in the `Image.csv` file in the `Scaling_FullStack` column. For 16-bit unsigned integer images (`uint16`) as we use them here the values are divided by `2**16 - 1 = 65535`.
-    - The mapping between the channel identifier `_c1`, `_c2`, `_c3`, ... corresponds to the position in the `..._full.csv` files found in the `analysis/cpout/images` folder.
+    - The channel identifier `_c1`, `_c2`, `_c3`, ... corresponds to the position in the `..._full.csv` files found in the `analysis/cpout/images` folder.
     - The original acquisition description, acquisition frequencies, acquisition name, etc. can be found in the `Image.csv` output file as `Metdata_...` columns.
 11. The cell-cell neighbor information detected in step 4 are exported as `.csv` containing an edge list.
 12. The final output are `.csv` files that contain additional metadata per measured feature. For the cell features the following information is written out: `category` (e.g. Intensity), `image_name` (e.g. FullStack), `object_name`, `feature_name` (e.g. MeanIntensity), `channel` (e.g. 1), `parameters`, `channel_id` (e.g. Ir191) and `data_type` (e.g. float)

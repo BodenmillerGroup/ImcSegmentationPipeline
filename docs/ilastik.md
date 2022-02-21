@@ -1,7 +1,7 @@
 # Ilastik pixel classification
 
 In this setp, we use [Ilastik](https://www.ilastik.org/) to label pixels and train a random-forrest classifier for semantic segmentation. 
-This means that each pixel will be classified as "nuclear", "cytoplasmic" or "background".  
+This means that each pixel will be classified as "nuclear", "cytoplasmic" or "background".
 The probability of each pixel belonging to one of these classes will be used for image segmentation (see [cell segmentation](segmentation.md)).
 
 ## Prepare images for pixel classification
@@ -21,10 +21,10 @@ The following steps are part of the pipeline:
 
 1. The average intensity across all channels is computed and multiplied by 10. This will later serve as visual help to find background areas during Ilastik pixel labelling.  
 2. The average is clipped to 0 and 1 (after uint16 rescaling) to avoid out-of-range errors.  
-3. The average channel is added to the ilastik stack as first channel.  
-4. The ilastik stack is upscaled by a factor of 2. This will increase the number of pixels in the image 4 fold and facilitates pixel labelling using Ilastik.  
-5. The ilastik stack is cropped into smaller fields of view. By default these are 500x500 pixel crops but for large datasets smaller image crops will suffice.  
-6. The upscaled ilastik stack is saved in `.h5` format into the `analysis/ilastik` folder and the cropped images are saved into the `analysis/crops` folder.  
+3. The average channel is added to the Ilastik stack as first channel.  
+4. The pixels of the Ilastik stack are upscaled by a factor of 2. This will increase the number of pixels in the image 4 fold and facilitates pixel labelling.  
+5. The Ilastik stack is cropped into smaller fields of view. By default these are 500x500 pixel crops but for large datasets smaller image crops will suffice.  
+6. The upscaled Ilastik stack is saved in `.h5` format into the `analysis/ilastik` folder and the cropped images are saved into the `analysis/crops` folder.  
 
 ## Train and apply a pixel classifier
 
@@ -44,7 +44,7 @@ To create a new classifier, please follow the steps below:
 3. `Feature Selection`: we generally recommend to select all features with &sigma; >= 1  
 4. `Training`: The following steps need to be performed to train the classifier
     * Create and rename 3 labels: Label 1 - "nucleus"; Label 2 - "cytoplasm"; Label 3 - "background"
-    * Observe the different channels: In the box on the bottom right the last entry `Raw Input` indicates the current channel. You can change the channel by using the buttons on the left and the channel order is stored in the `_ilastik.csv` files in the `analysis/ilastik` folder.
+    * Observe the different channels: the last entry `Raw Input` in the box on the bottom left indicates the current channel. You can change the channel by using the buttons on the left and the channel order is stored in the `_ilastik.csv` files in the `analysis/ilastik` folder.
     * Adjust the contrast of the channel: This can be done by selecting the `Window Leveling` tool under `Add Label`. Holding the left mouse button and moving the mouse changes the visual appearance of the channel. Clicking the right mouse button resets the channel intensities.
     * Label the pixels: Select the `Brush Cursor` tool and draw lines on the image. You can get an orientation by looking at the labels in the `IMCWorkflow.ilp` project. Switch between labels to label pixels as "nucleus", "cytoplasm" and "background". Label pixel in an opiniated fashion: If you see in the nucleus channel that two nuclei are stuck together but have a faint dip in intensity in between, label this dip as "cytoplasm". Encircle nuclei with "cytoplasm".  
     * After labelling a few images, click on `Live Update`. This will show the current prediction for the three classes. Labelling while keeping `Live Update` enabled slows down the process.
