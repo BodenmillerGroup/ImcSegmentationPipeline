@@ -257,8 +257,8 @@ SaveImages:[module_num:16|svn_version:'Unknown'|variable_revision_number:16|show
     Select image name for file prefix:ProbabStack
     Enter single file name:OrigBlue
     Number of digits:4
-    Append a suffix to the image file name?:No
-    Text to append to the image name:
+    Append a suffix to the image file name?:Yes
+    Text to append to the image name:_s1
     Saved file format:tiff
     Output file location:Default Output Folder sub-folder|probabilities
     Image bit depth:16-bit integer
