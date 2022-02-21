@@ -99,8 +99,10 @@ A second `CellProfiler` pipeline is then used to extract object-specific feature
 
 Please follow the [segmentation instructions](segmentation.md) for more information.
 
-![full_pipeline](img/overview.png)
-*<a name="overview">An overview of the full segmentation pipeline</a>*
+<figure markdown>
+  ![full_pipeline](img/overview.png){ width="500" }
+  <figcaption><a name="overview">An overview of the full segmentation pipeline</a></figcaption>
+</figure>
 
 ## Downstream analysis
 

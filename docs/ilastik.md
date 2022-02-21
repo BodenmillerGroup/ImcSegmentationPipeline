@@ -6,7 +6,9 @@ The probability of each pixel belonging to one of these classes will be used for
 
 ## Prepare images for pixel classification
 
-![prepro](img/ilastik_prep.png)
+<figure markdown>
+  ![ilastik_1](img/ilastik_prep.png){ width="500" }
+</figure>
 
 In the first step, the `resources/pipelines/1_prepare_ilastik.cppipe` [CellProfiler](https://cellprofiler.org/) pipeline will be used to prepare images for labelling and classification.
 To get started, you will need to open CellProfiler and import the `1_prepare_ilastik.cppipe` pipeline.
@@ -26,7 +28,9 @@ The following steps are part of the pipeline:
 
 ## Train and apply a pixel classifier
 
-![prepro](img/ilastik_class.png)
+<figure markdown>
+  ![ilastik_2](img/ilastik_class.png){ width="500" }
+</figure>
 
 Here, we will open [Ilastik](https://www.ilastik.org/) and perform pixel labelling as well as pixel classification.
 For a detailed overview on Ilastik pixel classification refer to the [manual](https://www.ilastik.org/documentation/pixelclassification/pixelclassification).

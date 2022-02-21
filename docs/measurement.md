@@ -1,6 +1,8 @@
 # Measurement of object features
 
-![prepro](img/measurement.pdf)
+<figure markdown>
+  ![measurement](img/measurement.pdf){ width="500" }
+</figure>
 
 After image segmentation to identify individual objects/cells, the next CellProfiler pipeline will measure single-object and single-image features.
 Set up the pipeline by importing the `resources/pipelines/3_measure_mask.cppipe` pipeline into CellProfiler and perform following steps:

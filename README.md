@@ -1,9 +1,9 @@
 [![DOI](https://zenodo.org/badge/103582813.svg)](https://zenodo.org/badge/latestdoi/103582813)
-# A flexible  image segmentation pipeline for heterogeneous multiplexed tissue images based on pixel classification
+# A flexible multiplexed image segmentation pipeline based on pixel classification
 
 ## Introduction
 
-The pipeline is based on CellProfiler ([cellprofiler.org](http://cellprofiler.org/), tested v4.2.1) for segmentation and Ilastik ([ilastik.org](http://ilastik.org/), tested v1.3.3post3) for pixel classification. 
+The pipeline is based on [CellProfiler](http://cellprofiler.org/) (tested v4.2.1) for segmentation and [Ilastik](http://ilastik.org/) (tested v1.3.3post3) for pixel classification. 
 It is streamlined by using the `imcsegpipe` python package available via this repository as well as custom CellProfiler modules ([ImcPluginsCP](https://github.com/BodenmillerGroup/ImcPluginsCP), release v4.2.1).
 
 This repository showcases the basis of the workflow with step-by-step instructions. 
@@ -41,7 +41,7 @@ conda env create -f environment.yml
 git submodule update --init --recursive
 ```
 
-5. Configure `CellProfiler` to use the plugins by opening the `CellProfiler` GUI, selecting `Preferences` and setting the `CellProfiler plugins directory` to `path/to/ImcSegmentationPipeline/cp_plugins/ImcPluginsCP/plugins`
+5. Configure CellProfiler to use the plugins by opening the CellProfiler GUI, selecting `Preferences` and setting the `CellProfiler plugins directory` to `path/to/ImcSegmentationPipeline/resources/ImcPluginsCP/plugins`. Alternatively you can clone the `ImcPluginsCP` repository individually and set the path correctly in CellProfiler.
 
 6. Activate the environment created in .3 and start a jupyter instance
 
@@ -87,9 +87,9 @@ To contribute to this work, please fork the repository, make changes to it and o
 
 ## Contributors
 
-*Creator*: Vito Zanotelli 
-*Contributor*: Jonas Windhager, Nils Eling
-*Maintainer*: Nils Eling
+**Creator:** Vito Zanotelli  
+**Contributor:** Jonas Windhager, Nils Eling  
+**Maintainer:** Nils Eling  
 
 ## Citation
 
@@ -99,10 +99,9 @@ If you use this workflow for your research, please cite us:
 @misc{ImcSegmentationPipeline,
     author       = {Vito RT Zanotelli, Bernd Bodenmiller},
     title        = {{ImcSegmentationPipeline: A pixel-classification based multiplexed image segmentation pipeline}},
-    month        = Sept,
-    year         = 2017,
+    year         = 2022,
     doi          = {10.5281/zenodo.3841961},
-    version      = {0.9},
+    version      = {3.0},
     publisher    = {Zenodo},
     url          = {https://doi.org/10.5281/zenodo.3841961}
     }

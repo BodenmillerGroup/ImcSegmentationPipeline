@@ -1,7 +1,9 @@
 # Pre-processing
 
-![prepro](img/prepro.png)
-*Conversion from raw `.mcd` files to `.ome.tiff` and `.tiff` files suitable for downstream analysis*
+<figure markdown>
+  ![prepro](img/prepro.png){ width="500" }
+  <figcaption>Conversion from raw `.mcd` files to `.ome.tiff` and `.tiff` files suitable for downstream analysis</figcaption>
+</figure>
 
 During the first step of the segmentation pipeline, raw imaging files need to be converted to file formats that can be read-in by external software (Fiji, R, python, histoCAT).
 
