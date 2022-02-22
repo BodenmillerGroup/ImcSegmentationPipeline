@@ -73,9 +73,9 @@ panel_ilastik_col = "ilastik"
 #
 # Within the `cellprofiler_output_dir` three subfolder are created storing the final images:
 #
-# * `final_images`: stores the hot pixel filtered multi-channel images containing selected channels (default `analysis/cpout/images`)
-# * `final_masks`: stores the final cell segmentation masks (default `analysis/cpout/masks`)
-# * `final_probabilities`: stores the downscaled pixel probabilities after ilastik classification (default `analysis/cpout/probabilities`)
+# * `final_images_dir`: stores the hot pixel filtered multi-channel images containing selected channels (default `analysis/cpout/images`)
+# * `final_masks_dir`: stores the final cell segmentation masks (default `analysis/cpout/masks`)
+# * `final_probabilities_dir`: stores the downscaled pixel probabilities after ilastik classification (default `analysis/cpout/probabilities`)
 
 # %%
 # working directory storing all outputs
@@ -92,9 +92,9 @@ cellprofiler_output_dir = work_dir / "cpout"
 histocat_dir = work_dir / "histocat"
 
 # Final output directories
-final_images = cellprofiler_output_dir / "images"
-final_masks = cellprofiler_output_dir / "masks"
-final_probabilities = cellprofiler_output_dir / "probabilities"
+final_images_dir = cellprofiler_output_dir / "images"
+final_masks_dir = cellprofiler_output_dir / "masks"
+final_probabilities_dir = cellprofiler_output_dir / "probabilities"
 
 # %% [markdown]
 # The specified folder will now be created.
@@ -107,9 +107,9 @@ cellprofiler_input_dir.mkdir(exist_ok=True)
 cellprofiler_output_dir.mkdir(exist_ok=True)
 histocat_dir.mkdir(exist_ok=True)
 
-final_images.mkdir(exist_ok=True)
-final_masks.mkdir(exist_ok=True)
-final_probabilities.mkdir(exist_ok=True)
+final_images_dir.mkdir(exist_ok=True)
+final_masks_dir.mkdir(exist_ok=True)
+final_probabilities_dir.mkdir(exist_ok=True)
 
 # %% [markdown]
 # ## Convert `.mcd` files to `.ome.tiff` files
@@ -194,7 +194,7 @@ for acquisition_dir in acquisitions_dir.glob("*"):
         # Write full stack
         imcsegpipe.create_analysis_stacks(
             acquisition_dir=acquisition_dir,
-            analysis_dir=final_images,
+            analysis_dir=final_images_dir,
             analysis_channels=panel.loc[panel[panel_keep_col] == 1, panel_channel_col].tolist(),
             suffix="_full",
             hpf=50.0,
@@ -214,7 +214,7 @@ for acquisition_dir in acquisitions_dir.glob("*"):
 # Finally, we will copy a file that contains the correct order of channels for the exported full stacks to the `cellprofiler_input_dir`.
 
 # %%
-first_channel_order_file = next(final_images.glob("*_full.csv"))
+first_channel_order_file = next(final_images_dir.glob("*_full.csv"))
 shutil.copy2(first_channel_order_file, cellprofiler_input_dir / "full_channelmeta.csv")
 
 # %% [markdown]
@@ -237,7 +237,7 @@ with open(cellprofiler_input_dir / "probab_channelmeta_manual.csv", "w") as f:
 #for acquisition_dir in acquisitions_dir.glob("*"):
 #    if acquisition_dir.is_dir():
 #        imcsegpipe.export_to_histocat(
-#            acquisition_dir, histocat_dir, mask_dir=final_masks
+#            acquisition_dir, histocat_dir, mask_dir=final_masks_dir
 #        )
 
 # %%

@@ -41,7 +41,7 @@ Furthermore, before running the analysis, you will need to setup a `conda` envir
 2. Clone the repository: 
 
 ```bash
-git clone https://github.com/BodenmillerGroup/ImcSegmentationPipeline.git
+git clone --recursive https://github.com/BodenmillerGroup/ImcSegmentationPipeline.git
 ```
 
 3. Setup the conda environment: 
@@ -51,19 +51,13 @@ cd ImcSegmentationPipeline
 conda env create -f environment.yml
 ```
 
-4. Obtain the IMC-specific [CellProfiler plugins](https://github.com/BodenmillerGroup/ImcPluginsCP) by directly downloading them via:
+4. Configure CellProfiler to use the plugins by opening the CellProfiler GUI, selecting `Preferences` and setting the `CellProfiler plugins directory` to `path/to/ImcSegmentationPipeline/resources/ImcPluginsCP/plugins`. Alternatively you can clone the `ImcPluginsCP` repository individually and set the path correctly in CellProfiler.
 
-```bash
-git submodule update --init --recursive
-```
-
-5. Configure CellProfiler to use the plugins by opening the CellProfiler GUI, selecting `Preferences` and setting the `CellProfiler plugins directory` to `path/to/ImcSegmentationPipeline/resources/ImcPluginsCP/plugins`. Alternatively you can clone the `ImcPluginsCP` repository individually and set the path correctly in CellProfiler.
-
-6. Activate the environment created in 3. and start a jupyter instance
+5. Activate the environment created in 3. and start a jupyter instance
 
 ```bash
 conda activate imcsegpipe
-jupyter notebook
+jupyter-lab
 ```
 
 This will automatically open a jupyter instance at `http://localhost:8888` in your browser.
