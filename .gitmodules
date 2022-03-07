@@ -1,0 +1,4 @@
+[submodule "ImcPluginsCP"]
+	path = resources/ImcPluginsCP
+	url = https://github.com/BodenmillerGroup/ImcPluginsCP.git
+	branch = master
