@@ -58,7 +58,7 @@ NamesAndTypes:[module_num:3|svn_version:'Unknown'|variable_revision_number:8|sho
     Select the image type:Color image
     Set intensity range from:Image bit-depth
     Maximum intensity:255.0
-    Select the rule criteria:and (file does endwith "_Probabilities.tiff")
+    Select the rule criteria:and (file does endwith "_Probabilities_s1.tiff")
     Name to assign these images:ProbabStack
     Name to assign these objects:Cytoplasm
     Select the image type:Color image

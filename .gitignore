@@ -3,6 +3,7 @@
 /.vscode/
 /analysis/
 /raw/
+sample_metadata.xlsx
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
