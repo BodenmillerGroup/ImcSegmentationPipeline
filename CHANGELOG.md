@@ -10,6 +10,7 @@
  - hot pixel filtered images are directly written out to `cpout/images`
  - segmentation masks are directly written out to `cpout/masks` in the second pipeline and read in as objects in the last pipeline
  - pixel probabilities are downscaled in the second pipeline and directly written into `cpout/probabilites`
+ - cell segmentation is performed on downscaled pixel probabilities
  
 ## [2.3]
 
