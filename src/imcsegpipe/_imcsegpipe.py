@@ -212,7 +212,7 @@ def _extract_slide(
     try:
         slide_img = mcd_file_handle.read_slide(slide)
         if slide_img is not None:
-            imageio.imwrite(slide_img_file, slide_img)
+            imageio.imwrite(slide_img_file, slide_img, compress_level=1)
         return True
     except Exception as e:
         logging.error(
@@ -225,7 +225,7 @@ def _extract_panorama(
 ) -> bool:
     try:
         panorama_img = mcd_file_handle.read_panorama(panorama)
-        imageio.imwrite(panorama_img_file, panorama_img)
+        imageio.imwrite(panorama_img_file, panorama_img, compress_level=1)
         return True
     except Exception as e:
         logging.error(
