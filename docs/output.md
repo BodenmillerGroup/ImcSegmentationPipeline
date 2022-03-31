@@ -59,7 +59,7 @@ Here `XYZ` indicates the sample name.
 The `cpout` folder contains all relevant output files:
 
 * `cpout/images`: contains the hot pixel filtered full stacks for analysis as well as `.csv` files indicating the channel order. 
-* `cpout/masks`: contains single-channel segmentation masks in 16-bit `.tiff` format. Segmentation masks are single-channel images that match the input images in size, with non-zero grayscale values indicating the IDs of segmented object. 
+* `cpout/masks`: contains single-channel segmentation masks in 16-bit `.tiff` format. Segmentation masks are single-channel images that match the input images in size, with non-zero grayscale values indicating the IDs of segmented objects. 
 * `cpout/probabilities`: contains 3 channel images in 16-bit `.tiff` format representing the downscaled pixel probabilities after Ilastik pixel classification.
 * `cpout/cell.csv`: contains features (columns) for each cell (rows).
 * `cpout/Experiment.csv`: contains metadata related to the CellProfiler version used.
@@ -86,7 +86,7 @@ The following folders contain files for Ilastik pixel classification:
 
 ## Image data folders
 
-The follwoing folders contain data in different formats for use with other software or [histoCAT](https://bodenmillergroup.github.io/histoCAT/).
+The following folders contain data in different formats for use with other software or [histoCAT](https://bodenmillergroup.github.io/histoCAT/).
 
 * `analysis/ometiff`: contains individual folders (one per sample) of which each contains multiple `.ome.tiff` files (one per acquisition).  
 * `analysis/histocat`: contains individual folders (one per acquisition) of which each contains multiple single-channel `.tiff` files for upload to histoCAT.  

@@ -10,7 +10,7 @@ For a more detailed introduction to IMC as technolgy and common data analysis st
 
 The [steinbock](https://github.com/BodenmillerGroup/steinbock) framework offers a dockerized version of the pipeline and extends the segmentation approach by [deepcell](https://github.com/vanvalenlab/intro-to-deepcell) segmentation. 
 
-This site gives detailed explanations of the individual steps of the pipeline ([see below](#overview)) to generate single-cell measurements from raw imag   ing data. 
+This site gives detailed explanations of the individual steps of the pipeline ([see below](#overview)) to generate single-cell measurements from raw imaging data. 
 
 ## Scope
 
@@ -60,7 +60,7 @@ conda activate imcsegpipe
 jupyter-lab
 ```
 
-This will automatically open a jupyter instance at `http://localhost:8888` in your browser.
+This will automatically open a jupyter instance at `http://localhost:8888/lab` in your browser.
 From there, you can open the `scripts/imc_preprocessing.ipynb` notebook and start the data pre-processing.
 
 ## Image data types
@@ -105,7 +105,7 @@ For downstream analysis in `R`, please refer to the [IMC Data Analysis](https://
 ## Contributors
 
 **Creator:** Vito Zanotelli [:fontawesome-brands-github:](https://github.com/votti) [:fontawesome-brands-twitter:](https://twitter.com/ZanotelliVRT)    
-**Contributors:** Jonas Windhager [:fontawesome-brands-github:](https://github.com/jwindhager) [:fontawesome-brands-twitter:](https://twitter.com/JonasWindhager) Nils Eling [:fontawesome-brands-github:](https://github.com/nilseling) [:fontawesome-brands-twitter:](https://twitter.com/NilsEling)  
+**Contributors:** Jonas Windhager [:fontawesome-brands-github:](https://github.com/jwindhager) [:fontawesome-brands-twitter:](https://twitter.com/JonasWindhager), Nils Eling [:fontawesome-brands-github:](https://github.com/nilseling) [:fontawesome-brands-twitter:](https://twitter.com/NilsEling)  
 **Maintainer:** Nils Eling
 
 ## Citation

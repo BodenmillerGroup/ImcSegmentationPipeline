@@ -84,7 +84,7 @@ StackImages:[module_num:7|svn_version:'Unknown'|variable_revision_number:2|show_
     Image name:ScaledMean
     Image name:Ilastik
 
-Resize:[module_num:8|svn_version:'Unknown'|variable_revision_number:4|show_window:False|notes:['Images are upscaled by a factor of 2. This approach facilitates pixel labelling using ilastik. Downscaling is perfomed in the following pipelines.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+Resize:[module_num:8|svn_version:'Unknown'|variable_revision_number:4|show_window:False|notes:['Images are upscaled by a factor of 2. This approach facilitates pixel labelling using ilastik. Downscaling is perfomed in the following pipeline.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select the input image:IlastikExp
     Name the output image:Ilastik2x
     Resizing method:Resize by a fraction or multiple of the original size

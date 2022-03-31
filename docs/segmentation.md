@@ -18,7 +18,7 @@ The following steps are part of the pipeline:
 4. The nulcear and cytoplasmic channels are summed up to form a single channel indicating the full cell probability.  
 5. The nuclear probabilities are smoothed using a gaussian filter. This step can be adjusted or removed to increase segmentation success. 
 6. The `IdentifyPrimaryObjects` module is crucial to correctly identifying nuclei. Use the test mode and enable the "eye" icon next to the module to observe if nuclei are correctly segmented. The advanced settings can be adjusted to improve segmentation.  
-7. The `MeasureObjectSizeShape` module measures the size of the nuclei and the `FilterObjects` module filters nuclei below a specified thresholds. 
+7. The `MeasureObjectSizeShape` module measures the size of the nuclei and the `FilterObjects` module filters nuclei below a specified threshold. 
 8. The `IdentifySecondaryObjects` module expands from the identified nuclei to the border of the full cell probability generated in step 3 or until touching the neighboring cell. 
 9. The segmentation masks are converted to 16-bit images. 
 10. The segmentation masks are written out as 16-bit, single-channel `.tiff` images to the `analysis/cpout/masks` folder.
@@ -28,5 +28,5 @@ The following steps are part of the pipeline:
 
 After image segmentation the following files have been generated:
 
-* `analysis/cpout/masks`: contains single-channel segmentation masks in 16-bit `.tiff` format. Segmentation masks are single-channel images that match the input images in size, with non-zero grayscale values indicating the IDs of segmented object 
+* `analysis/cpout/masks`: contains single-channel segmentation masks in 16-bit `.tiff` format. Segmentation masks are single-channel images that match the input images in size, with non-zero grayscale values indicating the IDs of segmented objects.
 * `analysis/cpout/probabilities`: contains 3 channel images in 16-bit `.tiff` format representing the downscaled pixel probabilities after Ilastik pixel classification.

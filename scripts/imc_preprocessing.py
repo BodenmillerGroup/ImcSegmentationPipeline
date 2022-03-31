@@ -71,7 +71,7 @@ panel_ilastik_col = "ilastik"
 # * `cellprofiler_output_dir`: all files written out by CellProfiler (default `analysis/cpout`)
 # * `histocat_dir`: folders containing single-channel images for histoCAT upload (default `analysis/histocat`)
 #
-# Within the `cellprofiler_output_dir` three subfolder are created storing the final images:
+# Within the `cellprofiler_output_dir` three subfolders are created storing the final images:
 #
 # * `final_images_dir`: stores the hot pixel filtered multi-channel images containing selected channels (default `analysis/cpout/images`)
 # * `final_masks_dir`: stores the final cell segmentation masks (default `analysis/cpout/masks`)
@@ -114,7 +114,7 @@ final_probabilities_dir.mkdir(exist_ok=True)
 # %% [markdown]
 # ## Convert `.mcd` files to `.ome.tiff` files
 #
-# In the first step, the `.zip` archives containing `.mcd` files are converted to folders, which contain `.ome.tiff` files, channel metadata files, panoramas and slide overviews. The `.ome.tiff` files can be read in by commercial and open-source software such as `ImageJ` using the BioFormats importer. The `.csv` files contain the order of the channels as well as the antibody names. The `_pano.png` contain the acquied panoramas; the `_slide.png` contains the slide overview. The `_schema.xml` contains metadata regarding the acquisition session.  
+# In the first step, the `.zip` archives containing `.mcd` files are converted to folders, which contain `.ome.tiff` files, channel metadata files, panoramas and slide overviews. The `.ome.tiff` files can be read in by commercial and open-source software such as `ImageJ` using the BioFormats importer. The `.csv` files contain the order of the channels as well as the antibody names. The `_pano.png` contain the acquired panoramas; the `_slide.png` contains the slide overview. The `_schema.xml` contains metadata regarding the acquisition session.  
 # At this stage, only `.zip` files specified by `file_regex` will be processed.
 #
 # In the following chunk, individual acquisition metadata are written out as `acquisition_metadata.csv` file in the `cellprofiler_output_dir` folder. 
@@ -175,6 +175,8 @@ for acquisition_dir in acquisitions_dir.glob("*"):
 # **1. Full stack:** The full stack contains all channels specified by the "1" entries in the `panel_keep_col` column of the panel file. This stack will be later used to measure cell-specific expression features of the selected channels.
 #
 # **2. Ilastik stack:** The ilastik stack contains all channels specified by the "1" entries in the `panel_ilastik_col` column of the panel file. This stack will be used to perform the ilastik training to generate cell, cytoplasm and background probability masks (see [Ilastik training](https://bodenmillergroup.github.io/ImcSegmentationPipeline/ilastik.html)).
+#
+# **Of note:** Both image stacks are now by default hot pixel filtered (see below). To write out the raw image data without filtering set `hpf=None`.
 #
 # The `create_analysis_stacks` function takes several arguments:
 #

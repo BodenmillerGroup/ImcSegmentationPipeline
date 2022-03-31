@@ -1,6 +1,6 @@
 # Ilastik pixel classification
 
-In this setp, we use [Ilastik](https://www.ilastik.org/) to label pixels and train a random-forrest classifier for semantic segmentation. 
+In this setp, we use [Ilastik](https://www.ilastik.org/) to label pixels and train a random-forest classifier for semantic segmentation. 
 This means that each pixel will be classified as "nuclear", "cytoplasmic" or "background".
 The probability of each pixel belonging to one of these classes will be used for image segmentation (see [cell segmentation](segmentation.md)).
 

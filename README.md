@@ -44,7 +44,7 @@ conda activate imcsegpipe
 jupyter-lab
 ```
 
-This will automatically open a jupyter instance at `http://localhost:8888` in your browser.
+This will automatically open a jupyter instance at `http://localhost:8888/lab` in your browser.
 From there, you can open the `scripts/imc_preprocessing.ipynb` notebook and start the data pre-processing.
 
 In brief, the main analysis steps include:

@@ -215,7 +215,7 @@ IdentifySecondaryObjects:[module_num:12|svn_version:'Unknown'|variable_revision_
     # of deviations:2
     Thresholding method:Otsu
 
-ConvertObjectsToImage:[module_num:13|svn_version:'Unknown'|variable_revision_number:1|show_window:False|notes:['The downscaled segmentation masks are converted into objects.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+ConvertObjectsToImage:[module_num:13|svn_version:'Unknown'|variable_revision_number:1|show_window:False|notes:['The segmentation masks are converted into images.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select the input objects:Cells
     Name the output image:CellImage
     Select the color format:uint16
