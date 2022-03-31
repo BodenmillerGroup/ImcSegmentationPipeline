@@ -1,0 +1,198 @@
+CellProfiler Pipeline: http://www.cellprofiler.org
+Version:5
+DateRevision:421
+GitHash:
+ModuleCount:15
+HasImagePlaneDetails:False
+
+Images:[module_num:1|svn_version:'Unknown'|variable_revision_number:2|show_window:False|notes:['This pipeline reads in the multi-channel images, the segmentation masks and pixel probabilities as generated in the previous pipelines to measure cell features.', 'Please select the analysis/cpout folder here.', '', 'Default Input Folder: path/to/analysis/cpinp', 'Default Output Folder: path/to/analysis/cpout']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    :
+    Filter images?:Images only
+    Select the rule criteria:and (extension does isimage) (directory doesnot containregexp "[\\\\/]\\.")
+
+Metadata:[module_num:2|svn_version:'Unknown'|variable_revision_number:6|show_window:False|notes:['Here, metadata from the images (<acname> and <acid>) are matched with image metadata generated during pre-processing (contained in the analysis/cpinp/acquisition_metadata.csv file). At the end of the pipeline, matched information is written out as Image.csv file.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Extract metadata?:Yes
+    Metadata data type:Text
+    Metadata types:{}
+    Extraction method count:2
+    Metadata extraction method:Extract from file/folder names
+    Metadata source:File name
+    Regular expression to extract from file name:^(?P<acname>.*)_s(?P<slideid>[0-9]+)_a(?P<acid>[0-9]+)_ac_.*
+    Regular expression to extract from folder name:(?P<Date>[0-9]{4}_[0-9]{2}_[0-9]{2})$
+    Extract metadata from:All images
+    Select the filtering criteria:and (file does contain "")
+    Metadata file location:Elsewhere...|
+    Match file and image metadata:[]
+    Use case insensitive matching?:No
+    Metadata file name:
+    Does cached metadata exist?:No
+    Metadata extraction method:Import from file
+    Metadata source:File name
+    Regular expression to extract from file name:^(?P<Plate>.*)_(?P<Well>[A-P][0-9]{2})_s(?P<Site>[0-9])_w(?P<ChannelNumber>[0-9])
+    Regular expression to extract from folder name:(?P<Date>[0-9]{4}_[0-9]{2}_[0-9]{2})$
+    Extract metadata from:All images
+    Select the filtering criteria:and (file does contain "")
+    Metadata file location:Default Input Folder|Git/ImcSegmentationPipelineHubMap/results/cpout
+    Match file and image metadata:[{'CSV Metadata': 'AcSession', 'Image Metadata': 'acname'}, {'CSV Metadata': 'id', 'Image Metadata': 'acid'}]
+    Use case insensitive matching?:No
+    Metadata file name:acquisition_metadata.csv
+    Does cached metadata exist?:No
+
+NamesAndTypes:[module_num:3|svn_version:'Unknown'|variable_revision_number:8|show_window:False|notes:['The multi-channel images (stored in analysis/cpout/images), segmentation masks (stored in analysis/cpout/images) and the pixel probabilities (stored in analysis/cpout/probabilities) are read in and matched via their acquisition name (acname) and acquisition ID (acid).']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Assign a name to:Images matching rules
+    Select the image type:Grayscale image
+    Name to assign these images:DNA
+    Match metadata:[{'FullStack': 'acname', 'ProbabStack': 'acname', 'cellmask': 'acname'}, {'FullStack': 'acid', 'ProbabStack': 'acid', 'cellmask': 'acid'}]
+    Image set matching method:Metadata
+    Set intensity range from:Image metadata
+    Assignments count:3
+    Single images count:0
+    Maximum intensity:1
+    Process as 3D?:No
+    Relative pixel spacing in X:1.0
+    Relative pixel spacing in Y:1.0
+    Relative pixel spacing in Z:1.0
+    Select the rule criteria:and (file does endwith "_full.tiff")
+    Name to assign these images:FullStack
+    Name to assign these objects:Cell
+    Select the image type:Color image
+    Set intensity range from:Image bit-depth
+    Maximum intensity:255.0
+    Select the rule criteria:and (file does endwith "_Probabilities_s1.tiff")
+    Name to assign these images:ProbabStack
+    Name to assign these objects:Cytoplasm
+    Select the image type:Color image
+    Set intensity range from:Image bit-depth
+    Maximum intensity:255.0
+    Select the rule criteria:and (file does endwith "_mask.tiff")
+    Name to assign these images:cellmask
+    Name to assign these objects:cell
+    Select the image type:Grayscale image
+    Set intensity range from:Image bit-depth
+    Maximum intensity:255.0
+
+Groups:[module_num:4|svn_version:'Unknown'|variable_revision_number:2|show_window:False|notes:['The Groups module optionally allows you to split your list of images into image subsets (groups) which will be processed independently of each other. Examples of groupings include screening batches, microtiter plates, time-lapse movies, etc.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Do you want to group your images?:No
+    grouping metadata count:1
+    Metadata category:Site
+
+ConvertImageToObjects:[module_num:5|svn_version:'Unknown'|variable_revision_number:1|show_window:False|notes:['The read in segmentation masks are converted to objects while keeping their original labels in place.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select the input image:cellmask
+    Name the output object:cell
+    Convert to boolean image:No
+    Preserve original labels:Yes
+    Background label:0
+    Connectivity:0
+
+MeasureObjectNeighbors:[module_num:6|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:['For each cell its direct neighbors are detected by expanding the cell mask by a defined distance. At the end of the pipeline, the neighbor information is written out in form of an edge list in the Object relationships.csv file.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select objects to measure:cell
+    Select neighboring objects to measure:cell
+    Method to determine neighbors:Within a specified distance
+    Neighbor distance:8
+    Consider objects discarded for touching image border?:Yes
+    Retain the image of objects colored by numbers of neighbors?:No
+    Name the output image:ObjectNeighborCount
+    Select colormap:Default
+    Retain the image of objects colored by percent of touching pixels?:No
+    Name the output image:PercentTouching
+    Select colormap:Default
+
+MeasureObjectIntensityMultichannel:[module_num:7|svn_version:'Unknown'|variable_revision_number:4|show_window:False|notes:['This module measures the object/cell intensities based on the multi-channel images. Further downstream you can select which intensity measures you want to export (default: all). The measurements for each channel will have a number (e.g. _c1, _c2, _c3) corresponding to the plane number. The metals corresponding to the plane/channel number can be found in the _full.csv files in the analysis/images folder.', '', 'You will need to adapt the number of channels according to your dataset here.', '']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select images to measure:FullStack
+    Select objects to measure:cell
+    How many channels does the image have?:40
+
+MeasureObjectIntensityMultichannel:[module_num:8|svn_version:'Unknown'|variable_revision_number:4|show_window:False|notes:['This module measures the per-cell pixel probabilities using the read-in pixel probability images. ']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select images to measure:ProbabStack
+    Select objects to measure:cell
+    How many channels does the image have?:3
+
+MeasureObjectSizeShape:[module_num:9|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:['Here, morphological features of the objects are extracted.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select object sets to measure:cell
+    Calculate the Zernike features?:No
+    Calculate the advanced features?:No
+
+MeasureImageIntensityMultichannel:[module_num:10|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:['This module measures the overall channel intensities based on the multi-channel images. Further downstream you can select which intensity measures you want to export (default: all). The measurements for each channel will have a number (e.g. _c1, _c2, _c3) corresponding to the plane number. The metals corresponding to the plane/channel number can be found in the _full.csv files in the analysis/images folder.', '', 'You will need to adapt the number of channels according to your dataset here.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select images to measure:FullStack
+    Measure the intensity only from areas enclosed by objects?:No
+    Select input object sets:
+    How many channels does the image have?:40
+
+MeasureImageIntensityMultichannel:[module_num:11|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:['This module measures the overall pixel probabilities across whole images.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select images to measure:ProbabStack
+    Measure the intensity only from areas enclosed by objects?:No
+    Select input object sets:
+    How many channels does the image have?:3
+
+ExportToSpreadsheet:[module_num:12|svn_version:'Unknown'|variable_revision_number:13|show_window:False|notes:['Here, the cell, image and experiment data is saved as .csv files.', 'The cell.csv file contains single-cell features including intensity and morphological features. You can select a subset of features by setting _Select the measurements to export_ to _Yes_.', 'Note: the intensity values are all scaled by a scaling factor corresponding to the bit depth. This scaling factor can be found in the Image.csv file in the Scaling_FullStack column.', 'For 16-bit unsigned integer images (uint16) values are divided by 2**16 - 1 = 65535.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select the column delimiter:Comma (",")
+    Add image metadata columns to your object data file?:No
+    Add image file and folder names to your object data file?:No
+    Select the measurements to export:No
+    Calculate the per-image mean values for object measurements?:No
+    Calculate the per-image median values for object measurements?:No
+    Calculate the per-image standard deviation values for object measurements?:No
+    Output file location:Default Output Folder|
+    Create a GenePattern GCT file?:No
+    Select source of sample row name:Metadata
+    Select the image to use as the identifier:None
+    Select the metadata to use as the identifier:None
+    Export all measurement types?:Yes
+    Press button to select measurements:
+    Representation of Nan/Inf:NaN
+    Add a prefix to file names?:No
+    Filename prefix:MyExpt_
+    Overwrite existing files without warning?:Yes
+    Data to export:Do not use
+    Combine these object measurements with those of the previous object?:No
+    File name:DATA.csv
+    Use the object name for the file name?:Yes
+
+ExportToSpreadsheet:[module_num:13|svn_version:'Unknown'|variable_revision_number:13|show_window:False|notes:['This module saves the cell neighbor information in form of an edge ist as Object relationships.csv file. ']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select the column delimiter:Comma (",")
+    Add image metadata columns to your object data file?:No
+    Add image file and folder names to your object data file?:No
+    Select the measurements to export:No
+    Calculate the per-image mean values for object measurements?:No
+    Calculate the per-image median values for object measurements?:No
+    Calculate the per-image standard deviation values for object measurements?:No
+    Output file location:Default Output Folder|
+    Create a GenePattern GCT file?:No
+    Select source of sample row name:Metadata
+    Select the image to use as the identifier:None
+    Select the metadata to use as the identifier:None
+    Export all measurement types?:No
+    Press button to select measurements:
+    Representation of Nan/Inf:NaN
+    Add a prefix to file names?:No
+    Filename prefix:MyExpt_
+    Overwrite existing files without warning?:Yes
+    Data to export:Object relationships
+    Combine these object measurements with those of the previous object?:No
+    File name:DATA.csv
+    Use the object name for the file name?:Yes
+
+ExportVarCsv:[module_num:14|svn_version:'Unknown'|variable_revision_number:2|show_window:False|notes:['The final module reads in the full_channelmeta.csv file containing the channel names (for IMC these are metal isotopes) and the probab_channelmeta_manual.csv file containing the channel information for the pixel probability images. This information is extended by the features (cell and image) measured in the pipeline to generate extensive feature metadata files. These files contain the link between individual channels, their names and measurement type.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Output file location:Default Output Folder|
+    Add a prefix to file names?:Yes
+    Filename prefix:var_
+    Overwrite existing files without warning?:No
+    Extraction method count:2
+    Select Images where this channel identifier applies:FullStack
+    Metadata file location:Default Input Folder|Git/ImcSegmentationPipelineHubMap/results/cpout
+    Metadata file name:full_channelmeta.csv
+    Select Images where this channel identifier applies:ProbabStack
+    Metadata file location:Default Input Folder|
+    Metadata file name:probab_channelmeta_manual.csv
+
+CreateBatchFiles:[module_num:15|svn_version:'Unknown'|variable_revision_number:8|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:False|wants_pause:False]
+    Store batch files in default output folder?:Yes
+    Output folder path:/mnt/f2160748-a937-44bd-aca8-3adb8a839612/Data/Analysis/cp4_segmentation_example/cpout
+    Are the cluster computers running Windows?:No
+    Hidden- in batch mode:No
+    Hidden- in distributed mode:No
+    Hidden- default input folder at time of save:/home/vitoz
+    Hidden- revision number:0
+    Hidden- from old matlab:No
+    Local root path:/home/vitoz
+    Cluster root path:/home/vitoz

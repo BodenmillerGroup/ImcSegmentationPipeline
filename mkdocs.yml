@@ -1,0 +1,32 @@
+theme:
+  name: material
+  palette:
+    primary: teal
+    accent: teal
+  icon:
+    repo: fontawesome/brands/github
+
+repo_url: https://github.com/BodenmillerGroup/ImcSegmentationPipeline
+repo_name: BodenmillerGroup/ImcSegmentationPipeline
+
+use_directory_urls: false
+
+plugins:
+  - search
+
+site_name: IMC Segmentation Pipeline
+nav:
+    - Home: index.md
+    - Pre-processing: prepro.md
+    - Ilastik training: ilastik.md
+    - Cell segmentation: segmentation.md
+    - Cell measurement: measurement.md
+    - Output files: output.md
+    
+markdown_extensions:
+    - footnotes
+    - attr_list
+    - md_in_html
+    - pymdownx.emoji:
+        emoji_index: !!python/name:materialx.emoji.twemoji
+        emoji_generator: !!python/name:materialx.emoji.to_svg
