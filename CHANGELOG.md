@@ -1,5 +1,10 @@
 # Changelog
 
+## [3.1]
+
+ - fixed git submodule issue
+ - specified in documentation to restart CellProfiler after setting the plugins
+
 ## [3.0]
 
  - replaced `imctools` by internal `imcsegpipe` package calling [readimc](https://github.com/BodenmillerGroup/readimc)
