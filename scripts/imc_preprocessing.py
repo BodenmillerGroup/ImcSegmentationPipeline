@@ -6,13 +6,15 @@
 # !{sys.executable} -m pip install -e {Path.cwd().parent}
 
 # %%
-import imcsegpipe
-import pandas as pd
 import shutil
-
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from typing import List
+
+import pandas as pd
+
+import imcsegpipe
+from imcsegpipe.utils import sort_channels_by_mass
 
 # %% [markdown]
 #
@@ -197,7 +199,9 @@ for acquisition_dir in acquisitions_dir.glob("*"):
         imcsegpipe.create_analysis_stacks(
             acquisition_dir=acquisition_dir,
             analysis_dir=final_images_dir,
-            analysis_channels=panel.loc[panel[panel_keep_col] == 1, panel_channel_col].tolist(),
+            analysis_channels=sort_channels_by_mass(
+                panel.loc[panel[panel_keep_col] == 1, panel_channel_col].tolist()
+            ),
             suffix="_full",
             hpf=50.0,
         )
@@ -205,7 +209,9 @@ for acquisition_dir in acquisitions_dir.glob("*"):
         imcsegpipe.create_analysis_stacks(
             acquisition_dir=acquisition_dir,
             analysis_dir=ilastik_dir,
-            analysis_channels=panel.loc[panel[panel_ilastik_col] == 1, panel_channel_col].tolist(),
+            analysis_channels=sort_channels_by_mass(
+                panel.loc[panel[panel_ilastik_col] == 1, panel_channel_col].tolist()
+            ),
             suffix="_ilastik",
             hpf=50.0,
         )
