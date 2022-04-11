@@ -160,4 +160,4 @@ def filter_hot_pixels(img: np.ndarray, thres: float) -> np.ndarray:
 
 
 def sort_channels_by_mass(channels: Sequence[str]) -> List[str]:
-    return sorted(channels, lambda channel: int(re.sub("[^0-9]", "", channel) or 0))
+    return sorted(channels, key=lambda channel: int(re.sub("[^0-9]", "", channel) or 0))
