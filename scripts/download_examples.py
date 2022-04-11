@@ -43,7 +43,7 @@ for example_file_name, example_file_url in [
 # Ilastik project
 ilastik_project = Path("..") / "IMCWorkflow.ilp"
 if not ilastik_project.exists():
-    request.urlretrieve("https://zenodo.org/record/6404960/files/IMCWorkflow.ilp", ilastik_project)
+    request.urlretrieve("https://zenodo.org/record/6449127/files/IMCWorkflow.ilp", ilastik_project)
     
 # Sample metadata
 sample_metadata = Path("..") / "sample_metadata.xlsx"
