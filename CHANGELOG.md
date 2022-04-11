@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.2]
+
+ - sort channels by metal tag when creating the ilastik and full stacks
+
 ## [3.1]
 
  - fixed git submodule issue

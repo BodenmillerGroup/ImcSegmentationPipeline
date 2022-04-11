@@ -1,12 +1,13 @@
+import re
+from dataclasses import dataclass
+from typing import List, Optional, Sequence
+from xml.etree import ElementTree as ET
+
 import numpy as np
 import xtiff
-
-from dataclasses import dataclass
 from readimc import MCDFile
 from readimc.data import Acquisition
 from scipy.ndimage import maximum_filter
-from typing import Optional, Sequence
-from xml.etree import ElementTree as ET
 
 
 @dataclass
@@ -156,3 +157,7 @@ def filter_hot_pixels(img: np.ndarray, thres: float) -> np.ndarray:
     kernel[0, 1, 1] = False
     max_neighbor_img = maximum_filter(img, footprint=kernel, mode="mirror")
     return np.where(img - max_neighbor_img > thres, max_neighbor_img, img)
+
+
+def sort_channels_by_mass(channels: Sequence[str]) -> List[str]:
+    return sorted(channels, key=lambda channel: int(re.sub("[^0-9]", "", channel) or 0))

@@ -1,18 +1,18 @@
-import imageio
 import logging
-import numpy as np
-import pandas as pd
 import re
 import shutil
-import tifffile
-import xtiff
-
 from os import PathLike
 from pathlib import Path
-from readimc import MCDFile, TXTFile
-from readimc.data import Acquisition, Panorama, Slide
 from typing import Dict, List, Optional, Sequence, Union
 from zipfile import ZipFile
+
+import imageio
+import numpy as np
+import pandas as pd
+import tifffile
+import xtiff
+from readimc import MCDFile, TXTFile
+from readimc.data import Acquisition, Panorama, Slide
 
 from .utils import AcquisitionMetadata, filter_hot_pixels, get_acquisition_ome_xml
 
