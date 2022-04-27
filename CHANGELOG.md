@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.3]
+
+ - fix `tifffile` version
+
 ## [3.2]
 
  - sort channels by metal tag when creating the ilastik and full stacks
