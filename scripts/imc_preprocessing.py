@@ -3,7 +3,7 @@
 
 # from pathlib import Path
 
-# !{sys.executable} -m pip install -e {Path.cwd().parent}
+# # !{sys.executable} -m pip install -e {Path.cwd().parent}
 
 # %%
 import shutil
