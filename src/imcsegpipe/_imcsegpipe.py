@@ -125,7 +125,7 @@ def create_analysis_stacks(
     hpf: Optional[float] = None,
 ) -> None:
     Path(analysis_dir).mkdir(exist_ok=True)
-    for acquisition_img_file in Path(acquisition_dir).glob("*.ome.tiff"):
+    for acquisition_img_file in Path(acquisition_dir).glob("[!.]*.ome.tiff"):
         acquisition_channels_file = acquisition_img_file.with_name(
             acquisition_img_file.name[:-9] + ".csv"
         )
@@ -161,7 +161,7 @@ def export_to_histocat(
     mask_dir: Optional[Union[str, PathLike]] = None,
 ) -> None:
     Path(histocat_dir).mkdir(exist_ok=True)
-    for acquisition_img_file in Path(acquisition_dir).glob("*.ome.tiff"):
+    for acquisition_img_file in Path(acquisition_dir).glob("[!.]*.ome.tiff"):
         acquisition_channels_file = acquisition_img_file.with_name(
             acquisition_img_file.name[:-9] + ".csv"
         )
@@ -182,7 +182,7 @@ def export_to_histocat(
             )
         if mask_dir is not None:
             mask_files = list(
-                Path(mask_dir).glob(f"{acquisition_img_file.name[:-9]}*_mask.tiff")
+                Path(mask_dir).glob(f"[!.]{acquisition_img_file.name[:-9]}*_mask.tiff")
             )
             if len(mask_files) > 0:
                 if len(mask_files) > 1:
