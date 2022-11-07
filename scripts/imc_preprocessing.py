@@ -42,7 +42,7 @@ from imcsegpipe.utils import sort_channels_by_mass
 # The `raw_dirs` variable describes the path (one or multiple) where the `.zip` archives are located.
 # Here, we use the example data (located in the `raw` folder) to run the pre-processing part of the pipeline.
 # The `file_regex` variable specifies a [glob](https://towardsdatascience.com/the-python-glob-module-47d82f4cbd2d) entry to select all files of interest from the input directory.
-# As an example: if you want to select all files that contain the word "Patient", you would use the glob expression `"*Patient*.zip"`.
+# As an example: if you want to select all non-hidden files that contain the word "Patient", you would use the glob expression `"[!.]*Patient*.zip"`.
 #  
 # You will also need to specify the location of the panel file (`panel_file`) that contains information regarding the column that contains the metal/channel name (`panel_channel_col`), the column that contains an identifier if the channel should be used for ilastik training (`panel_ilastik_col`), and the column that contains an identifier if the channel should be used to generate the final stack of channels (`panel_keep_col`). The latter two arguments specify columns which contain 0s or 1s, 1 meaning the indicated channel is used and 0 meaning the channel is not used.
 
@@ -52,7 +52,7 @@ raw_dirs = ["../raw"]
 raw_dirs = [Path(raw_dir) for raw_dir in raw_dirs]
 
 # regular expression to select files
-file_regex = "*Patient*.zip"
+file_regex = "[!.]*Patient*.zip"
 
 # panel information
 panel_file = "../raw/panel.csv"
@@ -134,9 +134,9 @@ try:
                 imcsegpipe.extract_zip_file(zip_file, temp_dir.name)
     acquisition_metadatas = []
     for raw_dir in raw_dirs + [Path(temp_dir.name) for temp_dir in temp_dirs]:
-        mcd_files = list(raw_dir.rglob("*.mcd"))
+        mcd_files = list(raw_dir.rglob("[!.]*.mcd"))
         if len(mcd_files) > 0:
-            txt_files = list(raw_dir.rglob("*.txt"))
+            txt_files = list(raw_dir.rglob("[!.]*.txt"))
             matched_txt_files = imcsegpipe.match_txt_files(mcd_files, txt_files)
             for mcd_file in mcd_files:
                 acquisition_metadata = imcsegpipe.extract_mcd_file(
@@ -165,7 +165,7 @@ shutil.copy2(panel_file, cellprofiler_output_dir / "panel.csv")
 # For each acquistion (each `.ome.tiff` file), the `export_to_histocat` function call produces one folder that contains single channel tiff files. All channels contained in the `.ome.tiff` files are written out.
 
 # %%
-for acquisition_dir in acquisitions_dir.glob("*"):
+for acquisition_dir in acquisitions_dir.glob("[!.]*"):
     if acquisition_dir.is_dir():
         imcsegpipe.export_to_histocat(acquisition_dir, histocat_dir)
 
@@ -193,7 +193,7 @@ for acquisition_dir in acquisitions_dir.glob("*"):
 # %%
 panel: pd.DataFrame = pd.read_csv(panel_file)
 
-for acquisition_dir in acquisitions_dir.glob("*"):
+for acquisition_dir in acquisitions_dir.glob("[!.]*"):
     if acquisition_dir.is_dir():
         # Write full stack
         imcsegpipe.create_analysis_stacks(
@@ -222,7 +222,7 @@ for acquisition_dir in acquisitions_dir.glob("*"):
 # Finally, we will copy a file that contains the correct order of channels for the exported full stacks to the `cellprofiler_input_dir`.
 
 # %%
-first_channel_order_file = next(final_images_dir.glob("*_full.csv"))
+first_channel_order_file = next(final_images_dir.glob("[!.]*_full.csv"))
 shutil.copy2(first_channel_order_file, cellprofiler_input_dir / "full_channelmeta.csv")
 
 # %% [markdown]
@@ -242,7 +242,7 @@ with open(cellprofiler_input_dir / "probab_channelmeta_manual.csv", "w") as f:
 # This function can be used to convert the `.ome.tiff` files together with the mask files, which are generated in the [segmentation step](https://bodenmillergroup.github.io/ImcSegmentationPipeline/segmentation.html) to a format that is recognized by the `histoCAT` software. To use the function you will need to remove `#` from the following code chunk.
 
 # %%
-#for acquisition_dir in acquisitions_dir.glob("*"):
+#for acquisition_dir in acquisitions_dir.glob("[!.]*"):
 #    if acquisition_dir.is_dir():
 #        imcsegpipe.export_to_histocat(
 #            acquisition_dir, histocat_dir, mask_dir=final_masks_dir
