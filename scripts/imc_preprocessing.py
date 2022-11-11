@@ -42,7 +42,7 @@ from imcsegpipe.utils import sort_channels_by_mass
 # The `raw_dirs` variable describes the path (one or multiple) where the `.zip` archives are located.
 # Here, we use the example data (located in the `raw` folder) to run the pre-processing part of the pipeline.
 # The `file_regex` variable specifies a [glob](https://towardsdatascience.com/the-python-glob-module-47d82f4cbd2d) entry to select all files of interest from the input directory.
-# As an example: if you want to select all non-hidden files that contain the word "Patient", you would use the glob expression `"[!.]*Patient*.zip"`.
+# As an example: if you want to select all files that contain the word "Patient", you would use the glob expression `"*Patient*.zip"`.
 #  
 # You will also need to specify the location of the panel file (`panel_file`) that contains information regarding the column that contains the metal/channel name (`panel_channel_col`), the column that contains an identifier if the channel should be used for ilastik training (`panel_ilastik_col`), and the column that contains an identifier if the channel should be used to generate the final stack of channels (`panel_keep_col`). The latter two arguments specify columns which contain 0s or 1s, 1 meaning the indicated channel is used and 0 meaning the channel is not used.
 
@@ -52,7 +52,7 @@ raw_dirs = ["../raw"]
 raw_dirs = [Path(raw_dir) for raw_dir in raw_dirs]
 
 # regular expression to select files
-file_regex = "[!.]*Patient*.zip"
+file_regex = "*Patient*.zip"
 
 # panel information
 panel_file = "../raw/panel.csv"
