@@ -292,18 +292,24 @@ def _write_acquisition_image(
     acquisition_img_file: Path,
     acquisition_channels_file: Path,
 ) -> None:
+    channel_labels_or_names = [
+        channel_label or channel_name
+        for channel_name, channel_label in zip(
+            acquisition.channel_names, acquisition.channel_labels
+        )
+    ]
     xtiff.to_tiff(
         acquisition_img,
         acquisition_img_file,
         ome_xml_fun=get_acquisition_ome_xml,
-        channel_names=acquisition.channel_labels,
+        channel_names=channel_labels_or_names,
         channel_fluors=acquisition.channel_names,
         xml_metadata=mcd_file_handle.metadata.replace("\r\n", ""),
     )
     pd.DataFrame(
         data={
             "channel_name": acquisition.channel_names,
-            "channel_label": acquisition.channel_labels,
+            "channel_label": channel_labels_or_names,
         }
     ).to_csv(acquisition_channels_file, index=False)
 
