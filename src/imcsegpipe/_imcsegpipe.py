@@ -28,7 +28,7 @@ def match_txt_files(
     mcd_files: Sequence[Union[str, PathLike]], txt_files: Sequence[Union[str, PathLike]]
 ) -> Dict[Union[str, PathLike], List[Path]]:
     unmatched_txt_files = list(txt_files)
-    matched_txt_files: Dict[Union[str, PathLike], List[Union[str, PathLike]]] = {}
+    matched_txt_files: Dict[Union[str, PathLike], List[Path]] = {}
     for mcd_file in sorted(mcd_files, key=lambda x: Path(x).stem, reverse=True):
         matched_txt_files[mcd_file] = []
         i = 0
@@ -80,7 +80,7 @@ def extract_mcd_file(
                 acquisition_is_valid = _extract_acquisition(
                     f_mcd, acquisition, acquisition_img_file, acquisition_channels_file
                 )
-                if not acquisition_is_valid:
+                if not acquisition_is_valid and txt_files is not None:
                     acquisition_txt_files = [
                         txt_file
                         for txt_file in txt_files
@@ -218,6 +218,7 @@ def _extract_slide(
         logging.error(
             f"Error reading slide {slide.id} from file {mcd_file_handle.path.name}: {e}"
         )
+        return False
 
 
 def _extract_panorama(
