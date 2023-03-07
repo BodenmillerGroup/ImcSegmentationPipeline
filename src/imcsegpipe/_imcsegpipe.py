@@ -173,10 +173,13 @@ def export_to_histocat(
         histocat_img_dir.mkdir(exist_ok=True)
         for channel_index, row in acquisition_channels.iterrows():
             acquisition_channel_img: np.ndarray = acquisition_img[channel_index]
-            channel_label = re.sub("[^a-zA-Z0-9()]", "-", row["channel_label"])
             channel_name = row["channel_name"]
+            channel_label = row["channel_label"]
+            if not pd.isnull(channel_label) and not channel_label:
+                channel_label = re.sub("[^a-zA-Z0-9()]", "-", channel_label)
             tifffile.imwrite(
-                histocat_img_dir / f"{channel_label}_{channel_name}.tiff",
+                histocat_img_dir
+                / f"{channel_label or channel_name}_{channel_name}.tiff",
                 data=acquisition_channel_img,
                 imagej=True,
             )
@@ -293,11 +296,17 @@ def _write_acquisition_image(
     acquisition_img_file: Path,
     acquisition_channels_file: Path,
 ) -> None:
+    channel_labels_or_names = [
+        channel_label or channel_name
+        for channel_name, channel_label in zip(
+            acquisition.channel_names, acquisition.channel_labels
+        )
+    ]
     xtiff.to_tiff(
         acquisition_img,
         acquisition_img_file,
         ome_xml_fun=get_acquisition_ome_xml,
-        channel_names=acquisition.channel_labels,
+        channel_names=channel_labels_or_names,
         channel_fluors=acquisition.channel_names,
         xml_metadata=mcd_file_handle.metadata.replace("\r\n", ""),
     )
