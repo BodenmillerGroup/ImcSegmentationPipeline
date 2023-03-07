@@ -200,7 +200,7 @@ def export_to_histocat(
 def _extract_schema(mcd_file_handle: MCDFile, schema_xml_file: Path) -> bool:
     try:
         with schema_xml_file.open("w") as f:
-            f.write(mcd_file_handle.metadata)
+            f.write(mcd_file_handle.schema_xml)
         return True
     except Exception as e:
         logging.error(
@@ -308,7 +308,7 @@ def _write_acquisition_image(
         ome_xml_fun=get_acquisition_ome_xml,
         channel_names=channel_labels_or_names,
         channel_fluors=acquisition.channel_names,
-        xml_metadata=mcd_file_handle.metadata.replace("\r\n", ""),
+        xml_metadata=mcd_file_handle.schema_xml.replace("\r\n", ""),
     )
     pd.DataFrame(
         data={

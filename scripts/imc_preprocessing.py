@@ -134,9 +134,11 @@ try:
                 imcsegpipe.extract_zip_file(zip_file, temp_dir.name)
     acquisition_metadatas = []
     for raw_dir in raw_dirs + [Path(temp_dir.name) for temp_dir in temp_dirs]:
-        mcd_files = list(raw_dir.rglob("[!.]*.mcd"))
+        mcd_files = list(raw_dir.rglob("*.mcd"))
+        mcd_files=[(i) for i in mcd_files if not i.stem.startswith('.')]
         if len(mcd_files) > 0:
-            txt_files = list(raw_dir.rglob("[!.]*.txt"))
+            txt_files = list(raw_dir.rglob("*.txt"))
+            txt_files=[(i) for i in txt_files if not i.stem.startswith('.')]
             matched_txt_files = imcsegpipe.match_txt_files(mcd_files, txt_files)
             for mcd_file in mcd_files:
                 acquisition_metadata = imcsegpipe.extract_mcd_file(
