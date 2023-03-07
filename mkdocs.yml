@@ -22,7 +22,7 @@ nav:
     - Cell segmentation: segmentation.md
     - Cell measurement: measurement.md
     - Output files: output.md
-    
+
 markdown_extensions:
     - footnotes
     - attr_list
