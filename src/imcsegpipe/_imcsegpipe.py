@@ -175,7 +175,7 @@ def export_to_histocat(
             acquisition_channel_img: np.ndarray = acquisition_img[channel_index]
             channel_name = row["channel_name"]
             channel_label = row["channel_label"]
-            if not np.isnan(channel_label) and not channel_label:
+            if not pd.isnull(channel_label) and not channel_label:
                 channel_label = re.sub("[^a-zA-Z0-9()]", "-", channel_label)
             tifffile.imwrite(
                 histocat_img_dir
