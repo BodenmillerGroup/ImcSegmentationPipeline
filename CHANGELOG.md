@@ -1,5 +1,23 @@
 # Changelog
 
+## [3.6, 08-03-2023]
+
+ - allow handling MCD files with missing channel label entries
+ - updated links to raw data on Zenodo
+ - switched from `MCDFile.metadata` to `MCDFile.schema_xml` to keep up with the latest version of `readimc`
+
+## [3.5, 07-11-2022]
+
+ - exclude hidden files from processing
+
+## [3.4, 02-06-2022]
+
+ - removed `tifffile` version pinning
+
+## [3.3, 27-04-2022]
+
+ - fixed `tifffile` version
+
 ## [3.2]
 
  - sort channels by metal tag when creating the ilastik and full stacks
