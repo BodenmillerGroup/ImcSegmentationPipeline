@@ -40,13 +40,13 @@ Furthermore, before running the analysis, you will need to setup a `conda` envir
 
 2. Clone the repository: 
 
-    ```bash
+    ```
     git clone --recursive https://github.com/BodenmillerGroup/ImcSegmentationPipeline.git
     ```
 
 3. Setup the conda environment: 
 
-    ```bash
+    ```
     cd ImcSegmentationPipeline
     conda env create -f environment.yml
     ```
@@ -55,7 +55,7 @@ Furthermore, before running the analysis, you will need to setup a `conda` envir
 
 5. Activate the environment created in 3. and start a jupyter instance
 
-    ```bash
+    ```
     conda activate imcsegpipe
     jupyter-lab
     ```
