@@ -17,23 +17,23 @@ raw_folder.mkdir(exist_ok=True, parents=True)
 for example_file_name, example_file_url in [
     (
         "Patient1.zip",
-        "https://zenodo.org/record/5949116/files/Patient1.zip",
+        "https://zenodo.org/record/7575859/files/Patient1.zip",
     ),
     (
         "Patient2.zip",
-        "https://zenodo.org/record/5949116/files/Patient2.zip",
+        "https://zenodo.org/record/7575859/files/Patient2.zip",
     ),
     (
         "Patient3.zip",
-        "https://zenodo.org/record/5949116/files/Patient3.zip",
+        "https://zenodo.org/record/7575859/files/Patient3.zip",
     ),
     (
         "Patient4.zip",
-        "https://zenodo.org/record/5949116/files/Patient4.zip",
+        "https://zenodo.org/record/7575859/files/Patient4.zip",
     ),
     (
         "panel.csv",
-        "https://zenodo.org/record/5949116/files/panel.csv",
+        "https://zenodo.org/record/7575859/files/panel.csv",
     )
 ]:
     example_file = raw_folder / example_file_name
@@ -48,7 +48,7 @@ if not ilastik_project.exists():
 # Sample metadata
 sample_metadata = Path("..") / "sample_metadata.xlsx"
 if not sample_metadata.exists():
-    request.urlretrieve("https://zenodo.org/record/5949116/files/sample_metadata.xlsx", sample_metadata)
+    request.urlretrieve("https://zenodo.org/record/7575859/files/sample_metadata.csv", sample_metadata)
 
 # %%
 # !conda list

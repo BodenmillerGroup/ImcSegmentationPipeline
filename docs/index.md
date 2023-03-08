@@ -40,25 +40,31 @@ Furthermore, before running the analysis, you will need to setup a `conda` envir
 
 2. Clone the repository: 
 
-```bash
-git clone --recursive https://github.com/BodenmillerGroup/ImcSegmentationPipeline.git
-```
+    ```
+    git clone --recursive https://github.com/BodenmillerGroup/ImcSegmentationPipeline.git
+    ```
 
 3. Setup the conda environment: 
 
-```bash
-cd ImcSegmentationPipeline
-conda env create -f environment.yml
-```
+    ```
+    cd ImcSegmentationPipeline
+    ```
+    
+    ```
+    conda env create -f environment.yml
+    ```
 
 4. Configure CellProfiler to use the plugins by opening the CellProfiler GUI, selecting `Preferences` and setting the `CellProfiler plugins directory` to `path/to/ImcSegmentationPipeline/resources/ImcPluginsCP/plugins` and **restart CellProfiler**. Alternatively you can clone the `ImcPluginsCP` repository individually and set the path correctly in CellProfiler.
 
 5. Activate the environment created in 3. and start a jupyter instance
 
-```bash
-conda activate imcsegpipe
-jupyter-lab
-```
+    ```
+    conda activate imcsegpipe
+    ```
+    
+    ```
+    jupyter-lab
+    ```
 
 This will automatically open a jupyter instance at `http://localhost:8888/lab` in your browser.
 From there, you can open the `scripts/imc_preprocessing.ipynb` notebook and start the data pre-processing.
