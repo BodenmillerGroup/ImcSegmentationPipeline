@@ -48,6 +48,9 @@ Furthermore, before running the analysis, you will need to setup a `conda` envir
 
     ```
     cd ImcSegmentationPipeline
+    ```
+    
+    ```
     conda env create -f environment.yml
     ```
 
@@ -57,6 +60,9 @@ Furthermore, before running the analysis, you will need to setup a `conda` envir
 
     ```
     conda activate imcsegpipe
+    ```
+    
+    ```
     jupyter-lab
     ```
 
