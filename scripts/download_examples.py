@@ -46,7 +46,7 @@ if not ilastik_project.exists():
     request.urlretrieve("https://zenodo.org/record/6449127/files/IMCWorkflow.ilp", ilastik_project)
     
 # Sample metadata
-sample_metadata = Path("..") / "sample_metadata.xlsx"
+sample_metadata = Path("..") / "sample_metadata.csv"
 if not sample_metadata.exists():
     request.urlretrieve("https://zenodo.org/record/7575859/files/sample_metadata.csv", sample_metadata)
 
