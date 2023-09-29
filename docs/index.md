@@ -63,7 +63,7 @@ Furthermore, before running the analysis, you will need to setup a `conda` envir
     ```
     
     ```
-    jupyter-lab
+    jupyter lab
     ```
 
 This will automatically open a jupyter instance at `http://localhost:8888/lab` in your browser.

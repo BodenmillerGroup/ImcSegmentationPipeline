@@ -38,7 +38,7 @@ conda env create -f environment.yml
 
 ```bash
 conda activate imcsegpipe
-jupyter-lab
+jupyter lab
 ```
 
 This will automatically open a jupyter instance at `http://localhost:8888/lab` in your browser. From there, you can open the `scripts/imc_preprocessing.ipynb` notebook and start the data pre-processing.
