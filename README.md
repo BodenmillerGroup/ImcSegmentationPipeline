@@ -84,16 +84,15 @@ To contribute to this work, please fork the repository, make changes to it and o
 
 ## Citation
 
-If you use this workflow for your research, please cite us:
+Please cite the following paper when using this workflow in your research:
 
-```
-@misc{ImcSegmentationPipeline,
-    author       = {Vito RT Zanotelli, Bernd Bodenmiller},
-    title        = {{ImcSegmentationPipeline: A pixel-classification based multiplexed image segmentation pipeline}},
-    year         = 2022,
-    doi          = {10.5281/zenodo.3841961},
-    version      = {3.0},
-    publisher    = {Zenodo},
-    url          = {https://doi.org/10.5281/zenodo.3841961}
+>  Windhager, J., Zanotelli, V.R.T., Schulz, D. et al. An end-to-end workflow for multiplexed image processing and analysis. Nat Protoc (2023). https://doi.org/10.1038/s41596-023-00881-0
+
+    @article{Windhager2023,
+        author = {Windhager, Jonas and Zanotelli, Vito R.T. and Schulz, Daniel and Meyer, Lasse and Daniel, Michelle and Bodenmiller, Bernd and Eling, Nils},
+        title = {An end-to-end workflow for multiplexed image processing and analysis},
+        year = {2023},
+        doi = {10.1038/s41596-023-00881-0},
+        URL = {https://www.nature.com/articles/s41596-023-00881-0},
+        journal = {Nature Protocols}
     }
-```
