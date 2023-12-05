@@ -78,9 +78,9 @@ To contribute to this work, please fork the repository, make changes to it and o
 
 **Creator:** Vito Zanotelli
 
-**Contributor:** Jonas Windhager, Nils Eling
+**Contributor:** Jonas Windhager, Nils Eling, Milad Adibi
 
-**Maintainer:** Nils Eling
+**Maintainer:** Milad Adibi
 
 ## Citation
 

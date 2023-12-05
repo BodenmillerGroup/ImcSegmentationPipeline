@@ -111,8 +111,8 @@ For downstream analysis in `R`, please refer to the [IMC Data Analysis](https://
 ## Contributors
 
 **Creator:** Vito Zanotelli [:fontawesome-brands-github:](https://github.com/votti) [:fontawesome-brands-twitter:](https://twitter.com/ZanotelliVRT)    
-**Contributors:** Jonas Windhager [:fontawesome-brands-github:](https://github.com/jwindhager) [:fontawesome-brands-twitter:](https://twitter.com/JonasWindhager), Nils Eling [:fontawesome-brands-github:](https://github.com/nilseling) [:fontawesome-brands-twitter:](https://twitter.com/NilsEling)  
-**Maintainer:** Nils Eling
+**Contributors:** Jonas Windhager [:fontawesome-brands-github:](https://github.com/jwindhager) [:fontawesome-brands-twitter:](https://twitter.com/JonasWindhager), Nils Eling [:fontawesome-brands-github:](https://github.com/nilseling) [:fontawesome-brands-twitter:](https://twitter.com/NilsEling), Milad Adibi [:fontawesome-brands-github:](https://github.com/Milad4849) 
+**Maintainer:** Milad Adibi
 
 ## Citation
 
